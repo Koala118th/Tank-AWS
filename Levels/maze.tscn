@@ -1,6 +1,33 @@
 [gd_scene format=3 uid="uid://be8spxxqvxqt"]
 
 [ext_resource type="Script" uid="uid://ceygdf0se50t7" path="res://Levels/maze.gd" id="1_c313c"]
+[ext_resource type="PackedScene" uid="uid://b3as12v5nfntk" path="res://Objects/Wall/wall.tscn" id="2_5mops"]
+[ext_resource type="Script" uid="uid://cetcc8cygwj2" path="res://Levels/tank_spawner.gd" id="2_egmw7"]
 
 [node name="Maze" type="Node2D" unique_id=1984496082]
 script = ExtResource("1_c313c")
+
+[node name="TankSpawner" type="Node2D" parent="." unique_id=592079577]
+script = ExtResource("2_egmw7")
+
+[node name="Map" type="Node2D" parent="." unique_id=1521102474]
+
+[node name="Wall" parent="Map" unique_id=2005327969 instance=ExtResource("2_5mops")]
+position = Vector2(-576, -324)
+scale = Vector2(6, 1)
+
+[node name="Wall2" parent="Map" unique_id=322262080 instance=ExtResource("2_5mops")]
+position = Vector2(-576, 324)
+scale = Vector2(6, 1)
+
+[node name="Wall3" parent="Map" unique_id=2039153632 instance=ExtResource("2_5mops")]
+position = Vector2(-576, -410)
+rotation = 1.5707964
+scale = Vector2(4, 1)
+
+[node name="Wall4" parent="Map" unique_id=796527653 instance=ExtResource("2_5mops")]
+position = Vector2(576, -324)
+rotation = 1.5707964
+scale = Vector2(4, 1)
+
+[node name="TankSpawnLocations" type="Node2D" parent="." unique_id=123431645]
