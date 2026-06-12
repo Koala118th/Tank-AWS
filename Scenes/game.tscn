@@ -1,3 +1,12 @@
 [gd_scene format=3 uid="uid://comfpuqm6dlql"]
 
+[ext_resource type="PackedScene" uid="uid://b3as12v5nfntk" path="res://Objects/Wall/wall.tscn" id="1_ebmjs"]
+[ext_resource type="PackedScene" uid="uid://b70uwo6ja00qt" path="res://Entities/Tank/tank.tscn" id="2_qxrlw"]
+
 [node name="Game" type="Node2D" unique_id=1209050767]
+
+[node name="Wall" parent="." unique_id=2005327969 instance=ExtResource("1_ebmjs")]
+position = Vector2(302, 350)
+
+[node name="Tank" parent="." unique_id=1826538697 instance=ExtResource("2_qxrlw")]
+position = Vector2(411, 277)

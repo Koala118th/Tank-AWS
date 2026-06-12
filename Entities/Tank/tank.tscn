@@ -1,12 +1,33 @@
 [gd_scene format=3 uid="uid://b70uwo6ja00qt"]
 
 [ext_resource type="Script" uid="uid://cpke425rqilxl" path="res://Entities/Tank/tank.gd" id="1_dlw22"]
+[ext_resource type="Texture2D" uid="uid://6w8tf76vyu6k" path="res://Assets/PNG/tankBody_green.png" id="2_t7cgh"]
+[ext_resource type="Script" uid="uid://db0xdvb74rm03" path="res://Entities/Tank/turret.gd" id="3_dahrd"]
+[ext_resource type="Texture2D" uid="uid://dhd61cu0w2geg" path="res://Assets/PNG/tankGreen_barrel1.png" id="3_f3kol"]
 
-[node name="Tank" type="Node2D" unique_id=559549924]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_f3kol"]
+size = Vector2(38, 36)
+
+[node name="Tank" type="CharacterBody2D" unique_id=1826538697]
 script = ExtResource("1_dlw22")
 
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=32780306]
+[node name="Body" type="Node2D" parent="." unique_id=1157753539]
 
-[node name="Area2D" type="Area2D" parent="." unique_id=1591004347]
+[node name="Sprite2D" type="Sprite2D" parent="Body" unique_id=32780306]
+texture = ExtResource("2_t7cgh")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1835032232]
+[node name="Turret" type="Node2D" parent="." unique_id=1595159381]
+script = ExtResource("3_dahrd")
+
+[node name="Sprite2D" type="Sprite2D" parent="Turret" unique_id=1317818099]
+position = Vector2(0, 8)
+texture = ExtResource("3_f3kol")
+offset = Vector2(0, -16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1835032232]
+visible = false
+shape = SubResource("RectangleShape2D_f3kol")
+
+[node name="Polygon2D" type="Polygon2D" parent="." unique_id=929128745]
+color = Color(0.1882353, 1, 0.45490196, 1)
+polygon = PackedVector2Array(-4, -24, 4, -24, 0, -31)
