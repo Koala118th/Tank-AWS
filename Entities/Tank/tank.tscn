@@ -1,0 +1,12 @@
+[gd_scene format=3 uid="uid://b70uwo6ja00qt"]
+
+[ext_resource type="Script" uid="uid://cpke425rqilxl" path="res://Entities/Tank/tank.gd" id="1_dlw22"]
+
+[node name="Tank" type="Node2D" unique_id=559549924]
+script = ExtResource("1_dlw22")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=32780306]
+
+[node name="Area2D" type="Area2D" parent="." unique_id=1591004347]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=1835032232]

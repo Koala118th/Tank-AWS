@@ -1,0 +1,12 @@
+res://Entities/Tank/tank.tscn
+res://Entities/Tank/tank.gd
+res://Interfaces/Main Menu/main_menu.tscn
+res://Interfaces/Main Menu/main_menu.gd
+res://Interfaces/Pause Menu/pause_menu.tscn
+res://Interfaces/Pause Menu/pause_menu.gd
+res://Levels/maze.tscn
+res://Levels/Maze 1/maze_1.tscn
+res://Objects/Bullet/bullet.tscn
+res://Levels/maze.gd
+res://Objects/Bullet/bullet.gd
+res://Scenes/game.tscn

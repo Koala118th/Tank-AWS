@@ -1,3 +1,20 @@
 63f7b34db8d8cdea90c76aacccf841ec
-::res://::1781230849
+::res://::1781231819
 icon.svg::CompressedTexture2D::8464296732594944917::1781230845::1781230850::1::::<><><>0<>0<>010e6b355e536dc72fdd4a255c868450<>res://.godot/imported/icon.svg-218a8f2b3041327d8a5756f3a245f83b.ctex::
+::res://Assets/::1781230999
+::res://Entities/::1781231308
+::res://Entities/Tank/::1781231778
+tank.gd::GDScript::5846613920760291365::1781231778::0::1::::Tank<>Node2D<><>0<>0<><>::
+tank.tscn::PackedScene::4685327534908638527::1781231778::0::1::::<><><>0<>0<><>::uid://cpke425rqilxl::::res://Entities/Tank/tank.gd
+::res://Interfaces/::1781231818
+::res://Interfaces/Main Menu/::1781231818
+main_menu.gd::GDScript::6850759115455255703::1781231836::0::1::::Main_menu<>Control<><>0<>0<><>::
+main_menu.tscn::PackedScene::7469780688888053676::1781231836::0::1::::<><><>0<>0<><>::uid://c4utab8ywpsjf::::res://Interfaces/Main Menu/main_menu.gd
+::res://Interfaces/Pause Menu/::1781231035
+Pause_menu.tscn::PackedScene::8975369116755327972::1781231858::0::1::::<><><>0<>0<><>::
+::res://Levels/::1781231224
+::res://Levels/Maze 1/::1781231224
+::res://Objects/::1781231234
+::res://Objects/Bullet/::1781231234
+::res://Scenes/::1781231301
+::res://Scenes/Game/::1781231301
