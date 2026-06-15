@@ -42,6 +42,12 @@ shoot={
 ]
 }
 
+[layer_names]
+
+2d_physics/layer_1="Wall-Tank"
+2d_physics/layer_2="Bullet-Tank"
+2d_physics/layer_3="Bullet-Wall"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

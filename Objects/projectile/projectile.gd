@@ -1,4 +1,4 @@
-extends Node2D
+extends CharacterBody2D
 class_name Projectile
 
 
@@ -7,7 +7,9 @@ class_name Projectile
 
 
 @export var speed: float
-var velocity: Vector2
+
+
+var shooter
 
 
 func set_direction(dir: Vector2):
@@ -20,9 +22,11 @@ func _physics_process(delta):
 
 
 func _on_enemy_detection_area_body_entered(body: Node2D) -> void:
-	body.get_hit()
+	if body == shooter:
+		return
+	if body.has_method("get_hit"):
+		body.get_hit()
 
 
 func _on_delete_timer_timeout() -> void:
-	print("delete")
 	queue_free()

@@ -2,18 +2,18 @@
 
 [ext_resource type="Script" uid="uid://k8fueg3ryajj" path="res://Objects/projectile/projectile.gd" id="1_sirro"]
 
-[node name="Projectile" type="Node2D" unique_id=746364472]
+[node name="Projectile" type="CharacterBody2D" unique_id=2093711468]
+collision_layer = 6
+collision_mask = 6
 script = ExtResource("1_sirro")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1784469120]
 
 [node name="EnemyDetectionArea" type="Area2D" parent="." unique_id=1894152565]
+collision_layer = 3
+collision_mask = 3
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyDetectionArea" unique_id=1678753695]
-
-[node name="EnemyDetectionArea" type="Area2D" parent="EnemyDetectionArea" unique_id=909346173]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyDetectionArea/EnemyDetectionArea" unique_id=1981404272]
 
 [node name="DeleteTimer" type="Timer" parent="." unique_id=1513807636]
 autostart = true
