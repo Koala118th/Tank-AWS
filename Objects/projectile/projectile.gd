@@ -3,6 +3,7 @@ class_name Projectile
 
 
 @onready var _enemy_detection_area: Area2D = $EnemyDetectionArea
+@onready var _delete_timer: Timer = $DeleteTimer
 
 
 @export var speed: float
@@ -20,3 +21,8 @@ func _physics_process(delta):
 
 func _on_enemy_detection_area_body_entered(body: Node2D) -> void:
 	body.get_hit()
+
+
+func _on_delete_timer_timeout() -> void:
+	print("delete")
+	queue_free()

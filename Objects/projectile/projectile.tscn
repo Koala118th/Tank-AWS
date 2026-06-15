@@ -15,4 +15,8 @@ script = ExtResource("1_sirro")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyDetectionArea/EnemyDetectionArea" unique_id=1981404272]
 
+[node name="DeleteTimer" type="Timer" parent="." unique_id=1513807636]
+autostart = true
+
 [connection signal="body_entered" from="EnemyDetectionArea" to="." method="_on_enemy_detection_area_body_entered"]
+[connection signal="timeout" from="DeleteTimer" to="." method="_on_delete_timer_timeout"]
