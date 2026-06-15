@@ -27,7 +27,6 @@ func _physics_process(delta: float):
 func shoot():
 	print("shot")
 	var bullet: Bullet = bullet_scene.instantiate()
-	bullet.shooter = self
 	var mouse_pos = get_global_mouse_position()
 	var bullet_dir = (mouse_pos - global_position).normalized()
 

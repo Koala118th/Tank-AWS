@@ -16,6 +16,7 @@ collision_mask = 2
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyDetectionArea" unique_id=1678753695]
 
 [node name="DeleteTimer" type="Timer" parent="." unique_id=1513807636]
+wait_time = 2.0
 autostart = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=346569427]

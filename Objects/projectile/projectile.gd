@@ -9,22 +9,22 @@ class_name Projectile
 @export var speed: float
 
 
-var shooter
-
-
 func set_direction(dir: Vector2):
 	velocity = (dir - global_position).normalized() * speed
 	rotation = velocity.angle()
 	rotation += deg_to_rad(90)
 
+
+func _ready():
+	$EnemyDetectionArea/CollisionShape2D.disabled = true
+	await get_tree().create_timer(0.1).timeout
+	$EnemyDetectionArea/CollisionShape2D.disabled = false
+
+
 func _physics_process(delta):
 	var collision = move_and_collide(velocity * delta)
 
 	if collision:
-		# Ignore shooter
-		if collision.get_collider() == shooter:
-			return
-		
 		# Reflect velocity
 		velocity = velocity.bounce(collision.get_normal())
 		rotation = velocity.angle()
@@ -32,8 +32,6 @@ func _physics_process(delta):
 
 
 func _on_enemy_detection_area_body_entered(body: Node2D) -> void:
-	if body == shooter:
-		return
 	if body.has_method("get_hit"):
 		body.get_hit()
 		queue_free()
