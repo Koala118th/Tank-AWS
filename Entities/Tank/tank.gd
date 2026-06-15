@@ -3,7 +3,7 @@ class_name Tank
 
 
 @export var bullet_scene: PackedScene =preload("res://Objects/projectile/bullet/bullet.tscn")
-
+@export var explosion_scene: PackedScene =preload("res://Entities/Explosion/explosion.tscn")
 
 @export var speed: float = 150.0
 @export var turn_speed: float = 5.0
@@ -41,4 +41,7 @@ func shoot():
 
 func get_hit():
 	print("got hit")
+	var explosion = explosion_scene.instantiate()
+	explosion.global_position = global_position
+	get_parent().add_child(explosion)
 	queue_free()
