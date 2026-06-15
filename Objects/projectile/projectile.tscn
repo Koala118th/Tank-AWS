@@ -3,20 +3,22 @@
 [ext_resource type="Script" uid="uid://k8fueg3ryajj" path="res://Objects/projectile/projectile.gd" id="1_sirro"]
 
 [node name="Projectile" type="CharacterBody2D" unique_id=2093711468]
-collision_layer = 6
-collision_mask = 6
+collision_layer = 0
+collision_mask = 4
 script = ExtResource("1_sirro")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=1784469120]
 
 [node name="EnemyDetectionArea" type="Area2D" parent="." unique_id=1894152565]
-collision_layer = 3
-collision_mask = 3
+collision_layer = 0
+collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="EnemyDetectionArea" unique_id=1678753695]
 
 [node name="DeleteTimer" type="Timer" parent="." unique_id=1513807636]
 autostart = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=346569427]
 
 [connection signal="body_entered" from="EnemyDetectionArea" to="." method="_on_enemy_detection_area_body_entered"]
 [connection signal="timeout" from="DeleteTimer" to="." method="_on_delete_timer_timeout"]

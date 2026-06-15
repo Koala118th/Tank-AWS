@@ -10,7 +10,6 @@ size = Vector2(38, 36)
 
 [node name="Tank" type="CharacterBody2D" unique_id=1826538697]
 collision_layer = 3
-collision_mask = 0
 script = ExtResource("1_dlw22")
 
 [node name="Body" type="Node2D" parent="." unique_id=1157753539]

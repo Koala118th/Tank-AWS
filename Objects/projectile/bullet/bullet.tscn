@@ -7,6 +7,9 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0g0mr"]
 size = Vector2(4, 10)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fmpon"]
+size = Vector2(4, 10)
+
 [node name="Bullet" unique_id=746364472 instance=ExtResource("1_tv54y")]
 script = ExtResource("2_0g0mr")
 speed = 400.0
@@ -16,7 +19,10 @@ texture = ExtResource("3_fmpon")
 
 [node name="EnemyDetectionArea" parent="." index="1" unique_id=1894152565]
 collision_layer = 0
-collision_mask = 6
+collision_mask = 2
 
 [node name="CollisionShape2D" parent="EnemyDetectionArea" index="0" unique_id=1678753695]
 shape = SubResource("RectangleShape2D_0g0mr")
+
+[node name="CollisionShape2D" parent="." index="3" unique_id=346569427]
+shape = SubResource("RectangleShape2D_fmpon")
