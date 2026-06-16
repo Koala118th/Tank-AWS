@@ -4,6 +4,7 @@ class_name Tank
 const MAX_HEALTH: int = 100
 @export var bullet_scene: PackedScene =preload("res://Objects/projectile/bullet/bullet.tscn")
 @export var sniper_scene: PackedScene =preload("res://Objects/projectile/sniper/sniper.tscn")
+@export var chaser_scene: PackedScene =preload("res://Objects/projectile/chaser/chaser.tscn")
 @export var explosion_scene: PackedScene =preload("res://Entities/Explosion/explosion.tscn")
 
 @export var speed: float = 150.0
@@ -22,13 +23,16 @@ const MAX_HEALTH: int = 100
 		
 var _health: float = 100
 
-@onready var body: Node2D =$Body
+@onready var body: Node2D = $Body
+@onready var turret: Node2D = $Turret
 @onready var health_bar: ProgressBar = $ProgressBar
 @onready var fire_timer: Timer = $FireTimer
 
 
 func _process(delta):
 	health_bar.value = lerp(health_bar.value, _health, 10 * delta)
+	turret.look_at(get_global_mouse_position())
+	turret.rotation += deg_to_rad(90)
 
 
 func _physics_process(delta: float):
@@ -39,7 +43,7 @@ func _physics_process(delta: float):
 	velocity = Vector2.UP.rotated(body.rotation) * forward * speed
 	
 	if Input.is_action_just_pressed("shoot") == true:
-		shoot(sniper_scene)
+		shoot(chaser_scene)
 
 	move_and_slide()
 
@@ -48,6 +52,7 @@ func shoot(projectile_scene: PackedScene):
 	if not fire_timer.is_stopped():
 		return
 	var projectile = projectile_scene.instantiate()
+	projectile.shooter = self
 	var mouse_pos = get_global_mouse_position()
 	var bullet_dir = (mouse_pos - global_position).normalized()
 
