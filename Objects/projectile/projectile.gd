@@ -7,6 +7,7 @@ class_name Projectile
 
 
 @export var speed: float
+@export var damage: float
 
 
 func set_direction(dir: Vector2):
@@ -17,7 +18,7 @@ func set_direction(dir: Vector2):
 
 func _ready():
 	$EnemyDetectionArea/CollisionShape2D.disabled = true
-	await get_tree().create_timer(0.1).timeout
+	await get_tree().create_timer(0.08).timeout
 	$EnemyDetectionArea/CollisionShape2D.disabled = false
 
 
@@ -33,7 +34,7 @@ func _physics_process(delta):
 
 func _on_enemy_detection_area_body_entered(body: Node2D) -> void:
 	if body.has_method("get_hit"):
-		body.get_hit()
+		body.get_hit(damage)
 		queue_free()
 
 

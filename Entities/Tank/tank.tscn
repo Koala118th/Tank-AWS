@@ -12,6 +12,21 @@ size = Vector2(38, 36)
 collision_layer = 3
 script = ExtResource("1_dlw22")
 
+[node name="ProgressBar" type="ProgressBar" parent="." unique_id=1505685711]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 14.0
+offset_top = -31.5
+offset_right = 18.0
+offset_bottom = -4.5
+grow_horizontal = 2
+grow_vertical = 2
+rotation = 1.5707964
+theme_override_font_sizes/font_size = 16
+fill_mode = 3
+show_percentage = false
+
 [node name="Body" type="Node2D" parent="." unique_id=1157753539]
 
 [node name="Sprite2D" type="Sprite2D" parent="Body" unique_id=32780306]

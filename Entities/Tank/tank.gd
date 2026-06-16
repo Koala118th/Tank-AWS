@@ -1,7 +1,7 @@
 extends CharacterBody2D
 class_name Tank
 
-
+const MAX_HEALTH: int = 100
 @export var bullet_scene: PackedScene =preload("res://Objects/projectile/bullet/bullet.tscn")
 @export var explosion_scene: PackedScene =preload("res://Entities/Explosion/explosion.tscn")
 
@@ -9,6 +9,22 @@ class_name Tank
 @export var turn_speed: float = 5.0
 @export var acceleration: float = 2500.0
 @export var deceleration: float = 1500.0
+@export_range(0, MAX_HEALTH) var health: float = 100:
+	get:
+		return health
+	set(new_value):
+		var new_health: int = clamp(new_value, 0, MAX_HEALTH)
+		health_bar.value = lerp(health_bar.value, health, 0.1)
+		if health > 0 and new_health == 0:
+			set_physics_process(false)
+			var explosion = explosion_scene.instantiate()
+			explosion.global_position = global_position
+			get_parent().add_child(explosion)
+			queue_free()
+		
+		health = new_health
+
+@onready var health_bar: ProgressBar = $ProgressBar
 
 
 func _physics_process(delta: float):
@@ -39,9 +55,8 @@ func shoot():
 	get_parent().add_child(bullet)
 
 
-func get_hit():
+func get_hit(damage: float):
+	print(health)
 	print("got hit")
-	var explosion = explosion_scene.instantiate()
-	explosion.global_position = global_position
-	get_parent().add_child(explosion)
-	queue_free()
+	health -= damage
+	print(health)
