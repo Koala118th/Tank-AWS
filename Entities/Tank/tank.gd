@@ -31,11 +31,11 @@ var _health: float = 100
 
 func _process(delta):
 	health_bar.value = lerp(health_bar.value, _health, 10 * delta)
-	turret.look_at(get_global_mouse_position())
-	turret.rotation += deg_to_rad(90)
 
 
 func _physics_process(delta: float):
+	turret.look_at(get_global_mouse_position())
+	turret.rotation += deg_to_rad(90)
 	var turn = Input.get_axis("turn_left", "turn_right")
 	body.rotation += turn * turn_speed * delta
 

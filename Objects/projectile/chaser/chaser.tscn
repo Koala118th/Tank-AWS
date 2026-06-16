@@ -13,7 +13,7 @@ size = Vector2(8, 14)
 
 [node name="Chaser" unique_id=2093711468 instance=ExtResource("1_60iaj")]
 script = ExtResource("2_v0nso")
-speed = 200.0
+speed = 180.0
 damage = 20.0
 fire_cooldown = 0.1
 
@@ -24,7 +24,7 @@ texture = ExtResource("3_u3bil")
 shape = SubResource("CapsuleShape2D_bgyv4")
 
 [node name="DeleteTimer" parent="." index="2" unique_id=1513807636]
-wait_time = 3.0
+wait_time = 4.0
 
 [node name="CollisionShape2D" parent="." index="3" unique_id=346569427]
 shape = SubResource("RectangleShape2D_7ompk")
