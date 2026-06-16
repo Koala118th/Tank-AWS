@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://dhd61cu0w2geg" path="res://Assets/PNG/tankGreen_barrel1.png" id="3_f3kol"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f3kol"]
+bg_color = Color(1, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dahrd"]
 bg_color = Color(0.28627452, 0.70980394, 0, 1)
@@ -37,6 +38,10 @@ show_percentage = false
 
 [node name="Body" type="Node2D" parent="." unique_id=1157753539]
 
+[node name="Polygon2D" type="Polygon2D" parent="Body" unique_id=929128745]
+color = Color(0.1882353, 1, 0.45490196, 1)
+polygon = PackedVector2Array(-4, -24, 4, -24, 0, -31)
+
 [node name="Sprite2D" type="Sprite2D" parent="Body" unique_id=32780306]
 texture = ExtResource("2_t7cgh")
 
@@ -51,10 +56,6 @@ offset = Vector2(0, -16)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1835032232]
 visible = false
 shape = SubResource("RectangleShape2D_f3kol")
-
-[node name="Polygon2D" type="Polygon2D" parent="." unique_id=929128745]
-color = Color(0.1882353, 1, 0.45490196, 1)
-polygon = PackedVector2Array(-4, -24, 4, -24, 0, -31)
 
 [node name="HealthBar" type="Node2D" parent="." unique_id=101778963]
 position = Vector2(14, -31.5)
