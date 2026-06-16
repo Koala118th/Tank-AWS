@@ -5,6 +5,11 @@
 [ext_resource type="Script" uid="uid://db0xdvb74rm03" path="res://Entities/Tank/turret.gd" id="3_dahrd"]
 [ext_resource type="Texture2D" uid="uid://dhd61cu0w2geg" path="res://Assets/PNG/tankGreen_barrel1.png" id="3_f3kol"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f3kol"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dahrd"]
+bg_color = Color(0.28627452, 0.70980394, 0, 1)
+
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_f3kol"]
 size = Vector2(38, 36)
 
@@ -18,12 +23,15 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = 14.0
 offset_top = -31.5
-offset_right = 18.0
+offset_right = 19.0
 offset_bottom = -4.5
 grow_horizontal = 2
 grow_vertical = 2
 rotation = 1.5707964
 theme_override_font_sizes/font_size = 16
+theme_override_styles/background = SubResource("StyleBoxFlat_f3kol")
+theme_override_styles/fill = SubResource("StyleBoxFlat_dahrd")
+value = 100.0
 fill_mode = 3
 show_percentage = false
 
@@ -47,3 +55,7 @@ shape = SubResource("RectangleShape2D_f3kol")
 [node name="Polygon2D" type="Polygon2D" parent="." unique_id=929128745]
 color = Color(0.1882353, 1, 0.45490196, 1)
 polygon = PackedVector2Array(-4, -24, 4, -24, 0, -31)
+
+[node name="HealthBar" type="Node2D" parent="." unique_id=101778963]
+position = Vector2(14, -31.5)
+rotation = 1.5707964

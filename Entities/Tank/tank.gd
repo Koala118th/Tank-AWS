@@ -8,31 +8,33 @@ const MAX_HEALTH: int = 100
 @export var speed: float = 150.0
 @export var turn_speed: float = 5.0
 @export var acceleration: float = 2500.0
-@export var deceleration: float = 1500.0
 @export_range(0, MAX_HEALTH) var health: float = 100:
 	get:
-		return health
-	set(new_value):
-		var new_health: int = clamp(new_value, 0, MAX_HEALTH)
-		health_bar.value = lerp(health_bar.value, health, 0.1)
-		if health > 0 and new_health == 0:
-			set_physics_process(false)
-			var explosion = explosion_scene.instantiate()
-			explosion.global_position = global_position
-			get_parent().add_child(explosion)
-			queue_free()
-		
-		health = new_health
+		return _health
+	set(value):
+		var new_health :float = clamp(value, 0, MAX_HEALTH)
 
+		if _health > 0 and new_health == 0:
+			die()
+
+		_health = new_health
+		
+var _health: float = 100
+
+@onready var body: Node2D =$Body
 @onready var health_bar: ProgressBar = $ProgressBar
+
+
+func _process(delta):
+	health_bar.value = lerp(health_bar.value, _health, 10 * delta)
 
 
 func _physics_process(delta: float):
 	var turn = Input.get_axis("turn_left", "turn_right")
-	rotation += turn * turn_speed * delta
+	body.rotation += turn * turn_speed * delta
 
 	var forward = Input.get_axis("move_backward", "move_forward")
-	velocity = Vector2.UP.rotated(rotation) * forward * speed
+	velocity = Vector2.UP.rotated(body.rotation) * forward * speed
 	
 	if Input.is_action_just_pressed("shoot") == true:
 		shoot()
@@ -60,3 +62,13 @@ func get_hit(damage: float):
 	print("got hit")
 	health -= damage
 	print(health)
+
+
+func die():
+	set_physics_process(false)
+
+	var explosion = explosion_scene.instantiate()
+	explosion.global_position = global_position
+	get_parent().add_child(explosion)
+
+	queue_free()
