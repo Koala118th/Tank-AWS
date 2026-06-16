@@ -60,3 +60,6 @@ shape = SubResource("RectangleShape2D_f3kol")
 [node name="HealthBar" type="Node2D" parent="." unique_id=101778963]
 position = Vector2(14, -31.5)
 rotation = 1.5707964
+
+[node name="FireTimer" type="Timer" parent="." unique_id=1649452440]
+one_shot = true

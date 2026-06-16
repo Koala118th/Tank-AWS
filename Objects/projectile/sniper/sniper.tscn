@@ -1,0 +1,26 @@
+[gd_scene format=3 uid="uid://dmtrptepjj2u7"]
+
+[ext_resource type="PackedScene" uid="uid://dt6g3kf66otjm" path="res://Objects/projectile/projectile.tscn" id="1_ku0u4"]
+[ext_resource type="Script" uid="uid://briogot7ucj7q" path="res://Objects/projectile/sniper/sniper.gd" id="2_rmuuh"]
+[ext_resource type="Texture2D" uid="uid://662uu2nwwk4s" path="res://Assets/PNG/bulletGreen3.png" id="3_njdyj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_wpp2a"]
+size = Vector2(4, 14)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_et4m5"]
+size = Vector2(4, 14)
+
+[node name="Sniper" unique_id=2093711468 instance=ExtResource("1_ku0u4")]
+script = ExtResource("2_rmuuh")
+speed = 1100.0
+damage = 30.0
+fire_cooldown = 2.0
+
+[node name="Sprite2D" parent="." index="0" unique_id=1784469120]
+texture = ExtResource("3_njdyj")
+
+[node name="CollisionShape2D" parent="EnemyDetectionArea" parent_id_path=PackedInt32Array(1894152565) index="0" unique_id=1678753695]
+shape = SubResource("RectangleShape2D_wpp2a")
+
+[node name="CollisionShape2D" parent="." index="3" unique_id=346569427]
+shape = SubResource("RectangleShape2D_et4m5")

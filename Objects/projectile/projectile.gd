@@ -8,6 +8,7 @@ class_name Projectile
 
 @export var speed: float
 @export var damage: float
+@export var fire_cooldown: float
 
 
 func set_direction(dir: Vector2):

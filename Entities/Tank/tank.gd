@@ -3,6 +3,7 @@ class_name Tank
 
 const MAX_HEALTH: int = 100
 @export var bullet_scene: PackedScene =preload("res://Objects/projectile/bullet/bullet.tscn")
+@export var sniper_scene: PackedScene =preload("res://Objects/projectile/sniper/sniper.tscn")
 @export var explosion_scene: PackedScene =preload("res://Entities/Explosion/explosion.tscn")
 
 @export var speed: float = 150.0
@@ -23,6 +24,7 @@ var _health: float = 100
 
 @onready var body: Node2D =$Body
 @onready var health_bar: ProgressBar = $ProgressBar
+@onready var fire_timer: Timer = $FireTimer
 
 
 func _process(delta):
@@ -37,31 +39,30 @@ func _physics_process(delta: float):
 	velocity = Vector2.UP.rotated(body.rotation) * forward * speed
 	
 	if Input.is_action_just_pressed("shoot") == true:
-		shoot()
+		shoot(sniper_scene)
 
 	move_and_slide()
 
 
-func shoot():
-	print("shot")
-	var bullet: Bullet = bullet_scene.instantiate()
+func shoot(projectile_scene: PackedScene):
+	if not fire_timer.is_stopped():
+		return
+	var projectile = projectile_scene.instantiate()
 	var mouse_pos = get_global_mouse_position()
 	var bullet_dir = (mouse_pos - global_position).normalized()
 
-	bullet.global_position = global_position + bullet_dir * 25
+	projectile.global_position = global_position + bullet_dir * 25
 
 	var dir = mouse_pos
-	print(dir)
-	bullet.set_direction(dir)
+	projectile.set_direction(dir)
 
-	get_parent().add_child(bullet)
+	get_parent().add_child(projectile)
+	
+	fire_timer.start(projectile.fire_cooldown)
 
 
 func get_hit(damage: float):
-	print(health)
-	print("got hit")
 	health -= damage
-	print(health)
 
 
 func die():
