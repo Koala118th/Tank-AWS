@@ -2,10 +2,13 @@ extends CharacterBody2D
 class_name Tank
 
 const MAX_HEALTH: int = 100
-@export var bullet_scene: PackedScene =preload("res://Objects/projectile/bullet/bullet.tscn")
-@export var sniper_scene: PackedScene =preload("res://Objects/projectile/sniper/sniper.tscn")
-@export var chaser_scene: PackedScene =preload("res://Objects/projectile/chaser/chaser.tscn")
-@export var explosion_scene: PackedScene =preload("res://Entities/Explosion/explosion.tscn")
+var bullet_scene: PackedScene =preload("res://Objects/projectile/bullet/bullet.tscn")
+var sniper_scene: PackedScene =preload("res://Objects/projectile/sniper/sniper.tscn")
+var chaser_scene: PackedScene =preload("res://Objects/projectile/chaser/chaser.tscn")
+var small_scene: PackedScene =preload("res://Objects/projectile/small/small.tscn")
+var explosion_scene: PackedScene =preload("res://Entities/Explosion/explosion.tscn")
+
+@export var current_ammo: PackedScene = small_scene
 
 @export var speed: float = 150.0
 @export var turn_speed: float = 5.0
@@ -42,8 +45,8 @@ func _physics_process(delta: float):
 	var forward = Input.get_axis("move_backward", "move_forward")
 	velocity = Vector2.UP.rotated(body.rotation) * forward * speed
 	
-	if Input.is_action_just_pressed("shoot") == true:
-		shoot(chaser_scene)
+	if Input.is_action_pressed("shoot") == true:
+		shoot(current_ammo)
 
 	move_and_slide()
 
