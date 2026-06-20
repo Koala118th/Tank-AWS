@@ -15,7 +15,7 @@ size = Vector2(8, 14)
 script = ExtResource("2_v0nso")
 speed = 180.0
 damage = 20.0
-fire_cooldown = 0.5
+fire_cooldown = 1.0
 
 [node name="Sprite2D" parent="." index="0" unique_id=1784469120]
 texture = ExtResource("3_u3bil")
