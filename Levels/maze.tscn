@@ -20,20 +20,20 @@ script = ExtResource("2_egmw7")
 
 [node name="Map" type="Node2D" parent="." unique_id=1521102474 groups=["navigation_polygon_source_geometry_group"]]
 
-[node name="Wall" parent="Map" unique_id=2005327969 instance=ExtResource("2_5mops")]
+[node name="OuterWall" parent="Map" unique_id=2005327969 instance=ExtResource("2_5mops")]
 position = Vector2(-576, -324)
 scale = Vector2(6, 1)
 
-[node name="Wall2" parent="Map" unique_id=322262080 instance=ExtResource("2_5mops")]
+[node name="OuterWall2" parent="Map" unique_id=322262080 instance=ExtResource("2_5mops")]
 position = Vector2(-576, 324)
 scale = Vector2(6, 1)
 
-[node name="Wall3" parent="Map" unique_id=2039153632 instance=ExtResource("2_5mops")]
+[node name="OuterWall3" parent="Map" unique_id=2039153632 instance=ExtResource("2_5mops")]
 position = Vector2(-576, -410)
 rotation = 1.5707964
 scale = Vector2(4, 1)
 
-[node name="Wall4" parent="Map" unique_id=796527653 instance=ExtResource("2_5mops")]
+[node name="OuterWall4" parent="Map" unique_id=796527653 instance=ExtResource("2_5mops")]
 position = Vector2(576, -324)
 rotation = 1.5707964
 scale = Vector2(4, 1)
