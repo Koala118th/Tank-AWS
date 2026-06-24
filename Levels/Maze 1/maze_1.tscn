@@ -43,22 +43,22 @@ position = Vector2(0, -328)
 rotation = 1.5707964
 
 [node name="Wall6" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="13" unique_id=2111563967 instance=ExtResource("2_4kn3y")]
-position = Vector2(429, -143)
+position = Vector2(416, -143)
 rotation = 0.7853982
 scale = Vector2(0.99999994, 0.99999994)
 
 [node name="Wall7" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="14" unique_id=341752381 instance=ExtResource("2_4kn3y")]
-position = Vector2(-572.99994, -1.000061)
+position = Vector2(-563, -1)
 rotation = 0.7853982
 scale = Vector2(0.99999994, 0.99999994)
 
 [node name="Wall8" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="15" unique_id=669769141 instance=ExtResource("2_4kn3y")]
-position = Vector2(-568.99994, -7)
+position = Vector2(-563, -7)
 rotation = -0.7853982
 scale = Vector2(0.99999994, 0.99999994)
 
 [node name="Wall9" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="16" unique_id=1290144236 instance=ExtResource("2_4kn3y")]
-position = Vector2(431, 147)
+position = Vector2(416, 146.99997)
 rotation = -0.7853982
 scale = Vector2(0.99999994, 0.99999994)
 
