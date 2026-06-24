@@ -4,6 +4,7 @@ class_name Tank
 const MAX_HEALTH: int = 100
 @export var bullet_scene: PackedScene =preload("res://Objects/projectile/bullet/bullet.tscn")
 @export var explosion_scene: PackedScene =preload("res://Entities/Explosion/explosion.tscn")
+@export var pause_menu: CanvasLayer
 
 @export var speed: float = 150.0
 @export var turn_speed: float = 5.0
@@ -28,8 +29,31 @@ var _health: float = 100
 func _process(delta):
 	health_bar.value = lerp(health_bar.value, _health, 10 * delta)
 
+var paused := false
+
+func _unhandled_input(event):
+	if event.is_action_pressed("ui_cancel"):
+		if paused:
+			_resume()
+		else:
+			_pause()
+
+func _ready():
+	if pause_menu != null:
+		pause_menu.resumed.connect(_resume)
+
+func _pause():
+	paused = true
+	pause_menu.open()
+
+func _resume():
+	paused = false
+	pause_menu.close()
 
 func _physics_process(delta: float):
+	if paused:
+		return
+	
 	var turn = Input.get_axis("turn_left", "turn_right")
 	body.rotation += turn * turn_speed * delta
 

@@ -7,9 +7,6 @@ var _tank_spawn_index: int = 0
 
 func _ready():
 	spawn_tank()
-	spawn_tank()
-	spawn_tank()
-	spawn_tank()
 
 
 func spawn_tank():

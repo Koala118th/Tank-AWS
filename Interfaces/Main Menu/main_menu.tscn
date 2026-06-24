@@ -1,9 +1,53 @@
 [gd_scene format=3 uid="uid://deoogxjce3mr1"]
 
 [ext_resource type="Script" uid="uid://c4utab8ywpsjf" path="res://Interfaces/Main Menu/main_menu.gd" id="1_b8hpp"]
-[ext_resource type="Texture2D" uid="uid://pnpqtpdhnvdb" path="res://Assets/Main Menu Assets/main menu background.jpg" id="2_neyqc"]
+[ext_resource type="Shader" uid="uid://c5r0cv1fjjaqu" path="res://Interfaces/Main Menu/grid_pattern.gdshader" id="2_neyqc"]
+[ext_resource type="Shader" uid="uid://cexvwrjvo26v1" path="res://Interfaces/Main Menu/vignette.gdshader" id="3_sulmp"]
+[ext_resource type="Texture2D" uid="uid://br7noaac5ekqj" path="res://Assets/PNG/tank_green.png" id="4_3q6f2"]
+[ext_resource type="Texture2D" uid="uid://crr1oakda6l6b" path="res://Assets/PNG/tank_blue.png" id="5_xpv52"]
 
-[node name="Main Menu" type="Control" unique_id=1769916949]
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sulmp"]
+shader = ExtResource("2_neyqc")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_neyqc"]
+shader = ExtResource("3_sulmp")
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sulmp"]
+bg_color = Color(0.29803923, 0.6862745, 0.3137255, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_hvu6i"]
+bg_color = Color(0.4, 0.73333335, 0.41568628, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_3q6f2"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.16470589, 0.22745098, 0.16470589, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_xpv52"]
+border_color = Color(0.29803923, 0.6862745, 0.3137255, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_2ccvi"]
+
+[node name="MainMenu" type="Control" unique_id=1769916949]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -12,30 +56,134 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_b8hpp")
 
-[node name="Background" type="TextureRect" parent="." unique_id=767980141]
+[node name="Background" type="ColorRect" parent="." unique_id=1656361367]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-texture = ExtResource("2_neyqc")
-expand_mode = 1
+color = Color(0.05490196, 0.06666667, 0.09019608, 1)
 
-[node name="Start Button" type="Button" parent="." unique_id=2130037411]
+[node name="GridPattern" type="ColorRect" parent="." unique_id=1481155272]
+material = SubResource("ShaderMaterial_sulmp")
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -127.0
-offset_top = 22.0
-offset_right = 129.0
-offset_bottom = 75.0
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_font_sizes/font_size = 32
-text = "Get Started"
 
-[connection signal="pressed" from="Start Button" to="." method="_on_start_button_pressed"]
+[node name="Vignette" type="ColorRect" parent="." unique_id=1073239533]
+material = SubResource("ShaderMaterial_neyqc")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CenterContainer" type="CenterContainer" parent="." unique_id=234454671]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CenterContainer" unique_id=2143163486]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="EyebrowLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=2096481526]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.22745098, 0.47843137, 0.22745098, 1)
+theme_override_font_sizes/font_size = 11
+text = "▸ Top-down tank battle"
+horizontal_alignment = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="CenterContainer/VBoxContainer" unique_id=429757282]
+layout_mode = 2
+theme_override_colors/default_color = Color(0.9098039, 0.9411765, 0.9098039, 1)
+theme_override_font_sizes/normal_font_size = 45
+bbcode_enabled = true
+text = "Steel [color=#4caf50]Barrage[/color]"
+fit_content = true
+horizontal_alignment = 1
+
+[node name="DividerLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=797793779]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.22745098, 0.3529412, 0.22745098, 1)
+theme_override_font_sizes/font_size = 12
+text = "·    ·    ·    ·    ·    ·    ·    ·    ·    ·    ·    ·    ·"
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="CenterContainer/VBoxContainer" unique_id=1427808590]
+modulate = Color(1, 1, 1, 0)
+self_modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="TankRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=1221371435]
+layout_mode = 2
+alignment = 1
+
+[node name="TankLeft" type="TextureRect" parent="CenterContainer/VBoxContainer/TankRow" unique_id=1343573682]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+texture = ExtResource("4_3q6f2")
+
+[node name="HSeparator" type="HSeparator" parent="CenterContainer/VBoxContainer/TankRow" unique_id=386613208]
+modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(80, 0)
+layout_mode = 2
+
+[node name="TankRight" type="TextureRect" parent="CenterContainer/VBoxContainer/TankRow" unique_id=1989910337]
+custom_minimum_size = Vector2(52, 52)
+layout_mode = 2
+texture = ExtResource("5_xpv52")
+
+[node name="PlayButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=2130037411]
+custom_minimum_size = Vector2(200, 46)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.039215688, 0.07058824, 0.039215688, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_sulmp")
+theme_override_styles/hover = SubResource("StyleBoxFlat_hvu6i")
+text = "▶  PLAY"
+
+[node name="SettingsButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1001919873]
+custom_minimum_size = Vector2(200, 46)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.41568628, 0.5411765, 0.41568628, 1)
+theme_override_colors/font_hover_color = Color(0.627451, 0.7529412, 0.627451, 1)
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_3q6f2")
+theme_override_styles/hover = SubResource("StyleBoxFlat_xpv52")
+text = "SETTINGS"
+
+[node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=376001844]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2901961, 0.3529412, 0.2901961, 1)
+theme_override_colors/font_hover_color = Color(0.5411765, 0.6039216, 0.5411765, 1)
+theme_override_font_sizes/font_size = 15
+theme_override_styles/normal = SubResource("StyleBoxEmpty_2ccvi")
+text = "QUIT"
+
+[node name="VersionLabel" type="Label" parent="." unique_id=121174579]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -45.0
+offset_top = -23.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.16470589, 0.22745098, 0.16470589, 1)
+theme_override_font_sizes/font_size = 20
+text = "v0.1.0"
+
+[connection signal="pressed" from="CenterContainer/VBoxContainer/PlayButton" to="." method="_on_start_button_pressed"]

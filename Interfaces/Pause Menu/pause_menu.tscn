@@ -2,11 +2,98 @@
 
 [ext_resource type="Script" uid="uid://b8dh0rtndwsn8" path="res://Interfaces/Pause Menu/pause_menu.gd" id="1_lm2xp"]
 
-[node name="Pause_Menu" type="Control" unique_id=415880588]
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lm2xp"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ywhub"]
+border_color = Color(0.29803923, 0.6862745, 0.3137255, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="PauseMenu" type="CanvasLayer" unique_id=862326212]
+script = ExtResource("1_lm2xp")
+
+[node name="Control" type="Control" parent="." unique_id=1941668181]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_lm2xp")
+
+[node name="DimOverlay" type="ColorRect" parent="Control" unique_id=67604915]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.039215688, 0.050980393, 0.07058824, 0.78039217)
+
+[node name="CenterContainer" type="CenterContainer" parent="Control" unique_id=1560259926]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control/CenterContainer" unique_id=186994853]
+layout_mode = 2
+
+[node name="EyebrowLabel" type="Label" parent="Control/CenterContainer/VBoxContainer" unique_id=1780569955]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.22745098, 0.47843137, 0.22745098, 1)
+theme_override_font_sizes/font_size = 20
+text = "//   Pause"
+horizontal_alignment = 1
+
+[node name="PausedLabel" type="Label" parent="Control/CenterContainer/VBoxContainer" unique_id=1575771968]
+layout_mode = 2
+theme_override_font_sizes/font_size = 52
+text = "Paused"
+horizontal_alignment = 1
+
+[node name="ResumeButton" type="Button" parent="Control/CenterContainer/VBoxContainer" unique_id=1040879207]
+custom_minimum_size = Vector2(200, 46)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_lm2xp")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ywhub")
+text = "▶  RESUME"
+
+[node name="SettingsButton" type="Button" parent="Control/CenterContainer/VBoxContainer" unique_id=346808688]
+custom_minimum_size = Vector2(200, 46)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_lm2xp")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ywhub")
+text = "SETTINGS"
+
+[node name="QuitButton" type="Button" parent="Control/CenterContainer/VBoxContainer" unique_id=418823728]
+custom_minimum_size = Vector2(200, 46)
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+theme_override_styles/normal = SubResource("StyleBoxFlat_lm2xp")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ywhub")
+text = "QUIT TO MENU"
+
+[node name="BottomLabel" type="Label" parent="Control/CenterContainer/VBoxContainer" unique_id=497377972]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.16470589, 0.22745098, 0.16470589, 1)
+theme_override_font_sizes/font_size = 15
+text = "[  ESC  ] to resume"
+horizontal_alignment = 1
+
+[connection signal="pressed" from="Control/CenterContainer/VBoxContainer/ResumeButton" to="." method="_on_resume_button_pressed"]
+[connection signal="pressed" from="Control/CenterContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
