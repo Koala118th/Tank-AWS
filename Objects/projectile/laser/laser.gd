@@ -3,7 +3,7 @@ class_name LaserProjectile
 
 @onready var ray: RayCast2D = $RayCast2D
 
-@export var max_bounces := 5
+@export var max_bounces := 3
 @export var max_length := 1000.0
 @onready var laser_texture: Texture2D = $Sprite2D.texture
 

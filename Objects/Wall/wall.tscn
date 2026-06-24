@@ -1,15 +1,13 @@
 [gd_scene format=4 uid="uid://b3as12v5nfntk"]
 
-[ext_resource type="Texture2D" uid="uid://xpdq1r7i3oau" path="res://Assets/PNG/crateMetal.png" id="1_vjqjo"]
+[ext_resource type="Texture2D" uid="uid://mytrqewr0ytu" path="res://Assets/PNG/metal_wall.png" id="1_vjqjo"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4p8b7"]
 texture = ExtResource("1_vjqjo")
-texture_region_size = Vector2i(28, 28)
 0:0/0 = 0
-0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-14, -14, 14, -14, 14, 14, -14, 14)
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-8, -8, 8, -8, 8, 8, -8, 8)
 
 [sub_resource type="TileSet" id="TileSet_g1r76"]
-tile_size = Vector2i(28, 28)
 physics_layer_0/collision_layer = 5
 physics_layer_0/collision_mask = 5
 sources/1 = SubResource("TileSetAtlasSource_4p8b7")
@@ -18,8 +16,7 @@ sources/1 = SubResource("TileSetAtlasSource_4p8b7")
 default_color = Color(0, 0, 0, 1)
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=488469089 groups=["wall"]]
-position = Vector2(0, 14)
-tile_map_data = PackedByteArray("AAAAAP//AQAAAAAAAAABAP//AQAAAAAAAAACAP//AQAAAAAAAAADAP//AQAAAAAAAAAEAP//AQAAAAAAAAAFAP//AQAAAAAAAAAGAP//AQAAAAAAAAA=")
+position = Vector2(0, 8)
+tile_map_data = PackedByteArray("AAAAAP//AQAAAAAAAAABAP//AQAAAAAAAAACAP//AQAAAAAAAAADAP//AQAAAAAAAAAEAP//AQAAAAAAAAAFAP//AQAAAAAAAAAGAP//AQAAAAAAAAAHAP//AQAAAAAAAAAIAP//AQAAAAAAAAAJAP//AQAAAAAAAAAKAP//AQAAAAAAAAALAP//AQAAAAAAAAAMAP//AQAAAAAAAAA=")
 tile_set = SubResource("TileSet_g1r76")
 collision_visibility_mode = 2
-physics_quadrant_size = 28
