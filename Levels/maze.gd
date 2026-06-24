@@ -1,7 +1,7 @@
 extends Node2D
 
 @export var tilemap: TileMapLayer
-@export var cols: int = 10
+@export var cols: int = 9
 @export var rows: int = 5
 @export var source_id: int = 1
 @export var wall_tile: Vector2i = Vector2i(0, 0)

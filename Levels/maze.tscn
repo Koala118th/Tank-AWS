@@ -9,7 +9,7 @@ polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Arr
 outlines = Array[PackedVector2Array]([PackedVector2Array(-577, -325, 576, -324, 576, 325, -577, 323)])
 parsed_geometry_type = 1
 source_geometry_mode = 1
-agent_radius = 25.0
+agent_radius = 20.0
 
 [node name="Maze" type="Node2D" unique_id=1984496082]
 script = ExtResource("1_c313c")
