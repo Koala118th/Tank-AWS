@@ -7,11 +7,12 @@ var target: Node2D
 
 
 func _ready():
+	
+	target = get_closest_tank()
+	agent.target_position = target.global_position
 	$EnemyDetectionArea/CollisionShape2D.disabled = true
 	await get_tree().create_timer(0.15).timeout
 	$EnemyDetectionArea/CollisionShape2D.disabled = false
-	target = get_closest_tank()
-	agent.target_position = target.global_position
 
 
 func get_closest_tank():

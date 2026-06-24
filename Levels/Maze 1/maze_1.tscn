@@ -1,66 +1,26 @@
 [gd_scene format=3 uid="uid://bp45d4yk6c0cr"]
 
 [ext_resource type="PackedScene" uid="uid://be8spxxqvxqt" path="res://Levels/maze.tscn" id="1_dnqw7"]
-[ext_resource type="PackedScene" uid="uid://b3as12v5nfntk" path="res://Objects/Wall/wall.tscn" id="2_4kn3y"]
 [ext_resource type="PackedScene" uid="uid://b70uwo6ja00qt" path="res://Entities/Tank/tank.tscn" id="3_8wn8b"]
+[ext_resource type="Texture2D" uid="uid://bkceyxglion63" path="res://Assets/PNG/metal_wall2.png" id="3_qssuq"]
 
-[node name="Maze" unique_id=1984496082 instance=ExtResource("1_dnqw7")]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8wn8b"]
+texture = ExtResource("3_qssuq")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-32, -32, 32, -32, 32, 32, -32, 32)
+
+[sub_resource type="TileSet" id="TileSet_qssuq"]
+tile_size = Vector2i(64, 64)
+physics_layer_0/collision_layer = 5
+physics_layer_0/collision_mask = 5
+sources/1 = SubResource("TileSetAtlasSource_8wn8b")
+
+[node name="Maze" unique_id=1984496082 node_paths=PackedStringArray("tilemap") instance=ExtResource("1_dnqw7")]
+tilemap = NodePath("TileMapLayer")
 
 [node name="TankSpawner" parent="." index="0" unique_id=592079577]
 tank_scene = ExtResource("3_8wn8b")
-
-[node name="Wall5" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="4" unique_id=2005327969 instance=ExtResource("2_4kn3y")]
-position = Vector2(-104, 0)
-
-[node name="Wall12" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="5" unique_id=1721167626 instance=ExtResource("2_4kn3y")]
-position = Vector2(171, 0)
-
-[node name="Wall13" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="6" unique_id=1865818699 instance=ExtResource("2_4kn3y")]
-position = Vector2(-410, 0)
-
-[node name="Wall10" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="7" unique_id=320932569 instance=ExtResource("2_4kn3y")]
-position = Vector2(0, 131)
-rotation = 1.5707964
-
-[node name="Wall14" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="8" unique_id=1179448110 instance=ExtResource("2_4kn3y")]
-position = Vector2(-308, -99)
-rotation = 1.5707964
-
-[node name="Wall16" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="9" unique_id=1779336242 instance=ExtResource("2_4kn3y")]
-position = Vector2(-104, -99)
-rotation = 1.5707964
-
-[node name="Wall17" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="10" unique_id=923543219 instance=ExtResource("2_4kn3y")]
-position = Vector2(97, -99)
-rotation = 1.5707964
-
-[node name="Wall15" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="11" unique_id=510376198 instance=ExtResource("2_4kn3y")]
-position = Vector2(269, -99)
-rotation = 1.5707964
-
-[node name="Wall11" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="12" unique_id=647165925 instance=ExtResource("2_4kn3y")]
-position = Vector2(0, -328)
-rotation = 1.5707964
-
-[node name="Wall6" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="13" unique_id=2111563967 instance=ExtResource("2_4kn3y")]
-position = Vector2(429, -143)
-rotation = 0.7853982
-scale = Vector2(0.99999994, 0.99999994)
-
-[node name="Wall7" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="14" unique_id=341752381 instance=ExtResource("2_4kn3y")]
-position = Vector2(-572.99994, -1.000061)
-rotation = 0.7853982
-scale = Vector2(0.99999994, 0.99999994)
-
-[node name="Wall8" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="15" unique_id=669769141 instance=ExtResource("2_4kn3y")]
-position = Vector2(-568.99994, -7)
-rotation = -0.7853982
-scale = Vector2(0.99999994, 0.99999994)
-
-[node name="Wall9" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="16" unique_id=1290144236 instance=ExtResource("2_4kn3y")]
-position = Vector2(431, 147)
-rotation = -0.7853982
-scale = Vector2(0.99999994, 0.99999994)
 
 [node name="Marker2D" type="Marker2D" parent="TankSpawnLocations" parent_id_path=PackedInt32Array(123431645) index="0" unique_id=1188589933]
 position = Vector2(-539, 94)
@@ -73,3 +33,8 @@ position = Vector2(541, -86)
 
 [node name="Marker2D4" type="Marker2D" parent="TankSpawnLocations" parent_id_path=PackedInt32Array(123431645) index="3" unique_id=1976692284]
 position = Vector2(541, 110)
+
+[node name="TileMapLayer" type="TileMapLayer" parent="." index="4" unique_id=904075345 groups=["wall"]]
+position = Vector2(-616, -359)
+tile_set = SubResource("TileSet_qssuq")
+collision_visibility_mode = 2

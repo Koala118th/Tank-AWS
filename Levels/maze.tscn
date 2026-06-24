@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://be8spxxqvxqt"]
 
 [ext_resource type="Script" uid="uid://ceygdf0se50t7" path="res://Levels/maze.gd" id="1_c313c"]
-[ext_resource type="PackedScene" uid="uid://b3as12v5nfntk" path="res://Objects/Wall/wall.tscn" id="2_5mops"]
 [ext_resource type="Script" uid="uid://cetcc8cygwj2" path="res://Levels/tank_spawner.gd" id="2_egmw7"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_egmw7"]
@@ -19,24 +18,6 @@ script = ExtResource("1_c313c")
 script = ExtResource("2_egmw7")
 
 [node name="Map" type="Node2D" parent="." unique_id=1521102474 groups=["navigation_polygon_source_geometry_group"]]
-
-[node name="OuterWall" parent="Map" unique_id=2005327969 instance=ExtResource("2_5mops")]
-position = Vector2(-576, -324)
-scale = Vector2(6, 1)
-
-[node name="OuterWall2" parent="Map" unique_id=322262080 instance=ExtResource("2_5mops")]
-position = Vector2(-576, 324)
-scale = Vector2(6, 1)
-
-[node name="OuterWall3" parent="Map" unique_id=2039153632 instance=ExtResource("2_5mops")]
-position = Vector2(-576, -410)
-rotation = 1.5707964
-scale = Vector2(4, 1)
-
-[node name="OuterWall4" parent="Map" unique_id=796527653 instance=ExtResource("2_5mops")]
-position = Vector2(576, -324)
-rotation = 1.5707964
-scale = Vector2(4, 1)
 
 [node name="TankSpawnLocations" type="Node2D" parent="." unique_id=123431645]
 
