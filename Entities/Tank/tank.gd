@@ -9,7 +9,7 @@ var small_scene: PackedScene =preload("res://Objects/projectile/small/small.tscn
 var laser_scene: PackedScene = preload("res://Objects/projectile/laser/laser.tscn")
 var explosion_scene: PackedScene =preload("res://Entities/Explosion/explosion.tscn")
 
-@export var current_ammo: PackedScene = chaser_scene
+@export var current_ammo: PackedScene = laser_scene
 
 @export var speed: float = 150.0
 @export var turn_speed: float = 5.0
@@ -31,6 +31,8 @@ var _health: float = 100
 @onready var turret: Node2D = $Turret
 @onready var health_bar: ProgressBar = $ProgressBar
 @onready var fire_timer: Timer = $FireTimer
+@onready var aim_ray: RayCast2D = $AimRay
+@onready var aim_line: Line2D = $AimLine
 
 
 func _process(delta):
@@ -48,8 +50,35 @@ func _physics_process(delta: float):
 	
 	if Input.is_action_pressed("shoot") == true:
 		shoot(current_ammo)
+	
+	#if current_ammo == laser_scene:
+	aim()
 
 	move_and_slide()
+
+
+func aim():
+	var tank_pos = global_position
+	var current_dir = (get_global_mouse_position() - tank_pos).normalized()
+	
+	var current_pos = tank_pos + current_dir * 25
+
+	var points = []
+	points.append(current_pos)
+
+	aim_ray.global_position = current_pos
+	aim_ray.target_position = current_dir * 2000
+	aim_ray.force_raycast_update()
+
+	if aim_ray.is_colliding():
+		var end_point = aim_ray.get_collision_point()
+		points.append(end_point)
+	else:
+		points.append(current_pos + current_dir * 2000)
+
+	aim_line.clear_points()
+	for p in points:
+		aim_line.add_point(aim_line.to_local(p))
 
 
 func shoot(projectile_scene: PackedScene):

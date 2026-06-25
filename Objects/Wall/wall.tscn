@@ -12,7 +12,7 @@ sources/1 = SubResource("TileSetAtlasSource_4p8b7")
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vjqjo"]
 size = Vector2(208, 16)
 
-[node name="Wall" type="Line2D" unique_id=2005327969]
+[node name="Wall" type="Line2D" unique_id=2005327969 groups=["wall"]]
 default_color = Color(0, 0, 0, 1)
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=488469089]
