@@ -5,3 +5,4 @@ signal tank_spawned(peer_id: int, assigned_slot)
 @rpc("authority", "call_remote")
 func relay_spawn_tank(peer_id: int, assigned_slot) -> void:
 	tank_spawned.emit(peer_id, assigned_slot)
+	print(multiplayer.get_unique_id() , " is required to be reload")

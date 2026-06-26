@@ -23,7 +23,7 @@ func _ready():
 func spawn_tank(owner_peer_id: int, spawn_index: int):
 	var tank: Tank = tank_scene.instantiate()
 	tank.set_multiplayer_authority(owner_peer_id)
-
+	print(multiplayer.get_unique_id(), " spawn a tank for ", owner_peer_id, " at ", spawn_index, ": ", tank)
 	var spawn_marker: Marker2D = _tank_spawn_locations.get_child(spawn_index)
 	tank.position = spawn_marker.position
 	add_child(tank)
