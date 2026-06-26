@@ -37,5 +37,3 @@ func generate_random_tiles():
 			var coords = tile_a_coords if use_a else tile_b_coords
 
 			tilemap.set_cell(Vector2i(x, y), source, coords)
-
-	tilemap.modulate = Color(0.6, 0.6, 0.6)

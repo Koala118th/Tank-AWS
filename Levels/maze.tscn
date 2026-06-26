@@ -29,10 +29,6 @@ sources/1 = SubResource("TileSetAtlasSource_pekh8")
 [node name="Maze" type="Node2D" unique_id=1984496082 node_paths=PackedStringArray("tilemap")]
 script = ExtResource("1_c313c")
 tilemap = NodePath("TileMapLayer")
-cols = null
-rows = null
-source_id = null
-wall_tile = null
 
 [node name="TankSpawner" type="Node2D" parent="." unique_id=592079577 node_paths=PackedStringArray("maze_generator")]
 script = ExtResource("2_egmw7")
