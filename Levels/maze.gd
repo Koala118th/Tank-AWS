@@ -5,6 +5,7 @@ extends Node2D
 @export var rows: int = 7
 @export var source_id: int = 1
 @export var wall_tile: Vector2i = Vector2i(0, 0)
+@onready var nav_reg = $NavigationRegion2D
 
 var tile_cols: int = 0
 var tile_rows: int = 0
@@ -23,6 +24,7 @@ func _ready():
 		return
 
 	generate()
+	nav_reg.bake_navigation_polygon()
 
 func generate():
 	tile_cols = 2 * cols + 1

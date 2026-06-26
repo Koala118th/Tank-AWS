@@ -1,0 +1,29 @@
+[gd_scene format=3 uid="uid://cinbd346kuavh"]
+
+[ext_resource type="Script" uid="uid://dymoutfqkmj0w" path="res://Levels/Background/background_1.gd" id="1_6iscw"]
+[ext_resource type="Texture2D" uid="uid://cfssyad43hpv" path="res://Assets/PNG/tileGrass1.png" id="2_3lhsv"]
+[ext_resource type="Texture2D" uid="uid://wxfjte1dmpi2" path="res://Assets/PNG/tileGrass2.png" id="3_n63nb"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_csgtx"]
+texture = ExtResource("2_3lhsv")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_xgkr2"]
+texture = ExtResource("3_n63nb")
+texture_region_size = Vector2i(64, 64)
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_knkok"]
+tile_size = Vector2i(64, 64)
+sources/0 = SubResource("TileSetAtlasSource_csgtx")
+sources/1 = SubResource("TileSetAtlasSource_xgkr2")
+
+[node name="Background1" type="Node2D" unique_id=1541136634]
+z_index = -1
+script = ExtResource("1_6iscw")
+
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=2104367523]
+z_index = -1
+tile_set = SubResource("TileSet_knkok")
+navigation_enabled = false
