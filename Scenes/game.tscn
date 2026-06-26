@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://comfpuqm6dlql"]
 
-[ext_resource type="PackedScene" uid="uid://bp45d4yk6c0cr" path="res://Levels/Maze 1/maze_1.tscn" id="2_wrm1d"]
+[ext_resource type="PackedScene" uid="uid://be8spxxqvxqt" path="res://Levels/maze.tscn" id="1_ebmjs"]
 
 [node name="Game" type="Node2D" unique_id=1209050767]
 
-[node name="Maze" parent="." unique_id=1984496082 instance=ExtResource("2_wrm1d")]
-
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1113496506]
+
+[node name="Maze" parent="." unique_id=1984496082 instance=ExtResource("1_ebmjs")]

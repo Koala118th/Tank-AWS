@@ -2,6 +2,8 @@
 
 [ext_resource type="Script" uid="uid://ceygdf0se50t7" path="res://Levels/maze.gd" id="1_c313c"]
 [ext_resource type="Script" uid="uid://cetcc8cygwj2" path="res://Levels/tank_spawner.gd" id="2_egmw7"]
+[ext_resource type="Texture2D" uid="uid://cxgmlqitventq" path="res://Assets/PNG/metal_wall3.png" id="3_egmw7"]
+[ext_resource type="PackedScene" uid="uid://b70uwo6ja00qt" path="res://Entities/Tank/tank.tscn" id="3_pekh8"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_egmw7"]
 vertices = PackedVector2Array(556, -304.0078, 556, 304.96094, -557, 303.03125, -557, -304.97656)
@@ -11,15 +13,37 @@ parsed_geometry_type = 1
 source_geometry_mode = 1
 agent_radius = 20.0
 
-[node name="Maze" type="Node2D" unique_id=1984496082]
-script = ExtResource("1_c313c")
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_pekh8"]
+texture = ExtResource("3_egmw7")
+texture_region_size = Vector2i(32, 32)
+0:0/0 = 0
+0:0/0/physics_layer_0/polygon_0/points = PackedVector2Array(-16, -16, 16, -16, 16, 16, -16, 16)
 
-[node name="TankSpawner" type="Node2D" parent="." unique_id=592079577]
+[sub_resource type="TileSet" id="TileSet_tt4vx"]
+tile_size = Vector2i(32, 32)
+physics_layer_0/collision_layer = 5
+physics_layer_0/collision_mask = 5
+sources/1 = SubResource("TileSetAtlasSource_pekh8")
+
+[node name="Maze" type="Node2D" unique_id=1984496082 node_paths=PackedStringArray("tilemap")]
+script = ExtResource("1_c313c")
+tilemap = NodePath("TileMapLayer")
+cols = null
+rows = null
+source_id = null
+wall_tile = null
+
+[node name="TankSpawner" type="Node2D" parent="." unique_id=592079577 node_paths=PackedStringArray("maze_generator")]
 script = ExtResource("2_egmw7")
+tank_scene = ExtResource("3_pekh8")
+maze_generator = NodePath("..")
 
 [node name="Map" type="Node2D" parent="." unique_id=1521102474 groups=["navigation_polygon_source_geometry_group"]]
 
-[node name="TankSpawnLocations" type="Node2D" parent="." unique_id=123431645]
-
 [node name="NavigationRegion2D" type="NavigationRegion2D" parent="." unique_id=2110590249 groups=["navigation_polygon_source_geometry_group"]]
 navigation_polygon = SubResource("NavigationPolygon_egmw7")
+
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=129563695 groups=["navigation_polygon_source_geometry_group", "wall"]]
+position = Vector2(-590, -335)
+tile_set = SubResource("TileSet_tt4vx")
+collision_visibility_mode = 2

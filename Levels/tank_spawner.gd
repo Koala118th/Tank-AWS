@@ -1,20 +1,31 @@
 extends Node2D
 
-var _tank_spawn_index: int = 0
 @export var tank_scene: PackedScene
-@onready var _tank_spawn_locations: Node2D = $"../TankSpawnLocations"
-
+@export var tank_count: int = 4
+@export var maze_generator: Node2D
 
 func _ready():
-	spawn_tank()
-	spawn_tank()
-	spawn_tank()
-	spawn_tank()
+	await get_tree().process_frame
+	spawn_tanks()
 
+func spawn_tanks():
+	if maze_generator == null:
+		push_error("TankSpawner: maze_generator is not assigned!")
+		return
 
-func spawn_tank():
-	var tank: Tank = tank_scene.instantiate()
-	var spawn_marker: Marker2D = _tank_spawn_locations.get_child(_tank_spawn_index)
-	tank.position = spawn_marker.position
-	_tank_spawn_index = (_tank_spawn_index + 1) % _tank_spawn_locations.get_child_count()
-	add_child(tank)
+	var floor_positions: Array = maze_generator.get_floor_positions()
+
+	if floor_positions.is_empty():
+		push_error("TankSpawner: no floor positions found!")
+		return
+
+	if floor_positions.size() < tank_count:
+		push_error("TankSpawner: not enough floor positions (", floor_positions.size(), ") for ", tank_count, " tanks!")
+		return
+
+	floor_positions.shuffle()
+
+	for i in range(tank_count):
+		var tank: Tank = tank_scene.instantiate()
+		tank.position = floor_positions[i]
+		add_child(tank)
