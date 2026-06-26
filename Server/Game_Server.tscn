@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://djbvowfvclxkf"]
+
+[ext_resource type="Script" uid="uid://cw6tgbhiv2yx1" path="res://Server/game_server.gd" id="1_7sp1r"]
+[ext_resource type="Script" uid="uid://coyrgjnpu3ikx" path="res://Server/Game/test.gd" id="2_ekkig"]
+[ext_resource type="Script" uid="uid://brw4txmx56ryy" path="res://Server/Game/player_manager.gd" id="4_b4e7e"]
+[ext_resource type="Script" uid="uid://di6y05irt2ng0" path="res://Server/Game/tank_manager.gd" id="4_f05h8"]
+
+[node name="GameServer" type="Node" unique_id=482026261]
+script = ExtResource("1_7sp1r")
+
+[node name="Test" type="Node" parent="." unique_id=1664764142]
+script = ExtResource("2_ekkig")
+
+[node name="PlayerManager" type="Node" parent="." unique_id=1117517698]
+script = ExtResource("4_b4e7e")
+
+[node name="TankManager" type="Node" parent="." unique_id=1374755422]
+script = ExtResource("4_f05h8")
