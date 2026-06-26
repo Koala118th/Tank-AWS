@@ -1,17 +1,18 @@
 extends Projectile
 class_name Chaser
 
+@export var turn_speed = 10.0
 
 @onready var agent: NavigationAgent2D = $NavigationAgent2D
 var target: Node2D
 
 
 func _ready():
+	target = get_closest_tank()
+	agent.target_position = target.global_position
 	$EnemyDetectionArea/CollisionShape2D.disabled = true
 	await get_tree().create_timer(0.15).timeout
 	$EnemyDetectionArea/CollisionShape2D.disabled = false
-	target = get_closest_tank()
-	agent.target_position = target.global_position
 
 
 func get_closest_tank():
@@ -42,10 +43,17 @@ func _physics_process(delta):
 		return
 
 	var next_point = agent.get_next_path_position()
-	var direction = (next_point - global_position).normalized()
+	var desired_dir = (next_point - global_position).normalized()
 
-	velocity = direction * speed
-	move_and_collide(velocity * delta)	
+	# If velocity is zero, initialize it
+	if velocity.length() == 0:
+		velocity = desired_dir * speed
+	else:
+		var current_dir = velocity.normalized()
+		var new_dir = current_dir.lerp(desired_dir, turn_speed * delta).normalized()
+		velocity = new_dir * speed
+	
+	move_and_collide(velocity * delta)
 	if target:
 		agent.target_position = target.global_position
-	rotation = direction.angle() + deg_to_rad(90)
+	rotation = velocity.angle() + deg_to_rad(90)
