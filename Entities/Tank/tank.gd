@@ -2,8 +2,14 @@ extends CharacterBody2D
 class_name Tank
 
 const MAX_HEALTH: int = 100
-@export var bullet_scene: PackedScene =preload("res://Objects/projectile/bullet/bullet.tscn")
-@export var explosion_scene: PackedScene =preload("res://Entities/Explosion/explosion.tscn")
+var bullet_scene: PackedScene =preload("res://Objects/projectile/bullet/bullet.tscn")
+var sniper_scene: PackedScene =preload("res://Objects/projectile/sniper/sniper.tscn")
+var chaser_scene: PackedScene =preload("res://Objects/projectile/chaser/chaser.tscn")
+var small_scene: PackedScene =preload("res://Objects/projectile/small/small.tscn")
+var laser_scene: PackedScene = preload("res://Objects/projectile/laser/laser.tscn")
+var explosion_scene: PackedScene =preload("res://Entities/Explosion/explosion.tscn")
+
+@export var current_ammo: PackedScene = chaser_scene
 
 @export var speed: float = 150.0
 @export var turn_speed: float = 5.0
@@ -21,8 +27,13 @@ const MAX_HEALTH: int = 100
 		
 var _health: float = 100
 
-@onready var body: Node2D =$Body
+@onready var body: Node2D = $Body
+@onready var turret: Node2D = $Turret
 @onready var health_bar: ProgressBar = $ProgressBar
+@onready var fire_timer: Timer = $FireTimer
+@onready var aim_ray: RayCast2D = $AimRay
+@onready var aim_line: Line2D = $AimLine
+
 
 func _process(delta):
 	health_bar.value = lerp(health_bar.value, _health, 10 * delta)
@@ -32,38 +43,67 @@ func _physics_process(delta: float):
 	if not is_multiplayer_authority():
 		return
 
+	turret.look_at(get_global_mouse_position())
+	turret.rotation += deg_to_rad(90)
 	var turn = Input.get_axis("turn_left", "turn_right")
 	body.rotation += turn * turn_speed * delta
 
 	var forward = Input.get_axis("move_backward", "move_forward")
 	velocity = Vector2.UP.rotated(body.rotation) * forward * speed
-
-	if Input.is_action_just_pressed("shoot") == true:
-		shoot()
+	
+	if Input.is_action_pressed("shoot") == true:
+		shoot(current_ammo)
+	
+	#if current_ammo == laser_scene:
+	aim()
 
 	move_and_slide()
 
 
-func shoot():
-	print("shot")
-	var bullet: Bullet = bullet_scene.instantiate()
+func aim():
+	var tank_pos = global_position
+	var current_dir = (get_global_mouse_position() - tank_pos).normalized()
+	
+	var current_pos = tank_pos + current_dir * 25
+
+	var points = []
+	points.append(current_pos)
+
+	aim_ray.global_position = current_pos
+	aim_ray.target_position = current_dir * 2000
+	aim_ray.force_raycast_update()
+
+	if aim_ray.is_colliding():
+		var end_point = aim_ray.get_collision_point()
+		points.append(end_point)
+	else:
+		points.append(current_pos + current_dir * 2000)
+
+	aim_line.clear_points()
+	for p in points:
+		aim_line.add_point(aim_line.to_local(p))
+
+
+func shoot(projectile_scene: PackedScene):
+	if not fire_timer.is_stopped():
+		return
+	var projectile = projectile_scene.instantiate()
+	projectile.shooter = self
 	var mouse_pos = get_global_mouse_position()
 	var bullet_dir = (mouse_pos - global_position).normalized()
 
-	bullet.global_position = global_position + bullet_dir * 25
+	projectile.global_position = global_position + bullet_dir * 25
 
 	var dir = mouse_pos
-	print(dir)
-	bullet.set_direction(dir)
+	projectile.set_direction(dir)
 
-	get_parent().add_child(bullet)
+	get_parent().add_child(projectile)
+	
+	fire_timer.start(projectile.fire_cooldown)
 
 
 func get_hit(damage: float):
-	print(health)
-	print("got hit")
 	health -= damage
-	print(health)
 
 
 func die():

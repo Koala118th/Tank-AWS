@@ -1,0 +1,32 @@
+[gd_scene format=3 uid="uid://canm2jogw5fri"]
+
+[ext_resource type="PackedScene" uid="uid://dt6g3kf66otjm" path="res://Objects/projectile/projectile.tscn" id="1_60iaj"]
+[ext_resource type="Script" uid="uid://dnhctrdww56od" path="res://Objects/projectile/chaser/chaser.gd" id="2_v0nso"]
+[ext_resource type="Texture2D" uid="uid://pk7fnv7l7ivj" path="res://Assets/PNG/bulletGreen1_outline.png" id="3_u3bil"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_bgyv4"]
+radius = 4.0
+height = 14.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7ompk"]
+size = Vector2(8, 14)
+
+[node name="Chaser" unique_id=2093711468 instance=ExtResource("1_60iaj")]
+script = ExtResource("2_v0nso")
+speed = 180.0
+damage = 20.0
+fire_cooldown = 1.0
+
+[node name="Sprite2D" parent="." index="0" unique_id=1784469120]
+texture = ExtResource("3_u3bil")
+
+[node name="CollisionShape2D" parent="EnemyDetectionArea" parent_id_path=PackedInt32Array(1894152565) index="0" unique_id=1678753695]
+shape = SubResource("CapsuleShape2D_bgyv4")
+
+[node name="DeleteTimer" parent="." index="2" unique_id=1513807636]
+wait_time = 4.0
+
+[node name="CollisionShape2D" parent="." index="3" unique_id=346569427]
+shape = SubResource("RectangleShape2D_7ompk")
+
+[node name="NavigationAgent2D" type="NavigationAgent2D" parent="." index="4" unique_id=1989109955]

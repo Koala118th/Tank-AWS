@@ -1,0 +1,25 @@
+[gd_scene format=3 uid="uid://di48uvev2r8sg"]
+
+[ext_resource type="PackedScene" uid="uid://dt6g3kf66otjm" path="res://Objects/projectile/projectile.tscn" id="1_8jhwm"]
+[ext_resource type="Texture2D" uid="uid://hjcqm1po0y8k" path="res://Assets/PNG/bulletGreen1.png" id="2_1jbff"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kgo4g"]
+size = Vector2(2, 5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7ha1i"]
+size = Vector2(2, 5)
+
+[node name="Small" unique_id=2093711468 instance=ExtResource("1_8jhwm")]
+speed = 400.0
+damage = 5.0
+fire_cooldown = 0.1
+
+[node name="Sprite2D" parent="." index="0" unique_id=1784469120]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("2_1jbff")
+
+[node name="CollisionShape2D" parent="EnemyDetectionArea" parent_id_path=PackedInt32Array(1894152565) index="0" unique_id=1678753695]
+shape = SubResource("RectangleShape2D_kgo4g")
+
+[node name="CollisionShape2D" parent="." index="3" unique_id=346569427]
+shape = SubResource("RectangleShape2D_7ha1i")

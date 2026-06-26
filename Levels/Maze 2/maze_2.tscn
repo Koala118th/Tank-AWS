@@ -1,0 +1,65 @@
+[gd_scene format=3 uid="uid://c211pwy11rl1b"]
+
+[ext_resource type="PackedScene" uid="uid://be8spxxqvxqt" path="res://Levels/maze.tscn" id="1_m2j73"]
+[ext_resource type="PackedScene" uid="uid://b3as12v5nfntk" path="res://Objects/Wall/wall.tscn" id="2_1jih6"]
+
+[node name="Maze2" unique_id=1984496082 instance=ExtResource("1_m2j73")]
+
+[node name="Wall5" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="4" unique_id=2005327969 instance=ExtResource("2_1jih6")]
+position = Vector2(-100, 0)
+
+[node name="Wall6" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="5" unique_id=366741484 instance=ExtResource("2_1jih6")]
+position = Vector2(0, -100)
+rotation = 1.5707964
+
+[node name="Wall7" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="6" unique_id=1649055304 instance=ExtResource("2_1jih6")]
+position = Vector2(-510, 0)
+
+[node name="Wall8" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="7" unique_id=1804543049 instance=ExtResource("2_1jih6")]
+position = Vector2(310, 0)
+
+[node name="Wall9" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="8" unique_id=516302611 instance=ExtResource("2_1jih6")]
+position = Vector2(-100, -200)
+
+[node name="Wall10" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="9" unique_id=1654028434 instance=ExtResource("2_1jih6")]
+position = Vector2(-100, 200)
+
+[node name="Wall11" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="10" unique_id=1194420328 instance=ExtResource("2_1jih6")]
+position = Vector2(-450, 200)
+
+[node name="Wall15" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="11" unique_id=1589284774 instance=ExtResource("2_1jih6")]
+position = Vector2(-450, -200)
+
+[node name="Wall12" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="12" unique_id=1569829112 instance=ExtResource("2_1jih6")]
+position = Vector2(250, 200)
+
+[node name="Wall16" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="13" unique_id=1580549621 instance=ExtResource("2_1jih6")]
+position = Vector2(250, -200)
+
+[node name="Wall13" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="14" unique_id=1071624427 instance=ExtResource("2_1jih6")]
+position = Vector2(250, 60)
+rotation = 1.5707964
+
+[node name="Wall18" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="15" unique_id=155492605 instance=ExtResource("2_1jih6")]
+position = Vector2(250, -260)
+rotation = 1.5707964
+
+[node name="Wall14" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="16" unique_id=1967538397 instance=ExtResource("2_1jih6")]
+position = Vector2(-250, 60)
+rotation = 1.5707964
+
+[node name="Wall17" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="17" unique_id=1436065455 instance=ExtResource("2_1jih6")]
+position = Vector2(-250, -260)
+rotation = 1.5707964
+
+[node name="Marker2D" type="Marker2D" parent="TankSpawnLocations" parent_id_path=PackedInt32Array(123431645) index="0" unique_id=500294956]
+position = Vector2(-410, 55)
+
+[node name="Marker2D2" type="Marker2D" parent="TankSpawnLocations" parent_id_path=PackedInt32Array(123431645) index="1" unique_id=1476896880]
+position = Vector2(-410, -55)
+
+[node name="Marker2D3" type="Marker2D" parent="TankSpawnLocations" parent_id_path=PackedInt32Array(123431645) index="2" unique_id=1259097603]
+position = Vector2(410, -55)
+
+[node name="Marker2D4" type="Marker2D" parent="TankSpawnLocations" parent_id_path=PackedInt32Array(123431645) index="3" unique_id=1567677787]
+position = Vector2(410, 55)

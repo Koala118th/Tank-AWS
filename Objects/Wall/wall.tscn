@@ -1,16 +1,28 @@
-[gd_scene format=3 uid="uid://b3as12v5nfntk"]
+[gd_scene format=4 uid="uid://b3as12v5nfntk"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_520cs"]
-size = Vector2(200, 10)
+[ext_resource type="Texture2D" uid="uid://mytrqewr0ytu" path="res://Assets/PNG/metal_wall.png" id="1_vjqjo"]
 
-[node name="Wall" type="Line2D" unique_id=2005327969]
-points = PackedVector2Array(0, 0, 200, 0)
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4p8b7"]
+texture = ExtResource("1_vjqjo")
+0:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_g1r76"]
+sources/1 = SubResource("TileSetAtlasSource_4p8b7")
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_vjqjo"]
+size = Vector2(208, 16)
+
+[node name="Wall" type="Line2D" unique_id=2005327969 groups=["wall"]]
 default_color = Color(0, 0, 0, 1)
 
-[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=1999687453]
-collision_layer = 5
-collision_mask = 5
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=488469089]
+position = Vector2(0, 8)
+tile_map_data = PackedByteArray("AAAAAP//AQAAAAAAAAABAP//AQAAAAAAAAACAP//AQAAAAAAAAADAP//AQAAAAAAAAAEAP//AQAAAAAAAAAFAP//AQAAAAAAAAAGAP//AQAAAAAAAAAHAP//AQAAAAAAAAAIAP//AQAAAAAAAAAJAP//AQAAAAAAAAAKAP//AQAAAAAAAAALAP//AQAAAAAAAAAMAP//AQAAAAAAAAA=")
+tile_set = SubResource("TileSet_g1r76")
+collision_visibility_mode = 2
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1862418163]
-position = Vector2(100, 0)
-shape = SubResource("RectangleShape2D_520cs")
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=269917422 groups=["navigation_polygon_source_geometry_group", "wall"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1183632419 groups=["navigation_polygon_source_geometry_group", "wall"]]
+position = Vector2(104, 0)
+shape = SubResource("RectangleShape2D_vjqjo")

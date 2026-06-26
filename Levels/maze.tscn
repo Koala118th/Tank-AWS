@@ -4,30 +4,41 @@
 [ext_resource type="PackedScene" uid="uid://b3as12v5nfntk" path="res://Objects/Wall/wall.tscn" id="2_5mops"]
 [ext_resource type="Script" uid="uid://cetcc8cygwj2" path="res://Levels/tank_spawner.gd" id="2_egmw7"]
 
+[sub_resource type="NavigationPolygon" id="NavigationPolygon_egmw7"]
+vertices = PackedVector2Array(-132, -119, -132, 129, -182, 28, -182, -28, 399, 28, 521.39844, 2, 382.0625, 141.34375, 548, -296, 548, -50.59375, 421.65625, -176.9375, 28, -296, 421.65625, 180.9375, 548, 54.59375, 548, 296, 28, 296, -548, 296, -548, 53.59375, -421.57813, 180.00781, -28, 296, -421.57813, -188.00781, -548, -61.59375, -548, -296, -28, -296, -381.9922, -148.42188, -76, -119, 297, 129, 241, 129, -76, 129, -381.9922, 140.42188, 382.0625, -137.34375, 297, -119, 241, -119, 399, -28, 297, -28, 297, 28, 125, 129, 69, 129, 28, 111, 69, 28, -76, 28, -28, 111, 241, -28, 151, -28, 125, -119, 151, 28, 241, 28, 69, -119, 28, -100, 69, -28, -76, -28, -28, -100, -280, -28, -280, -119, -336, -119, -336, -28, -430, -28, -526.40625, -4, -430, 28, -336, 28, -336, 129, -280, 129, -280, 28)
+polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3), PackedInt32Array(4, 5, 6), PackedInt32Array(7, 8, 9), PackedInt32Array(10, 7, 9), PackedInt32Array(11, 12, 13), PackedInt32Array(11, 13, 14), PackedInt32Array(15, 16, 17), PackedInt32Array(18, 15, 17), PackedInt32Array(19, 20, 21), PackedInt32Array(19, 21, 22), PackedInt32Array(23, 19, 22, 24, 0), PackedInt32Array(25, 6, 11, 14, 26), PackedInt32Array(27, 18, 17, 28, 1), PackedInt32Array(10, 9, 29, 30, 31), PackedInt32Array(5, 4, 32), PackedInt32Array(29, 5, 32), PackedInt32Array(29, 32, 33, 30), PackedInt32Array(34, 4, 6, 25), PackedInt32Array(35, 26, 14), PackedInt32Array(36, 35, 14), PackedInt32Array(36, 14, 37, 38), PackedInt32Array(39, 38, 37, 40), PackedInt32Array(27, 39, 40, 18), PackedInt32Array(31, 41, 42, 43), PackedInt32Array(44, 45, 26, 35), PackedInt32Array(44, 35, 43, 42), PackedInt32Array(10, 31, 43), PackedInt32Array(10, 43, 46), PackedInt32Array(47, 10, 46, 48), PackedInt32Array(47, 48, 49, 50), PackedInt32Array(50, 49, 24, 22), PackedInt32Array(3, 51, 52, 0), PackedInt32Array(23, 0, 52), PackedInt32Array(23, 52, 53), PackedInt32Array(53, 54, 55, 23), PackedInt32Array(56, 23, 55), PackedInt32Array(56, 55, 57), PackedInt32Array(28, 56, 57), PackedInt32Array(28, 57, 58, 59), PackedInt32Array(60, 61, 2, 1), PackedInt32Array(60, 1, 28), PackedInt32Array(28, 59, 60)])
+outlines = Array[PackedVector2Array]([PackedVector2Array(-577, -325, 576, -324, 576, 325, -577, 323)])
+parsed_geometry_type = 1
+source_geometry_mode = 1
+agent_radius = 20.0
+
 [node name="Maze" type="Node2D" unique_id=1984496082]
 script = ExtResource("1_c313c")
 
 [node name="TankSpawner" type="Node2D" parent="." unique_id=592079577]
 script = ExtResource("2_egmw7")
 
-[node name="Map" type="Node2D" parent="." unique_id=1521102474]
+[node name="Map" type="Node2D" parent="." unique_id=1521102474 groups=["navigation_polygon_source_geometry_group"]]
 
-[node name="Wall" parent="Map" unique_id=2005327969 instance=ExtResource("2_5mops")]
+[node name="OuterWall" parent="Map" unique_id=2005327969 instance=ExtResource("2_5mops")]
 position = Vector2(-576, -324)
 scale = Vector2(6, 1)
 
-[node name="Wall2" parent="Map" unique_id=322262080 instance=ExtResource("2_5mops")]
+[node name="OuterWall2" parent="Map" unique_id=322262080 instance=ExtResource("2_5mops")]
 position = Vector2(-576, 324)
 scale = Vector2(6, 1)
 
-[node name="Wall3" parent="Map" unique_id=2039153632 instance=ExtResource("2_5mops")]
+[node name="OuterWall3" parent="Map" unique_id=2039153632 instance=ExtResource("2_5mops")]
 position = Vector2(-576, -410)
 rotation = 1.5707964
 scale = Vector2(4, 1)
 
-[node name="Wall4" parent="Map" unique_id=796527653 instance=ExtResource("2_5mops")]
+[node name="OuterWall4" parent="Map" unique_id=796527653 instance=ExtResource("2_5mops")]
 position = Vector2(576, -324)
 rotation = 1.5707964
 scale = Vector2(4, 1)
 
 [node name="TankSpawnLocations" type="Node2D" parent="." unique_id=123431645]
+
+[node name="NavigationRegion2D" type="NavigationRegion2D" parent="." unique_id=2110590249 groups=["navigation_polygon_source_geometry_group"]]
+navigation_polygon = SubResource("NavigationPolygon_egmw7")
