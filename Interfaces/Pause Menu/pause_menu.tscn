@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://d040au338m11y"]
 
 [ext_resource type="Script" uid="uid://b8dh0rtndwsn8" path="res://Interfaces/Pause Menu/pause_menu.gd" id="1_lm2xp"]
+[ext_resource type="FontFile" uid="uid://dm2nbkb8dm4vu" path="res://Assets/Fonts/Blockletter.otf" id="2_ywhub"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lm2xp"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -54,12 +55,14 @@ layout_mode = 2
 [node name="EyebrowLabel" type="Label" parent="Control/CenterContainer/VBoxContainer" unique_id=1780569955]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.22745098, 0.47843137, 0.22745098, 1)
+theme_override_fonts/font = ExtResource("2_ywhub")
 theme_override_font_sizes/font_size = 20
 text = "//   Pause"
 horizontal_alignment = 1
 
 [node name="PausedLabel" type="Label" parent="Control/CenterContainer/VBoxContainer" unique_id=1575771968]
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_ywhub")
 theme_override_font_sizes/font_size = 52
 text = "Paused"
 horizontal_alignment = 1
@@ -67,6 +70,7 @@ horizontal_alignment = 1
 [node name="ResumeButton" type="Button" parent="Control/CenterContainer/VBoxContainer" unique_id=1040879207]
 custom_minimum_size = Vector2(200, 46)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_ywhub")
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_lm2xp")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ywhub")
@@ -75,6 +79,7 @@ text = "▶  RESUME"
 [node name="SettingsButton" type="Button" parent="Control/CenterContainer/VBoxContainer" unique_id=346808688]
 custom_minimum_size = Vector2(200, 46)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_ywhub")
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_lm2xp")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ywhub")
@@ -83,6 +88,7 @@ text = "SETTINGS"
 [node name="QuitButton" type="Button" parent="Control/CenterContainer/VBoxContainer" unique_id=418823728]
 custom_minimum_size = Vector2(200, 46)
 layout_mode = 2
+theme_override_fonts/font = ExtResource("2_ywhub")
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_lm2xp")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ywhub")
@@ -91,6 +97,7 @@ text = "QUIT TO MENU"
 [node name="BottomLabel" type="Label" parent="Control/CenterContainer/VBoxContainer" unique_id=497377972]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.16470589, 0.22745098, 0.16470589, 1)
+theme_override_fonts/font = ExtResource("2_ywhub")
 theme_override_font_sizes/font_size = 15
 text = "[  ESC  ] to resume"
 horizontal_alignment = 1

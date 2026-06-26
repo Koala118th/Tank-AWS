@@ -4,6 +4,7 @@
 [ext_resource type="Shader" uid="uid://c5r0cv1fjjaqu" path="res://Interfaces/Main Menu/grid_pattern.gdshader" id="2_neyqc"]
 [ext_resource type="Shader" uid="uid://cexvwrjvo26v1" path="res://Interfaces/Main Menu/vignette.gdshader" id="3_sulmp"]
 [ext_resource type="Texture2D" uid="uid://br7noaac5ekqj" path="res://Assets/PNG/tank_green.png" id="4_3q6f2"]
+[ext_resource type="FontFile" uid="uid://dm2nbkb8dm4vu" path="res://Assets/Fonts/Blockletter.otf" id="4_xpv52"]
 [ext_resource type="Texture2D" uid="uid://crr1oakda6l6b" path="res://Assets/PNG/tank_blue.png" id="5_xpv52"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_sulmp"]
@@ -99,13 +100,15 @@ alignment = 1
 [node name="EyebrowLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=2096481526]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.22745098, 0.47843137, 0.22745098, 1)
+theme_override_fonts/font = ExtResource("4_xpv52")
 theme_override_font_sizes/font_size = 11
 text = "▸ Top-down tank battle"
 horizontal_alignment = 1
 
-[node name="RichTextLabel" type="RichTextLabel" parent="CenterContainer/VBoxContainer" unique_id=429757282]
+[node name="TitleLabel" type="RichTextLabel" parent="CenterContainer/VBoxContainer" unique_id=429757282]
 layout_mode = 2
 theme_override_colors/default_color = Color(0.9098039, 0.9411765, 0.9098039, 1)
+theme_override_fonts/normal_font = ExtResource("4_xpv52")
 theme_override_font_sizes/normal_font_size = 45
 bbcode_enabled = true
 text = "Steel [color=#4caf50]Barrage[/color]"
@@ -148,6 +151,7 @@ texture = ExtResource("5_xpv52")
 custom_minimum_size = Vector2(200, 46)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.039215688, 0.07058824, 0.039215688, 1)
+theme_override_fonts/font = ExtResource("4_xpv52")
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_sulmp")
 theme_override_styles/hover = SubResource("StyleBoxFlat_hvu6i")
@@ -158,6 +162,7 @@ custom_minimum_size = Vector2(200, 46)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.41568628, 0.5411765, 0.41568628, 1)
 theme_override_colors/font_hover_color = Color(0.627451, 0.7529412, 0.627451, 1)
+theme_override_fonts/font = ExtResource("4_xpv52")
 theme_override_font_sizes/font_size = 20
 theme_override_styles/normal = SubResource("StyleBoxFlat_3q6f2")
 theme_override_styles/hover = SubResource("StyleBoxFlat_xpv52")
@@ -167,6 +172,7 @@ text = "SETTINGS"
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2901961, 0.3529412, 0.2901961, 1)
 theme_override_colors/font_hover_color = Color(0.5411765, 0.6039216, 0.5411765, 1)
+theme_override_fonts/font = ExtResource("4_xpv52")
 theme_override_font_sizes/font_size = 15
 theme_override_styles/normal = SubResource("StyleBoxEmpty_2ccvi")
 text = "QUIT"
@@ -183,6 +189,7 @@ offset_top = -23.0
 grow_horizontal = 0
 grow_vertical = 0
 theme_override_colors/font_color = Color(0.16470589, 0.22745098, 0.16470589, 1)
+theme_override_fonts/font = ExtResource("4_xpv52")
 theme_override_font_sizes/font_size = 20
 text = "v0.1.0"
 

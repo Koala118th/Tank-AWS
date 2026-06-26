@@ -1,6 +1,6 @@
 extends CanvasLayer
 
-signal resumed  # add this
+signal resumed
 
 func _ready():
 	hide()
