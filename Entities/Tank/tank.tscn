@@ -11,7 +11,7 @@ bg_color = Color(1, 0, 0, 1)
 bg_color = Color(0.28627452, 0.70980394, 0, 1)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_f3kol"]
-size = Vector2(38, 36)
+size = Vector2(40, 43)
 
 [node name="Tank" type="CharacterBody2D" unique_id=1826538697 groups=["tank"]]
 collision_layer = 3
@@ -52,6 +52,7 @@ texture = ExtResource("3_f3kol")
 offset = Vector2(0, -16)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1835032232]
+position = Vector2(0, -1.5)
 shape = SubResource("RectangleShape2D_f3kol")
 
 [node name="HealthBar" type="Node2D" parent="." unique_id=101778963]
