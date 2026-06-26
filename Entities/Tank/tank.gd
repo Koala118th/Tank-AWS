@@ -24,18 +24,20 @@ var _health: float = 100
 @onready var body: Node2D =$Body
 @onready var health_bar: ProgressBar = $ProgressBar
 
-
 func _process(delta):
 	health_bar.value = lerp(health_bar.value, _health, 10 * delta)
 
 
 func _physics_process(delta: float):
+	if not is_multiplayer_authority():
+		return
+
 	var turn = Input.get_axis("turn_left", "turn_right")
 	body.rotation += turn * turn_speed * delta
 
 	var forward = Input.get_axis("move_backward", "move_forward")
 	velocity = Vector2.UP.rotated(body.rotation) * forward * speed
-	
+
 	if Input.is_action_just_pressed("shoot") == true:
 		shoot()
 
