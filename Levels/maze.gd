@@ -1,12 +1,11 @@
 extends Node2D
 
 @export var tilemap: TileMapLayer
-@export var cols: int = 9
-@export var rows: int = 5
+@export var cols: int = 12
+@export var rows: int = 7
 @export var source_id: int = 1
 @export var wall_tile: Vector2i = Vector2i(0, 0)
 
-# Tile grid dimensions (set during generate)
 var tile_cols: int = 0
 var tile_rows: int = 0
 @onready var nav_reg = $NavigationRegion2D
@@ -22,50 +21,55 @@ func _ready():
 	if tilemap.tile_set == null:
 		push_error("Maze Generator: TileMapLayer has no TileSet assigned!")
 		return
-	print("TileSet found: ", tilemap.tile_set)
 
 	if not tilemap.tile_set.has_source(source_id):
 		push_error("Maze Generator: source_id " + str(source_id) + " not found!")
 		return
-	print("Source ID ", source_id, " is valid.")
 
-	print("Starting maze generation: ", cols, "x", rows, " cells")
 	generate()
 	print("=== Maze generation complete ===")
 	nav_reg.bake_navigation_polygon()
 
 func generate():
-	# Tile grid is (2*cols+1) wide and (2*rows+1) tall
-	# e.g. 10 cols → 21 tile cols, same as the C++ area size
 	tile_cols = 2 * cols + 1
 	tile_rows = 2 * rows + 1
 	print("Tile grid size: ", tile_cols, "x", tile_rows)
 
-	# Step 1: Fill the entire grid with walls
-	print("Filling with walls...")
-	for tr in tile_rows:
-		for tc in tile_cols:
-			tilemap.set_cell(Vector2i(tc, tr), source_id, wall_tile)
+	tilemap.clear()
 
-	# Step 2: Carve out the interior as floors (leave border as walls)
-	# Matches the C++ loop: y from 1..(height-2), x from 1..(width-2)
-	print("Carving interior floors...")
-	for tr in range(1, tile_rows - 1):
-		for tc in range(1, tile_cols - 1):
-			tilemap.erase_cell(Vector2i(tc, tr))
+	# Build maze into a 2D array
+	var maze_grid: Array = []
+	for tr in range(tile_rows):
+		maze_grid.append([])
+		for tc in range(tile_cols):
+			if tr % 2 == 0 or tc % 2 == 0:
+				maze_grid[tr].append(1)  # wall
+			else:
+				maze_grid[tr].append(0)  # floor
 
-	# Step 3: Recursively divide
-	# Pass full tile dimensions just like C++: divide(0, 0, height, width)
 	print("Starting recursive division...")
-	divide(0, 0, tile_rows, tile_cols)
+	divide_grid(maze_grid, 0, 0, tile_rows, tile_cols)
+	print("Division complete.")
+
+	print("Expanding corridors...")
+	var expanded = expand_grid(maze_grid)
+	print("Expanded grid size: ", expanded[0].size(), "x", expanded.size())
+
+	print("Writing to tilemap...")
+	tilemap.clear()
+	for tr in range(expanded.size()):
+		for tc in range(expanded[tr].size()):
+			var pos = Vector2i(tc, tr)
+			if expanded[tr][tc] == 1:
+				tilemap.set_cell(pos, source_id, wall_tile)
+			else:
+				tilemap.erase_cell(pos)
 	print("=== Maze generation complete ===")
 
-func divide(y: int, x: int, height: int, width: int):
-	print("  divide() y=", y, " x=", x, " h=", height, " w=", width)
+func divide_grid(maze_grid: Array, y: int, x: int, height: int, width: int):
+	print("  divide_grid() y=", y, " x=", x, " h=", height, " w=", width)
 
 	var orientation: String
-
-	# Match C++ logic: longer axis gets the perpendicular wall
 	if width < height:
 		orientation = "horizontal"
 	elif width > height:
@@ -73,63 +77,135 @@ func divide(y: int, x: int, height: int, width: int):
 	else:
 		orientation = "horizontal" if randi() % 2 == 0 else "vertical"
 
-	print("  -> orientation: ", orientation)
-
 	if orientation == "horizontal":
-		# Need at least 5 tiles tall to place a wall with room either side
 		if height < 5:
-			print("  -> Too small (height ", height, " < 5), stopping.")
+			print("  -> Too small, stopping.")
 			return
 
-		# Wall must land on an even row, hole on an odd row
-		# random_wall range: 2..(height-3), then force even: /2*2
-		var wall_range = height - 3 - 2 + 1  # = height - 4
-		var raw_wall = randi() % wall_range + 2
-		var new_wall = y + (raw_wall / 2 * 2)        # force even tile row
+		var wall_count = (height - 1) / 2 - 1
+		if wall_count < 1:
+			print("  -> No valid wall positions, stopping.")
+			return
 
-		# Hole must land on an odd col
-		# random_hole range: 1..(width-2), then force odd: /2*2+1
-		var hole_range = width - 2 - 1 + 1           # = width - 2
-		var raw_hole = randi() % hole_range + 1
-		var new_hole = x + (raw_hole / 2 * 2 + 1)    # force odd tile col
+		var hole_count = (width - 1) / 2
+		if hole_count < 1:
+			print("  -> No valid hole positions, stopping.")
+			return
+
+		var new_wall = y + (randi() % wall_count + 1) * 2
+		var new_hole = x + (randi() % hole_count) * 2 + 1
+
+		# Safety check before writing
+		if new_wall >= maze_grid.size():
+			push_error("new_wall row ", new_wall, " out of bounds (grid rows: ", maze_grid.size(), ")")
+			return
+		if new_hole >= maze_grid[new_wall].size():
+			push_error("new_hole col ", new_hole, " out of bounds (grid cols: ", maze_grid[new_wall].size(), ")")
+			return
 
 		print("  -> H-wall at row=", new_wall, " hole at col=", new_hole)
 
-		# Draw the wall across the full width (x to x+width-2, matches C++ i < x+width-1)
-		for i in range(x, x + width - 1):
-			tilemap.set_cell(Vector2i(i, new_wall), source_id, wall_tile)
+		for i in range(x, x + width):
+			maze_grid[new_wall][i] = 1
+		maze_grid[new_wall][new_hole] = 0
 
-		# Carve the hole
-		tilemap.erase_cell(Vector2i(new_hole, new_wall))
+		# Top region:    from y,        height = new_wall - y + 1
+		# Bottom region: from new_wall, height = y + height - new_wall
+		var top_height    = new_wall - y + 1
+		var bottom_y      = new_wall
+		var bottom_height = y + height - new_wall
 
-		# Recurse into top and bottom sub-regions
-		divide(y,        x, new_wall - y + 1,       width)   # top
-		divide(new_wall, x, y + height - new_wall,  width)   # bottom
+		print("  -> Top:    y=", y, " h=", top_height)
+		print("  -> Bottom: y=", bottom_y, " h=", bottom_height)
 
-	else:  # vertical
-		# Need at least 5 tiles wide
+		divide_grid(maze_grid, y,         x, top_height,    width)
+		divide_grid(maze_grid, bottom_y,  x, bottom_height, width)
+
+	else:
 		if width < 5:
-			print("  -> Too small (width ", width, " < 5), stopping.")
+			print("  -> Too small, stopping.")
 			return
 
-		# Wall must land on an even col, hole on an odd row
-		var wall_range = width - 3 - 2 + 1           # = width - 4
-		var raw_wall = randi() % wall_range + 2
-		var new_wall = x + (raw_wall / 2 * 2)        # force even tile col
+		var wall_count = (width - 1) / 2 - 1
+		if wall_count < 1:
+			print("  -> No valid wall positions, stopping.")
+			return
 
-		var hole_range = height - 2 - 1 + 1          # = height - 2
-		var raw_hole = randi() % hole_range + 1
-		var new_hole = y + (raw_hole / 2 * 2 + 1)    # force odd tile row
+		var hole_count = (height - 1) / 2
+		if hole_count < 1:
+			print("  -> No valid hole positions, stopping.")
+			return
+
+		var new_wall = x + (randi() % wall_count + 1) * 2
+		var new_hole = y + (randi() % hole_count) * 2 + 1
+
+		# Safety check before writing
+		if new_hole >= maze_grid.size():
+			push_error("new_hole row ", new_hole, " out of bounds (grid rows: ", maze_grid.size(), ")")
+			return
+		if new_wall >= maze_grid[new_hole].size():
+			push_error("new_wall col ", new_wall, " out of bounds (grid cols: ", maze_grid[new_hole].size(), ")")
+			return
 
 		print("  -> V-wall at col=", new_wall, " hole at row=", new_hole)
 
-		# Draw the wall across the full height (y to y+height-2)
-		for i in range(y, y + height - 1):
-			tilemap.set_cell(Vector2i(new_wall, i), source_id, wall_tile)
+		for i in range(y, y + height):
+			maze_grid[i][new_wall] = 1
+		maze_grid[new_hole][new_wall] = 0
 
-		# Carve the hole
-		tilemap.erase_cell(Vector2i(new_wall, new_hole))
+		# Left region:  from x,        width = new_wall - x + 1
+		# Right region: from new_wall, width = x + width - new_wall
+		var left_width  = new_wall - x + 1
+		var right_x     = new_wall
+		var right_width = x + width - new_wall
 
-		# Recurse into left and right sub-regions
-		divide(y, x,        height, new_wall - x + 1)      # left
-		divide(y, new_wall, height, x + width - new_wall)  # right
+		print("  -> Left:  x=", x, " w=", left_width)
+		print("  -> Right: x=", right_x, " w=", right_width)
+
+		divide_grid(maze_grid, y, x,       height, left_width)
+		divide_grid(maze_grid, y, right_x, height, right_width)
+
+func expand_grid(maze_grid: Array) -> Array:
+	var orig_rows = maze_grid.size()
+	var orig_cols = maze_grid[0].size()
+
+	# Wall tiles (even index) stay 1 tile wide
+	# Floor tiles (odd index) expand to 2 tiles wide
+	var col_map: Array = []
+	for tc in range(orig_cols):
+		col_map.append(1 if tc % 2 == 0 else 2)
+
+	var row_map: Array = []
+	for tr in range(orig_rows):
+		row_map.append(1 if tr % 2 == 0 else 2)
+
+	# Total expanded size
+	var new_cols = 0
+	for v in col_map:
+		new_cols += v
+	var new_rows = 0
+	for v in row_map:
+		new_rows += v
+
+	print("  expand_grid: ", orig_cols, "x", orig_rows, " → ", new_cols, "x", new_rows)
+
+	# Build expanded grid filled with walls
+	var expanded: Array = []
+	for _tr in range(new_rows):
+		expanded.append([])
+		for _tc in range(new_cols):
+			expanded[expanded.size() - 1].append(1)
+
+	# Stamp each original tile into its expanded slots
+	var exp_row = 0
+	for orig_tr in range(orig_rows):
+		var exp_col = 0
+		for orig_tc in range(orig_cols):
+			var value = maze_grid[orig_tr][orig_tc]
+			for dr in range(row_map[orig_tr]):
+				for dc in range(col_map[orig_tc]):
+					expanded[exp_row + dr][exp_col + dc] = value
+			exp_col += col_map[orig_tc]
+		exp_row += row_map[orig_tr]
+
+	return expanded
