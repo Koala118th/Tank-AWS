@@ -54,15 +54,17 @@ func _on_peer_disconnected(id: int):
 var my_id = null
 func start_client():
 	var peer = ENetMultiplayerPeer.new()
+	
+	multiplayer.connected_to_server.connect(_on_connected_to_server)
+	multiplayer.connection_failed.connect(_on_connection_failed)
+	multiplayer.server_disconnected.connect(_on_server_disconnected)
+	
 	var err = peer.create_client(SERVER_IP, PORT)
 	if err != OK:
 		print("CLIENT: Failed to connect: ", err)
 		return
 	multiplayer.multiplayer_peer = peer
-	
-	multiplayer.connected_to_server.connect(_on_connected_to_server)
-	multiplayer.connection_failed.connect(_on_connection_failed)
-	multiplayer.server_disconnected.connect(_on_server_disconnected)
+
 
 func _on_connected_to_server():
 	my_id = multiplayer.get_unique_id()

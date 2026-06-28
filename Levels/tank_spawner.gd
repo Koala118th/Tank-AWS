@@ -28,16 +28,16 @@ func _ready():
 		tankManager.request_spawns.rpc_id(1, multiplayer.get_unique_id())
 		
 func spawn_tank(owner_peer_id: int, spawn_index: int):
-	var tank: Tank = tank_scene.instantiate()
-	tank.set_multiplayer_authority(owner_peer_id)
+	var tankscene: Tank = tank_scene.instantiate()
+	tankscene.set_multiplayer_authority(owner_peer_id)
 	print("SPAWN")
 	print(self)
 	print(get_path())
 	print(multiplayer)
 	print(multiplayer.multiplayer_peer)
 	
-	print(multiplayer.get_unique_id(), " spawn a tank for ", owner_peer_id, " at ", spawn_index, ": ", tank)
+	print(multiplayer.get_unique_id(), " spawn a tank for ", owner_peer_id, " at ", spawn_index, ": ", tankscene)
 	var spawn_marker: Marker2D = _tank_spawn_locations.get_child(spawn_index)
-	tank.position = spawn_marker.position
-	add_child(tank)
+	tankscene.position = spawn_marker.position
+	add_child(tankscene)
 	
