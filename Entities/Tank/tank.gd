@@ -35,6 +35,10 @@ var _health: float = 100
 @onready var aim_line: Line2D = $AimLine
 
 
+func _ready():
+	GameServer.tankManager.tank_moved.connect(_on_tank_moved)
+
+
 func _process(delta):
 	health_bar.value = lerp(health_bar.value, _health, 10 * delta)
 
@@ -58,6 +62,8 @@ func _physics_process(delta: float):
 	aim()
 
 	move_and_slide()
+	
+	GameServer.tankManager.update_transform.rpc(multiplayer.get_unique_id(), position, body.rotation, turret.rotation)
 
 
 func aim():
@@ -114,3 +120,11 @@ func die():
 	get_parent().add_child(explosion)
 
 	queue_free()
+
+
+func _on_tank_moved(peer_id: int, pos: Vector2, body_rot: float, turret_rot: float):
+	if peer_id != get_multiplayer_authority():
+		return
+	position = pos
+	body.rotation = body_rot
+	turret.rotation = turret_rot
