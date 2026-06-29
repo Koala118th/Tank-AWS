@@ -2,22 +2,26 @@ extends Node
 # ─────────────────────────────────────────
 #  SLOT MANAGEMENT
 # ─────────────────────────────────────────
+signal slot_filled(peer_id: int, slot: int)
 var slots: Dictionary = {
 	0: null,
 	1: null,
 	2: null,
 	3: null,
 }
-func assign_slot(peer_id: int) -> void:
+func assign_slot(peer_id: int):
 	var slot = get_empty_slot()
 	if slot != -1:
 		slots[slot] = peer_id
 		player_count += 1
+		slot_filled.emit(peer_id, slot)
+		return slot
 		
-		if player_count <= 2:
-			reload_game.rpc()
-		elif player_count >=3:
-			make_spectator(peer_id)
+		#if player_count <= 2:
+			#reload_game.rpc()
+		#elif player_count >=3:
+			#make_spectator(peer_id)
+	return -1
 
 
 func remove_slot(peer_id: int) -> void:

@@ -3,7 +3,7 @@ extends Node2D
 @export var tank_scene: PackedScene
 @onready var _tank_spawn_locations: Node2D = $"../TankSpawnLocations"
 
-var tank: Dictionary = {} 
+var tanks: Dictionary = {} 
 
 func _ready():
 	#Server nodes
@@ -15,6 +15,7 @@ func _ready():
 		for slot in slots.keys():
 			if slots[slot] != null:
 				spawn_tank(slots[slot], slot)
+		playerManager.slot_filled.connect(spawn_tank)
 	else:
 		print("READY")
 		print(self)
