@@ -41,13 +41,6 @@ func start_server():
 func _on_peer_connected(id: int):
 	var slot = playerManager.assign_slot(id)
 	print("SERVER: Player ", id, " assigned slot ", slot)
-	
-	if slot == 1:
-		# second slot just filled — everyone (re)loads into the live match
-		load_game_scene.rpc()
-	else:
-		# first player — only they load, straight into solo play
-		load_game_scene.rpc_id(id)
 
 
 func _on_peer_disconnected(id: int):
@@ -84,8 +77,3 @@ func _on_connection_failed():
 
 func _on_server_disconnected():
 	print("CLIENT: Server disconnected.")
-
-
-@rpc("authority", "call_remote", "reliable")
-func load_game_scene():
-	get_tree().change_scene_to_file("res://Scenes/game.tscn")

@@ -15,6 +15,10 @@ func assign_slot(peer_id: int):
 		slots[slot] = peer_id
 		player_count += 1
 		slot_filled.emit(peer_id, slot)
+		
+		if slot != -1:
+			load_game_scene.rpc()
+		
 		return slot
 		
 		#if player_count <= 2:
@@ -73,3 +77,8 @@ func reload_game() -> void:
 			make_active_player(slots[slot])
 	
 	game_reloaded.emit()
+
+
+@rpc("authority", "call_remote", "reliable")
+func load_game_scene():
+	get_tree().change_scene_to_file("res://Scenes/game.tscn")
