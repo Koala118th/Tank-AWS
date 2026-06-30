@@ -3,11 +3,13 @@
 [ext_resource type="PackedScene" uid="uid://be8spxxqvxqt" path="res://Levels/maze.tscn" id="1_dnqw7"]
 [ext_resource type="PackedScene" uid="uid://b3as12v5nfntk" path="res://Objects/Wall/wall.tscn" id="2_4kn3y"]
 [ext_resource type="PackedScene" uid="uid://b70uwo6ja00qt" path="res://Entities/Tank/tank.tscn" id="3_8wn8b"]
+[ext_resource type="PackedScene" uid="uid://dp6oajpitk3l8" path="res://Interfaces/Game Over/game_over_menu.tscn" id="4_qssuq"]
 
 [node name="Maze" unique_id=1984496082 instance=ExtResource("1_dnqw7")]
 
-[node name="TankSpawner" parent="." index="0" unique_id=592079577]
+[node name="TankSpawner" parent="." index="0" unique_id=592079577 node_paths=PackedStringArray("game_over_screen")]
 tank_scene = ExtResource("3_8wn8b")
+game_over_screen = NodePath("../GameOverMenu")
 
 [node name="Wall5" parent="Map" parent_id_path=PackedInt32Array(1521102474) index="4" unique_id=2005327969 instance=ExtResource("2_4kn3y")]
 position = Vector2(-99, 0)
@@ -73,3 +75,6 @@ position = Vector2(541, -86)
 
 [node name="Marker2D4" type="Marker2D" parent="TankSpawnLocations" parent_id_path=PackedInt32Array(123431645) index="3" unique_id=1976692284]
 position = Vector2(541, 110)
+
+[node name="GameOverMenu" parent="." index="3" unique_id=1132579724 node_paths=PackedStringArray("tank_spawner") instance=ExtResource("4_qssuq")]
+tank_spawner = NodePath("../TankSpawner")
