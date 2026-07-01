@@ -2,12 +2,10 @@ extends Node2D
 
 @onready var tilemap: TileMapLayer = $TileMapLayer
 
-@export var tile_a_coords: Vector2i = Vector2i(0, 0)
 @export var tile_a_source: int = 0
-
-@export var tile_b_coords: Vector2i = Vector2i(0, 0)
 @export var tile_b_source: int = 1
 
+var tile_coords: Vector2i = Vector2i(0, 0)
 
 func _ready():
 
@@ -34,6 +32,6 @@ func generate_random_tiles():
 			var use_a = randi() % 2 == 0
 			
 			var source = tile_a_source if use_a else tile_b_source
-			var coords = tile_a_coords if use_a else tile_b_coords
+			var pos = Vector2i(x, y)
 
-			tilemap.set_cell(Vector2i(x, y), source, coords)
+			tilemap.set_cell(pos, source, tile_coords)
