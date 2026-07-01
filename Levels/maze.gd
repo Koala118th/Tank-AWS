@@ -5,12 +5,15 @@ extends Node2D
 @export var rows: int = 7
 @export var source_id: int = 1
 @export var wall_tile: Vector2i = Vector2i(0, 0)
+@export var background_scenes: Array[PackedScene] = []
 @onready var nav_reg = $NavigationRegion2D
 
 var tile_cols: int = 0
 var tile_rows: int = 0
 
 func _ready():
+	print("=== Maze Generator: _ready() called ===")
+
 	if tilemap == null:
 		push_error("Maze Generator: 'tilemap' export is not assigned!")
 		return
@@ -23,8 +26,30 @@ func _ready():
 		push_error("Maze Generator: source_id " + str(source_id) + " not found!")
 		return
 
+	spawn_background()
 	generate()
 	nav_reg.bake_navigation_polygon()
+
+func spawn_background():
+	if background_scenes.is_empty():
+		push_error("Maze Generator: no background scenes assigned!")
+		return
+
+	var picked: PackedScene = background_scenes[randi() % background_scenes.size()]
+
+	if picked == null:
+		push_error("Maze Generator: picked background scene is null!")
+		return
+
+	var background = picked.instantiate()
+
+	# Defer the add_child call until the parent is done setting up
+	get_parent().add_child.call_deferred(background)
+
+	# Also defer the move_child since it depends on add_child completing first
+	get_parent().move_child.call_deferred(background, 0)
+
+	print("Background spawned: ", picked.resource_path)
 
 func generate():
 	tile_cols = 2 * cols + 1

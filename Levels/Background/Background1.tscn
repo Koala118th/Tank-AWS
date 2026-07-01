@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://cinbd346kuavh"]
 
-[ext_resource type="Script" uid="uid://dymoutfqkmj0w" path="res://Levels/Background/background_1.gd" id="1_6iscw"]
+[ext_resource type="Script" uid="uid://dymoutfqkmj0w" path="res://Levels/Background/background_normal.gd" id="1_6iscw"]
 [ext_resource type="Texture2D" uid="uid://cfssyad43hpv" path="res://Assets/PNG/tileGrass1.png" id="2_3lhsv"]
 [ext_resource type="Texture2D" uid="uid://wxfjte1dmpi2" path="res://Assets/PNG/tileGrass2.png" id="3_n63nb"]
 
@@ -24,7 +24,6 @@ sources/1 = SubResource("TileSetAtlasSource_xgkr2")
 [node name="Background1" type="Node2D" unique_id=1541136634]
 z_index = -1
 script = ExtResource("1_6iscw")
-is_darkened = true
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=2104367523]
 z_index = -1

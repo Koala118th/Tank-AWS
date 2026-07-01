@@ -2,8 +2,10 @@
 
 [ext_resource type="Script" uid="uid://ceygdf0se50t7" path="res://Levels/maze.gd" id="1_c313c"]
 [ext_resource type="Script" uid="uid://cetcc8cygwj2" path="res://Levels/tank_spawner.gd" id="2_egmw7"]
+[ext_resource type="PackedScene" uid="uid://cfhquv6aa4r1v" path="res://Levels/Background/Background2.tscn" id="3_011ed"]
 [ext_resource type="Texture2D" uid="uid://cxgmlqitventq" path="res://Assets/PNG/metal_wall3.png" id="3_egmw7"]
 [ext_resource type="PackedScene" uid="uid://b70uwo6ja00qt" path="res://Entities/Tank/tank.tscn" id="3_pekh8"]
+[ext_resource type="PackedScene" uid="uid://dycb531swub4h" path="res://Levels/Background/Background3.tscn" id="4_qtbyg"]
 [ext_resource type="PackedScene" uid="uid://cinbd346kuavh" path="res://Levels/Background/Background1.tscn" id="5_tt4vx"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_egmw7"]
@@ -29,6 +31,7 @@ sources/1 = SubResource("TileSetAtlasSource_pekh8")
 [node name="Maze" type="Node2D" unique_id=1984496082 node_paths=PackedStringArray("tilemap")]
 script = ExtResource("1_c313c")
 tilemap = NodePath("TileMapLayer")
+background_scenes = Array[PackedScene]([ExtResource("4_qtbyg"), ExtResource("3_011ed"), ExtResource("5_tt4vx")])
 
 [node name="TankSpawner" type="Node2D" parent="." unique_id=592079577 node_paths=PackedStringArray("maze_generator")]
 script = ExtResource("2_egmw7")
@@ -44,5 +47,3 @@ navigation_polygon = SubResource("NavigationPolygon_egmw7")
 position = Vector2(-590, -335)
 tile_set = SubResource("TileSet_tt4vx")
 collision_visibility_mode = 2
-
-[node name="Background1" parent="." unique_id=1541136634 instance=ExtResource("5_tt4vx")]
