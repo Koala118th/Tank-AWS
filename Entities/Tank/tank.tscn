@@ -3,6 +3,7 @@
 [ext_resource type="Script" uid="uid://cpke425rqilxl" path="res://Entities/Tank/tank.gd" id="1_dlw22"]
 [ext_resource type="Texture2D" uid="uid://6w8tf76vyu6k" path="res://Assets/PNG/tankBody_green.png" id="2_t7cgh"]
 [ext_resource type="Texture2D" uid="uid://dhd61cu0w2geg" path="res://Assets/PNG/tankGreen_barrel1.png" id="3_f3kol"]
+[ext_resource type="PackedScene" uid="uid://d040au338m11y" path="res://Interfaces/Pause Menu/pause_menu.tscn" id="5_dahrd"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f3kol"]
 bg_color = Color(1, 0, 0, 1)
@@ -13,9 +14,10 @@ bg_color = Color(0.28627452, 0.70980394, 0, 1)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_f3kol"]
 size = Vector2(40, 43)
 
-[node name="Tank" type="CharacterBody2D" unique_id=1826538697 groups=["tank"]]
+[node name="Tank" type="CharacterBody2D" unique_id=1826538697 node_paths=PackedStringArray("pause_menu")]
 collision_layer = 3
 script = ExtResource("1_dlw22")
+pause_menu = NodePath("PauseMenu")
 
 [node name="ProgressBar" type="ProgressBar" parent="." unique_id=1505685711]
 anchors_preset = 15
@@ -67,3 +69,4 @@ one_shot = true
 [node name="AimLine" type="Line2D" parent="." unique_id=475982724]
 width = 2.0
 default_color = Color(0.3647059, 0.3647059, 0.3647059, 1)
+[node name="PauseMenu" parent="." unique_id=862326212 instance=ExtResource("5_dahrd")]

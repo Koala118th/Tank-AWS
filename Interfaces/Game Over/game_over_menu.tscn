@@ -1,0 +1,146 @@
+[gd_scene format=3 uid="uid://dp6oajpitk3l8"]
+
+[ext_resource type="Script" uid="uid://dsdg70t3gpou8" path="res://Interfaces/Game Over/game_over_menu.gd" id="1_abqp5"]
+[ext_resource type="PackedScene" uid="uid://cq645uq4m1l1t" path="res://Interfaces/Game Over/score_row.tscn" id="1_vu3iv"]
+[ext_resource type="Script" uid="uid://o813xeayc0hu" path="res://Interfaces/Game Over/status_dot.gd" id="2_w35h0"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_18kyr"]
+content_margin_left = 16.0
+content_margin_top = 6.0
+content_margin_right = 16.0
+content_margin_bottom = 6.0
+bg_color = Color(0.05490196, 0.06666667, 0.09019608, 0.19607843)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.16470589, 0.22745098, 0.16470589, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[node name="GameOverMenu" type="CanvasLayer" unique_id=1132579724]
+script = ExtResource("1_abqp5")
+
+[node name="Control" type="Control" parent="." unique_id=695321950]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+
+[node name="Background" type="ColorRect" parent="Control" unique_id=1718044187]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.05490196, 0.06666667, 0.09019608, 1)
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Control" unique_id=1270576794]
+custom_minimum_size = Vector2(460, 0)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -5.0
+offset_top = -48.5
+offset_right = 5.0
+offset_bottom = 48.5
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 16
+alignment = 1
+
+[node name="MatchLabel" type="Label" parent="Control/VBoxContainer" unique_id=1258461375]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.22745098, 0.3529412, 0.22745098, 1)
+theme_override_font_sizes/font_size = 11
+text = "// ROUND COMPLETE"
+horizontal_alignment = 1
+
+[node name="RoundOverLabel" type="RichTextLabel" parent="Control/VBoxContainer" unique_id=397645580]
+layout_mode = 2
+theme_override_colors/default_color = Color(0.9098039, 0.9411765, 0.9098039, 1)
+theme_override_font_sizes/normal_font_size = 38
+bbcode_enabled = true
+text = "Round [color=#4caf50]Over[/color]"
+fit_content = true
+scroll_active = false
+horizontal_alignment = 1
+
+[node name="WinnerBadge" type="Label" parent="Control/VBoxContainer" unique_id=1594741312]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.29803923, 0.6862745, 0.3137255, 1)
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxFlat_18kyr")
+text = "🏆  Player wins the round"
+horizontal_alignment = 1
+
+[node name="ScoreContainer" type="VBoxContainer" parent="Control/VBoxContainer" unique_id=369814914]
+layout_mode = 2
+theme_override_constants/separation = 6
+
+[node name="ScoreRow" parent="Control/VBoxContainer/ScoreContainer" unique_id=605151524 instance=ExtResource("1_vu3iv")]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_constants/separation = 8
+
+[node name="NextStatus" type="HBoxContainer" parent="Control/VBoxContainer" unique_id=1194519479]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="StatusDot" type="ColorRect" parent="Control/VBoxContainer/NextStatus" unique_id=1304242303]
+custom_minimum_size = Vector2(6, 6)
+layout_mode = 2
+color = Color(0.29803923, 0.6862745, 0.3137255, 1)
+script = ExtResource("2_w35h0")
+
+[node name="StatusLabel" type="Label" parent="Control/VBoxContainer/NextStatus" unique_id=2131561552]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.29803923, 0.6862745, 0.3137255, 1)
+theme_override_font_sizes/font_size = 12
+text = "Generating next map"
+
+[node name="CountdownLabel" type="Label" parent="Control/VBoxContainer/NextStatus" unique_id=534592028]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.22745098, 0.47843137, 0.22745098, 1)
+theme_override_font_sizes/font_size = 12
+text = "08"
+
+[node name="QuitButton" type="Button" parent="Control/VBoxContainer" unique_id=1020968764]
+custom_minimum_size = Vector2(0, 32)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2901961, 0.3529412, 0.2901961, 1)
+theme_override_colors/font_hover_color = Color(0.7882353, 0.47843137, 0.47843137, 1)
+theme_override_font_sizes/font_size = 12
+text = "QUIT TO MENU"
+flat = true
+
+[node name="MatchCounter" type="Label" parent="Control" unique_id=24397974]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -89.0
+offset_top = -39.0
+offset_right = -16.0
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.16470589, 0.22745098, 0.16470589, 1)
+theme_override_font_sizes/font_size = 10
+text = "Match #1"
+horizontal_alignment = 2
+vertical_alignment = 2

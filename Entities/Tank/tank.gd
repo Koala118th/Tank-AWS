@@ -10,6 +10,7 @@ var laser_scene: PackedScene = preload("res://Objects/projectile/laser/laser.tsc
 var explosion_scene: PackedScene =preload("res://Entities/Explosion/explosion.tscn")
 
 @export var current_ammo: PackedScene = chaser_scene
+@export var pause_menu: CanvasLayer
 
 @export var speed: float = 150.0
 @export var turn_speed: float = 5.0
@@ -42,8 +43,31 @@ func _ready():
 func _process(delta):
 	health_bar.value = lerp(health_bar.value, _health, 10 * delta)
 
+var paused := false
+
+func _unhandled_input(event):
+	if event.is_action_pressed("ui_cancel"):
+		if paused:
+			_resume()
+		else:
+			_pause()
+
+func _ready():
+	if pause_menu != null:
+		pause_menu.resumed.connect(_resume)
+
+func _pause():
+	paused = true
+	pause_menu.open()
+
+func _resume():
+	paused = false
+	pause_menu.close()
 
 func _physics_process(delta: float):
+	if paused:
+		return
+	
 	if not is_multiplayer_authority():
 		return
 

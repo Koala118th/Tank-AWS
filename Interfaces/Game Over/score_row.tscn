@@ -1,0 +1,33 @@
+[gd_scene format=3 uid="uid://cq645uq4m1l1t"]
+
+[ext_resource type="Script" uid="uid://lqoxyeuhpci" path="res://Interfaces/Game Over/score_row.gd" id="1_dag7n"]
+
+[node name="ScoreRow" type="HBoxContainer" unique_id=605151524]
+script = ExtResource("1_dag7n")
+
+[node name="RankLabel" type="Label" parent="." unique_id=1947400345]
+custom_minimum_size = Vector2(32, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.22745098, 0.3529412, 0.22745098, 1)
+theme_override_font_sizes/font_size = 13
+horizontal_alignment = 1
+
+[node name="NameLabel" type="Label" parent="." unique_id=1729117682]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.627451, 0.7529412, 0.627451, 1)
+theme_override_font_sizes/font_size = 14
+
+[node name="WinsLabel" type="Label" parent="." unique_id=925012196]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.9098039, 0.9411765, 0.9098039, 1)
+theme_override_font_sizes/font_size = 15
+horizontal_alignment = 1
+
+[node name="KillsLabel" type="Label" parent="." unique_id=55584959]
+custom_minimum_size = Vector2(60, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.3529412, 0.47843137, 0.3529412, 1)
+theme_override_font_sizes/font_size = 13
+horizontal_alignment = 1
