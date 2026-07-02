@@ -36,10 +36,6 @@ var _health: float = 100
 @onready var aim_line: Line2D = $AimLine
 
 
-func _ready():
-	GameServer.tankManager.tank_moved.connect(_on_tank_moved)
-
-
 func _process(delta):
 	health_bar.value = lerp(health_bar.value, _health, 10 * delta)
 
@@ -53,6 +49,7 @@ func _unhandled_input(event):
 			_pause()
 
 func _ready():
+	GameServer.tankManager.tank_moved.connect(_on_tank_moved)
 	if pause_menu != null:
 		pause_menu.resumed.connect(_resume)
 
