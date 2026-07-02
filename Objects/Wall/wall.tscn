@@ -1,13 +1,17 @@
-[gd_scene format=4 uid="uid://b3as12v5nfntk"]
+[gd_scene format=3 uid="uid://b3as12v5nfntk"]
 
-[ext_resource type="Texture2D" uid="uid://mytrqewr0ytu" path="res://Assets/PNG/metal_wall.png" id="1_vjqjo"]
+[ext_resource type="Texture2D" uid="uid://bkceyxglion63" path="res://Assets/PNG/metal_wall2.png" id="1_vjqjo"]
 
-[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4p8b7"]
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_vjqjo"]
 texture = ExtResource("1_vjqjo")
+texture_region_size = Vector2i(64, 64)
 0:0/0 = 0
 
 [sub_resource type="TileSet" id="TileSet_g1r76"]
-sources/1 = SubResource("TileSetAtlasSource_4p8b7")
+tile_size = Vector2i(64, 64)
+physics_layer_0/collision_layer = 5
+physics_layer_0/collision_mask = 5
+sources/1 = SubResource("TileSetAtlasSource_vjqjo")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vjqjo"]
 size = Vector2(208, 16)
@@ -15,9 +19,8 @@ size = Vector2(208, 16)
 [node name="Wall" type="Line2D" unique_id=2005327969 groups=["wall"]]
 default_color = Color(0, 0, 0, 1)
 
-[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=488469089]
-position = Vector2(0, 8)
-tile_map_data = PackedByteArray("AAAAAP//AQAAAAAAAAABAP//AQAAAAAAAAACAP//AQAAAAAAAAADAP//AQAAAAAAAAAEAP//AQAAAAAAAAAFAP//AQAAAAAAAAAGAP//AQAAAAAAAAAHAP//AQAAAAAAAAAIAP//AQAAAAAAAAAJAP//AQAAAAAAAAAKAP//AQAAAAAAAAALAP//AQAAAAAAAAAMAP//AQAAAAAAAAA=")
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=488469089 groups=["wall"]]
+position = Vector2(-10, -6)
 tile_set = SubResource("TileSet_g1r76")
 collision_visibility_mode = 2
 

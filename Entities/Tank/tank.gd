@@ -51,6 +51,7 @@ func _physics_process(delta: float):
 	turret.rotation += deg_to_rad(90)
 	var turn = Input.get_axis("turn_left", "turn_right")
 	body.rotation += turn * turn_speed * delta
+	$CollisionShape2D.rotation += turn * turn_speed * delta
 
 	var forward = Input.get_axis("move_backward", "move_forward")
 	velocity = Vector2.UP.rotated(body.rotation) * forward * speed
