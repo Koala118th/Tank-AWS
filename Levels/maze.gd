@@ -31,7 +31,6 @@ func _ready():
 
 	spawn_background()
 	nav_reg.bake_navigation_polygon()
-	print("baked")
 
 func spawn_background():
 	if background_scenes.is_empty():
@@ -64,6 +63,9 @@ func _apply_maze(grid: Array):
 			else:
 				tilemap.erase_cell(pos)
 	print("maze applied")
+	
+	await get_tree().process_frame
+	await get_tree().process_frame
 	nav_reg.bake_navigation_polygon()
 
 
