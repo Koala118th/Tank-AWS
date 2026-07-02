@@ -22,11 +22,11 @@ func _ready():
 				spawn_tank(slots[slot], slot)
 		playerManager.slot_filled.connect(spawn_tank)
 	else:
-		print("READY")
-		print(self)
-		print(get_path())
-		print(multiplayer)
-		print(multiplayer.multiplayer_peer)
+		#print("READY")
+		#print(self)
+		#print(get_path())
+		#print(multiplayer)
+		#print(multiplayer.multiplayer_peer)
 		for c in tankManager.tank_spawned.get_connections():
 			tankManager.tank_spawned.disconnect(c["callable"])
 		
@@ -55,10 +55,10 @@ func spawn_tank(owner_peer_id: int, spawn_index: int):
 		var tank: Tank = tank_scene.instantiate()
 		tank.set_multiplayer_authority(owner_peer_id)
 		print("SPAWN")
-		print(self)
-		print(get_path())
-		print(multiplayer)
-		print(multiplayer.multiplayer_peer)
+		#print(self)
+		#print(get_path())
+		#print(multiplayer)
+		#print(multiplayer.multiplayer_peer)
 		
 		print(multiplayer.get_unique_id(), " spawn a tank for ", owner_peer_id, " at ", spawn_index, ": ", tank)
 		tank.position = floor_positions[i]
