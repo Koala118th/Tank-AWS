@@ -1,7 +1,7 @@
 extends Node2D
 
 @export var tank_scene: PackedScene
-@export var tank_count: int = 4
+@export var tank_count: int = 1
 @export var maze_generator: Node2D
 var tanks: Dictionary = {} 
 
@@ -31,7 +31,7 @@ func _ready():
 		tankManager.request_spawns.rpc_id(1, multiplayer.get_unique_id())
 
 
-func spawn_tank():
+func spawn_tank(owner_peer_id: int, spawn_index: int):
 	if maze_generator == null:
 		push_error("TankSpawner: maze_generator is not assigned!")
 		return
@@ -58,6 +58,5 @@ func spawn_tank():
 		print(multiplayer.multiplayer_peer)
 		
 		print(multiplayer.get_unique_id(), " spawn a tank for ", owner_peer_id, " at ", spawn_index, ": ", tank)
-		var spawn_marker: Marker2D = _tank_spawn_locations.get_child(spawn_index)
 		tank.position = floor_positions[i]
 		add_child(tank)
