@@ -35,6 +35,8 @@ var _health: float = 100
 @onready var aim_ray: RayCast2D = $AimRay
 @onready var aim_line: Line2D = $AimLine
 
+var owner_id
+
 
 func _process(delta):
 	health_bar.value = lerp(health_bar.value, _health, 10 * delta)
@@ -78,7 +80,7 @@ func _physics_process(delta: float):
 	velocity = Vector2.UP.rotated(body.rotation) * forward * speed
 	
 	if Input.is_action_pressed("shoot") == true:
-		shoot(current_ammo)
+		shoot_request()
 	
 	#if current_ammo == laser_scene:
 	aim()
@@ -112,21 +114,52 @@ func aim():
 		aim_line.add_point(aim_line.to_local(p))
 
 
-func shoot(projectile_scene: PackedScene):
+func shoot_request():
 	if not fire_timer.is_stopped():
 		return
-	var projectile = projectile_scene.instantiate()
-	projectile.shooter = self
+	
 	var mouse_pos = get_global_mouse_position()
+	GameServer.projectileManager.request_shoot.rpc_id(1, mouse_pos) # 1 = server
+
+
+#func shoot(projectile_scene: PackedScene):
+	#if not fire_timer.is_stopped():
+		#return
+	#var projectile = projectile_scene.instantiate()
+	#projectile.shooter = self
+	#var mouse_pos = get_global_mouse_position()
+	#var bullet_dir = (mouse_pos - global_position).normalized()
+#
+	#projectile.global_position = global_position + bullet_dir * 25
+#
+	#var dir = mouse_pos
+	#projectile.set_direction(dir)
+#
+	#get_parent().add_child(projectile)
+	#
+	#fire_timer.start(projectile.fire_cooldown)
+
+
+func server_shoot(mouse_pos: Vector2, ammo: PackedScene):
+	if not fire_timer.is_stopped():
+		return
+	
+	var projectile = ammo.instantiate()
+	projectile.shooter_id = multiplayer.get_unique_id()
+
 	var bullet_dir = (mouse_pos - global_position).normalized()
-
 	projectile.global_position = global_position + bullet_dir * 25
-
-	var dir = mouse_pos
-	projectile.set_direction(dir)
+	projectile.set_direction(mouse_pos)
 
 	get_parent().add_child(projectile)
-	
+
+	# tell all clients to spawn it visually
+	GameServer.projectileManager.spawn_projectile.rpc(
+		projectile.global_position,
+		projectile.rotation,
+		bullet_dir
+	)
+
 	fire_timer.start(projectile.fire_cooldown)
 
 

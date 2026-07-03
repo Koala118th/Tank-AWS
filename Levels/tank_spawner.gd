@@ -61,6 +61,7 @@ func spawn_tank(owner_peer_id: int, spawn_index: int):
 	
 	print(multiplayer.get_unique_id(), " spawn a tank for ", owner_peer_id, " at ", spawn_index, ": ", tank)
 	tank.position = floor_positions[spawn_index]
+	tank.owner_id = owner_peer_id
 	tank.tree_exited.connect(_on_tank_died)
 	add_child(tank)
 
