@@ -14,7 +14,7 @@ func _ready():
 	#Server nodes
 	var playerManager = GameServer.playerManager
 	var tankManager = GameServer.tankManager
-		
+	
 	if GameServer.is_server_mode():
 		var slots: Dictionary = playerManager.slots
 		for slot in slots.keys():
