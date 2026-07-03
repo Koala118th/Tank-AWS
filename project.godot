@@ -19,6 +19,10 @@ config/icon="res://icon.svg"
 
 GameServer="*uid://djbvowfvclxkf"
 
+[dotnet]
+
+project/assembly_name="Tank (AWS)"
+
 [global_group]
 
 navigation_polygon_source_geometry_group=""
