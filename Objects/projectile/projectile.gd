@@ -2,10 +2,6 @@ extends CharacterBody2D
 class_name Projectile
 
 
-@onready var _enemy_detection_area: Area2D = $EnemyDetectionArea
-@onready var _delete_timer: Timer = $DeleteTimer
-
-
 @export var speed: float
 @export var damage: float
 @export var fire_cooldown: float

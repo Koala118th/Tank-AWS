@@ -5,6 +5,7 @@
 [ext_resource type="Script" uid="uid://brw4txmx56ryy" path="res://Server/Game/player_manager.gd" id="4_b4e7e"]
 [ext_resource type="Script" uid="uid://di6y05irt2ng0" path="res://Server/Game/tank_manager.gd" id="4_f05h8"]
 [ext_resource type="Script" uid="uid://cnwje3daie033" path="res://Server/Game/map_manager.gd" id="5_f05h8"]
+[ext_resource type="Script" uid="uid://cdcefh8dkpnnd" path="res://Server/Game/collectible.manager.gd" id="6_gkfa0"]
 
 [node name="GameServer" type="Node" unique_id=482026261]
 script = ExtResource("1_7sp1r")
@@ -20,3 +21,6 @@ script = ExtResource("4_f05h8")
 
 [node name="MapManager" type="Node" parent="." unique_id=1877818516]
 script = ExtResource("5_f05h8")
+
+[node name="CollectibleManager" type="Node" parent="." unique_id=1124513988]
+script = ExtResource("6_gkfa0")

@@ -21,6 +21,7 @@ const SERVER_IP = "127.0.0.1"
 @onready var playerManager = $PlayerManager
 @onready var tankManager = $TankManager
 @onready var mapManager = $MapManager
+@onready var collectibleManager = $CollectibleManager
 signal game_started
 
 func start_server():

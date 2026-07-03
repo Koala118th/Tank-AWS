@@ -1,0 +1,101 @@
+extends Node
+
+var maze_generator: Node2D = null
+
+enum CrateType { SNIPER, SMALL, LASER, CHASER }
+
+const MAX_COLLECTIBLES: int = 3
+const SPAWN_INTERVAL: float = 5.0
+const MIN_DISTANCE: float = 64.0
+
+# Server-side state
+var _spawn_timer: Timer
+var _active_crates: Dictionary = {}
+var _next_id: int = 0
+
+# Client-side spawner reference
+var _collectible_spawner: Node2D = null
+
+func init_collectibles(spawner_node: Node) -> void:
+	_collectible_spawner = spawner_node
+
+func start_timer() -> void:
+	if not multiplayer.is_server():
+		return
+	if _spawn_timer != null:
+		return  # already started, don't double-start
+	_spawn_timer = Timer.new()
+	_spawn_timer.wait_time = SPAWN_INTERVAL
+	_spawn_timer.autostart = false
+	_spawn_timer.timeout.connect(_on_spawn_timer_timeout)
+	add_child(_spawn_timer)
+	_spawn_timer.start()
+	print("[CollectibleManager] Timer started")
+
+func _on_spawn_timer_timeout() -> void:
+	if _active_crates.size() >= MAX_COLLECTIBLES:
+		return
+	_do_spawn()
+
+func _do_spawn() -> void:
+	if _collectible_spawner == null:
+		return
+	var floor_positions: Array = _collectible_spawner.maze_generator.get_floor_positions()
+	if floor_positions.is_empty():
+		return
+
+	var valid: Array = floor_positions.filter(func(pos):
+		for data in _active_crates.values():
+			if (data["position"] as Vector2).distance_to(pos) < MIN_DISTANCE:
+				return false
+		return true
+	)
+	if valid.is_empty():
+		return
+
+	valid.shuffle()
+	var chosen_pos: Vector2 = valid[0]
+	var chosen_type: int = randi() % CrateType.size()
+	var crate_id: int = _next_id
+	_next_id += 1
+
+	_active_crates[crate_id] = { "type": chosen_type, "position": chosen_pos }
+
+	receive_crate_spawned.rpc(crate_id, chosen_type, chosen_pos)
+
+@rpc("any_peer", "call_remote", "reliable")
+func notify_crate_picked_up_rpc(crate_id: int) -> void:
+	if not multiplayer.is_server():
+		return
+	if not _active_crates.has(crate_id):
+		push_warning("[CollectibleManager] crate_id %d not found in _active_crates!" % crate_id)
+		return
+	_active_crates.erase(crate_id)
+	receive_crate_removed.rpc(crate_id)
+
+	if is_inside_tree() and _spawn_timer != null:
+		_spawn_timer.stop()
+		_spawn_timer.start()
+
+@rpc("authority", "call_local", "reliable")
+func receive_crate_spawned(crate_id: int, crate_type: int, pos: Vector2) -> void:
+	if _collectible_spawner == null:
+		push_warning("[CollectibleManager] _collectible_spawner is null!")
+		return
+	_collectible_spawner.spawn_crate(crate_id, crate_type, pos)
+
+@rpc("authority", "call_local", "reliable")
+func receive_crate_removed(crate_id: int) -> void:
+	if _collectible_spawner == null:
+		push_warning("[CollectibleManager] _collectible_spawner is null!")
+		return
+	_collectible_spawner.remove_crate(crate_id)
+
+@rpc("any_peer", "call_remote", "reliable")
+func request_crates() -> void:
+	if not multiplayer.is_server():
+		return
+	var sender_id: int = multiplayer.get_remote_sender_id()
+	for crate_id in _active_crates:
+		var data = _active_crates[crate_id]
+		receive_crate_spawned.rpc_id(sender_id, crate_id, data["type"], data["position"])
