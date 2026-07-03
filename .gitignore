@@ -2,6 +2,7 @@
 .godot/
 *.exe
 *.pck
+*.TMP
 .nomedia
 
 # Godot-specific ignores
