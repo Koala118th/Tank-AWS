@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://comfpuqm6dlql"]
 
-[ext_resource type="Script" uid="uid://bc5atsld61ag6" path="res://Scenes/Game/game.gd" id="1_qxrlw"]
 [ext_resource type="PackedScene" uid="uid://be8spxxqvxqt" path="res://Levels/maze.tscn" id="1_ebmjs"]
+[ext_resource type="Script" uid="uid://bc5atsld61ag6" path="res://Scenes/Game/game.gd" id="1_qxrlw"]
 
 [node name="Game" type="Node2D" unique_id=1209050767]
 script = ExtResource("1_qxrlw")

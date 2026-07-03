@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://oiq4ubq3rxw4"]
+
+[ext_resource type="PackedScene" uid="uid://dxfusd1g2n7d2" path="res://Objects/collectibles/collectible.tscn" id="1_nurs7"]
+[ext_resource type="Script" uid="uid://btgp83oqfkdv8" path="res://Objects/collectibles/small/small_crate.gd" id="2_5f3ji"]
+[ext_resource type="PackedScene" uid="uid://di48uvev2r8sg" path="res://Objects/projectile/small/small.tscn" id="3_5f3ji"]
+[ext_resource type="Texture2D" uid="uid://cw776osu2bagd" path="res://Assets/PNG/smallCrate.png" id="4_5f3ji"]
+
+[node name="small_crate" unique_id=1318032153 instance=ExtResource("1_nurs7")]
+script = ExtResource("2_5f3ji")
+small_bullet = ExtResource("3_5f3ji")
+
+[node name="Sprite2D" parent="." index="0" unique_id=1570432169]
+texture = ExtResource("4_5f3ji")

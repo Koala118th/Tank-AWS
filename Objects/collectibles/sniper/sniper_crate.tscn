@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://driwdok4cabt5"]
+
+[ext_resource type="PackedScene" uid="uid://dxfusd1g2n7d2" path="res://Objects/collectibles/collectible.tscn" id="1_7pqmt"]
+[ext_resource type="Script" uid="uid://f6dqc1ycnoqr" path="res://Objects/collectibles/sniper/sniper_crate.gd" id="2_2laox"]
+[ext_resource type="Texture2D" uid="uid://4wuux2tjb0tj" path="res://Assets/PNG/sniperCrate.png" id="2_vttte"]
+[ext_resource type="PackedScene" uid="uid://dmtrptepjj2u7" path="res://Objects/projectile/sniper/sniper.tscn" id="3_2laox"]
+
+[node name="sniper_crate" unique_id=1318032153 instance=ExtResource("1_7pqmt")]
+script = ExtResource("2_2laox")
+sniper_bullet = ExtResource("3_2laox")
+
+[node name="Sprite2D" parent="." index="0" unique_id=1570432169]
+texture = ExtResource("2_vttte")

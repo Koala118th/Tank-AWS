@@ -9,7 +9,7 @@ var small_scene: PackedScene =preload("res://Objects/projectile/small/small.tscn
 var laser_scene: PackedScene = preload("res://Objects/projectile/laser/laser.tscn")
 var explosion_scene: PackedScene =preload("res://Entities/Explosion/explosion.tscn")
 
-@export var current_ammo: PackedScene = chaser_scene
+@export var current_ammo: PackedScene = bullet_scene
 @export var pause_menu: CanvasLayer
 
 @export var speed: float = 150.0

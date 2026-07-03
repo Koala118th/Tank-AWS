@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://c0de3letot3w0"]
+
+[ext_resource type="PackedScene" uid="uid://dxfusd1g2n7d2" path="res://Objects/collectibles/collectible.tscn" id="1_4dadr"]
+[ext_resource type="Script" uid="uid://bn8j4ijcfn85y" path="res://Objects/collectibles/laser/laser_crate.gd" id="2_1a788"]
+[ext_resource type="PackedScene" uid="uid://dxlc08w4sejtp" path="res://Objects/projectile/laser/laser.tscn" id="3_1a788"]
+[ext_resource type="Texture2D" uid="uid://dbl20a2td8kbp" path="res://Assets/PNG/laserCrate.png" id="4_ufksb"]
+
+[node name="laser_crate" unique_id=1318032153 instance=ExtResource("1_4dadr")]
+script = ExtResource("2_1a788")
+laser_bullet = ExtResource("3_1a788")
+
+[node name="Sprite2D" parent="." index="0" unique_id=1570432169]
+texture = ExtResource("4_ufksb")

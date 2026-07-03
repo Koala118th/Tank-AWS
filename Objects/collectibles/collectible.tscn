@@ -1,0 +1,20 @@
+[gd_scene format=3 uid="uid://dxfusd1g2n7d2"]
+
+[ext_resource type="Script" uid="uid://c7771i3mwvqdi" path="res://Objects/collectibles/collectible.gd" id="1_atuiu"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fy6bu"]
+
+[node name="Collectible" type="Node2D" unique_id=1318032153]
+script = ExtResource("1_atuiu")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1570432169]
+
+[node name="Area2D" type="Area2D" parent="." unique_id=277432639]
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" unique_id=54829548]
+scale = Vector2(1.4, 1.4)
+shape = SubResource("RectangleShape2D_fy6bu")
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_body_entered"]

@@ -1,0 +1,13 @@
+[gd_scene format=3 uid="uid://b6rem01mnf6h1"]
+
+[ext_resource type="PackedScene" uid="uid://dxfusd1g2n7d2" path="res://Objects/collectibles/collectible.tscn" id="1_kqei2"]
+[ext_resource type="Script" uid="uid://b63d1qmcw8pol" path="res://Objects/collectibles/chaser/chaser_crate.gd" id="2_76vqe"]
+[ext_resource type="PackedScene" uid="uid://canm2jogw5fri" path="res://Objects/projectile/chaser/chaser.tscn" id="3_tlpd8"]
+[ext_resource type="Texture2D" uid="uid://dc78puwmoikcl" path="res://Assets/PNG/chaserCrate.png" id="4_aa4hx"]
+
+[node name="chaser_crate" unique_id=1318032153 instance=ExtResource("1_kqei2")]
+script = ExtResource("2_76vqe")
+chaser_bullet = ExtResource("3_tlpd8")
+
+[node name="Sprite2D" parent="." index="0" unique_id=1570432169]
+texture = ExtResource("4_aa4hx")
