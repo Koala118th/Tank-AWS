@@ -1,11 +1,10 @@
 [gd_scene format=3 uid="uid://be8spxxqvxqt"]
 
 [ext_resource type="Script" uid="uid://ceygdf0se50t7" path="res://Levels/maze.gd" id="1_c313c"]
-[ext_resource type="Script" uid="uid://cetcc8cygwj2" path="res://Levels/tank_spawner.gd" id="2_egmw7"]
 [ext_resource type="PackedScene" uid="uid://cfhquv6aa4r1v" path="res://Levels/Background/Background2.tscn" id="3_011ed"]
 [ext_resource type="Texture2D" uid="uid://cxgmlqitventq" path="res://Assets/PNG/metal_wall3.png" id="3_egmw7"]
-[ext_resource type="PackedScene" uid="uid://b70uwo6ja00qt" path="res://Entities/Tank/tank.tscn" id="3_pekh8"]
 [ext_resource type="PackedScene" uid="uid://dycb531swub4h" path="res://Levels/Background/Background3.tscn" id="4_qtbyg"]
+[ext_resource type="PackedScene" uid="uid://bnpbf21tettv7" path="res://Levels/tank_spawner.tscn" id="5_011ed"]
 [ext_resource type="PackedScene" uid="uid://cinbd346kuavh" path="res://Levels/Background/Background1.tscn" id="5_tt4vx"]
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_egmw7"]
@@ -33,9 +32,7 @@ script = ExtResource("1_c313c")
 tilemap = NodePath("TileMapLayer")
 background_scenes = Array[PackedScene]([ExtResource("4_qtbyg"), ExtResource("3_011ed"), ExtResource("5_tt4vx")])
 
-[node name="TankSpawner" type="Node2D" parent="." unique_id=592079577 node_paths=PackedStringArray("maze_generator")]
-script = ExtResource("2_egmw7")
-tank_scene = ExtResource("3_pekh8")
+[node name="TankSpawner" parent="." unique_id=11995414 node_paths=PackedStringArray("maze_generator") instance=ExtResource("5_011ed")]
 maze_generator = NodePath("..")
 
 [node name="Map" type="Node2D" parent="." unique_id=1521102474 groups=["navigation_polygon_source_geometry_group"]]

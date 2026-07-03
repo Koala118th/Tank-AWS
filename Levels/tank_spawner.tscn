@@ -1,0 +1,8 @@
+[gd_scene format=3 uid="uid://bnpbf21tettv7"]
+
+[ext_resource type="Script" uid="uid://cetcc8cygwj2" path="res://Levels/tank_spawner.gd" id="1_0n55h"]
+[ext_resource type="PackedScene" uid="uid://b70uwo6ja00qt" path="res://Entities/Tank/tank.tscn" id="2_j31f0"]
+
+[node name="TankSpawner" type="Node2D" unique_id=11995414]
+script = ExtResource("1_0n55h")
+tank_scene = ExtResource("2_j31f0")

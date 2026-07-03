@@ -16,6 +16,8 @@ func _ready():
 	GameServer.mapManager.maze_received.connect(_apply_maze)
 	if not multiplayer.is_server():
 		GameServer.mapManager.request_maze.rpc_id(1)
+	else:
+		GameServer.mapManager.request_maze()
 
 	if tilemap == null:
 		push_error("Maze Generator: 'tilemap' export is not assigned!")
@@ -86,6 +88,7 @@ func get_floor_positions() -> Array:
 				var local_pos = tilemap.map_to_local(pos)
 				var world_pos = tilemap.to_global(local_pos)
 				floor_positions.append(world_pos)
+				print(world_pos)
 	return floor_positions
 	#Server nodes
 	#var playerManager = GameServer.playerManager
