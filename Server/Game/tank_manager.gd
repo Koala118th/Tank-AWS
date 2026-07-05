@@ -29,6 +29,7 @@ func update_transform(peer_id: int, pos: Vector2, body_rot: float, turret_rot: f
 		var sender_id = multiplayer.get_remote_sender_id()
 		if sender_id != peer_id:
 			return  # reject anyone trying to move someone else's tank
+		tank_moved.emit(peer_id, pos, body_rot, turret_rot)
 		for p in multiplayer.get_peers():
 			if p != sender_id:
 				update_transform.rpc_id(p, peer_id, pos, body_rot, turret_rot)

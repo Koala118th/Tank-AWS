@@ -37,8 +37,8 @@ func start_server():
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 	
-	get_tree().call_deferred("change_scene_to_file", "res://Scenes/game.tscn")
 	mapManager.start_maze()
+	get_tree().call_deferred("change_scene_to_file", "res://Scenes/game.tscn")
 
 
 func _on_peer_connected(id: int):

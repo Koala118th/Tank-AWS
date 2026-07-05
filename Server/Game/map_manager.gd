@@ -18,7 +18,7 @@ func request_maze():
 		receive_maze.rpc_id(sender_id, current_maze)
 
 
-@rpc("authority", "call_remote", "reliable")
+@rpc("authority", "call_local", "reliable")
 func receive_maze(grid: Array):
 	emit_signal("maze_received", grid)
 

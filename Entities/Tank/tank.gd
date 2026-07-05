@@ -2,14 +2,26 @@ extends CharacterBody2D
 class_name Tank
 
 const MAX_HEALTH: int = 100
-var bullet_scene: PackedScene =preload("res://Objects/projectile/bullet/bullet.tscn")
-var sniper_scene: PackedScene =preload("res://Objects/projectile/sniper/sniper.tscn")
-var chaser_scene: PackedScene =preload("res://Objects/projectile/chaser/chaser.tscn")
-var small_scene: PackedScene =preload("res://Objects/projectile/small/small.tscn")
-var laser_scene: PackedScene = preload("res://Objects/projectile/laser/laser.tscn")
+
+enum AmmoType {
+	BULLET,
+	SNIPER,
+	CHASER,
+	SMALL,
+	LASER
+}
+
+var ammo_scenes := {
+	AmmoType.BULLET : preload("res://Objects/projectile/bullet/bullet.tscn"),
+	AmmoType.SNIPER : preload("res://Objects/projectile/sniper/sniper.tscn"),
+	AmmoType.CHASER : preload("res://Objects/projectile/chaser/chaser.tscn"),
+	AmmoType.SMALL : preload("res://Objects/projectile/small/small.tscn"),
+	AmmoType.LASER : preload("res://Objects/projectile/laser/laser.tscn"),
+}
+
 var explosion_scene: PackedScene =preload("res://Entities/Explosion/explosion.tscn")
 
-@export var current_ammo: PackedScene = bullet_scene
+@export var current_ammo = AmmoType.BULLET
 @export var pause_menu: CanvasLayer
 
 @export var speed: float = 150.0
@@ -119,7 +131,7 @@ func shoot_request():
 		return
 	
 	var mouse_pos = get_global_mouse_position()
-	GameServer.projectileManager.request_shoot.rpc_id(1, mouse_pos) # 1 = server
+	GameServer.projectileManager.request_shoot.rpc_id(1, mouse_pos, current_ammo) # 1 = server
 
 
 #func shoot(projectile_scene: PackedScene):
@@ -140,11 +152,11 @@ func shoot_request():
 	#fire_timer.start(projectile.fire_cooldown)
 
 
-func server_shoot(mouse_pos: Vector2, ammo: PackedScene):
+func server_shoot(mouse_pos: Vector2, ammo_type: int):
 	if not fire_timer.is_stopped():
 		return
 	
-	var projectile = ammo.instantiate()
+	var projectile = ammo_scenes[ammo_type].instantiate()
 	projectile.shooter_id = multiplayer.get_unique_id()
 
 	var bullet_dir = (mouse_pos - global_position).normalized()
@@ -152,12 +164,17 @@ func server_shoot(mouse_pos: Vector2, ammo: PackedScene):
 	projectile.set_direction(mouse_pos)
 
 	get_parent().add_child(projectile)
+	
+	var bullet_id = randi()
+	projectile.projectile_id = bullet_id
 
 	# tell all clients to spawn it visually
 	GameServer.projectileManager.spawn_projectile.rpc(
+		bullet_id,
 		projectile.global_position,
 		projectile.rotation,
-		bullet_dir
+		bullet_dir,
+		ammo_type
 	)
 
 	fire_timer.start(projectile.fire_cooldown)

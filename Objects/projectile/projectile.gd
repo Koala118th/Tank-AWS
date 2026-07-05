@@ -2,14 +2,12 @@ extends CharacterBody2D
 class_name Projectile
 
 
-@onready var _enemy_detection_area: Area2D = $EnemyDetectionArea
-@onready var _delete_timer: Timer = $DeleteTimer
-
-
 @export var speed: float
 @export var damage: float
 @export var fire_cooldown: float
 var shooter
+var shooter_id: int
+var projectile_id
 
 
 func set_direction(dir: Vector2):
@@ -25,13 +23,16 @@ func _ready():
 
 
 func _physics_process(delta):
-	var collision = move_and_collide(velocity * delta)
+	if multiplayer.is_server():
+		var collision = move_and_collide(velocity * delta)
 
-	if collision:
-		# Reflect velocity
-		velocity = velocity.bounce(collision.get_normal())
-		rotation = velocity.angle()
-		rotation += deg_to_rad(90)
+		if collision:
+			# Reflect velocity
+			velocity = velocity.bounce(collision.get_normal())
+			rotation = velocity.angle()
+			rotation += deg_to_rad(90)
+		
+		GameServer.projectileManager.sync_transform.rpc(projectile_id, global_position, rotation, velocity)
 
 
 func _on_enemy_detection_area_body_entered(body: Node2D) -> void:
