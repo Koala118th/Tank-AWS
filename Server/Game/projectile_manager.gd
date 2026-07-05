@@ -22,7 +22,7 @@ var projectiles := {}
 
 
 @rpc("any_peer", "call_remote", "reliable")
-func request_shoot(mouse_pos: Vector2, ammo_type: int):
+func request_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int):
 	if not multiplayer.is_server():
 		return
 	
@@ -32,7 +32,7 @@ func request_shoot(mouse_pos: Vector2, ammo_type: int):
 	if tank == null:
 		return
 	
-	tank.server_shoot(mouse_pos, ammo_type)
+	tank.server_shoot(shooter_id, mouse_pos, ammo_type)
 
 
 @rpc("authority", "call_remote", "reliable")

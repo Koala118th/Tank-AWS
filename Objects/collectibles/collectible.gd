@@ -1,7 +1,7 @@
 extends Node2D
 class_name Collectible
 
-var bullet_scene: PackedScene = null
+var bullet_scene
 
 func _ready() -> void:
 	pass

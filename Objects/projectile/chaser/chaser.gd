@@ -22,7 +22,7 @@ func get_closest_tank():
 	var closest_dist = INF
 	
 	for tank in tanks:
-		if tank == shooter:
+		if tank.owner_id == shooter_id:
 			continue
 		
 		var dist = global_position.distance_squared_to(tank.global_position)
@@ -35,24 +35,27 @@ func get_closest_tank():
 
 
 func _physics_process(delta):
-	if !is_instance_valid(target):
-		target = get_closest_tank()
-	
-	if target:
-		agent.target_position = target.global_position
+	if multiplayer.is_server():
+		if !is_instance_valid(target):
+			target = get_closest_tank()
 		
-		if !agent.is_navigation_finished():
+		if target:
+			agent.target_position = target.global_position
+			
+			if !agent.is_navigation_finished():
 
-			var next_point = agent.get_next_path_position()
-			var desired_dir = (next_point - global_position).normalized()
+				var next_point = agent.get_next_path_position()
+				var desired_dir = (next_point - global_position).normalized()
 
-			# If velocity is zero, initialize it
-			if velocity.length() == 0:
-				velocity = desired_dir * speed
-			else:
-				var current_dir = velocity.normalized()
-				var new_dir = current_dir.lerp(desired_dir, turn_speed * delta).normalized()
-				velocity = new_dir * speed
-	
-	move_and_collide(velocity * delta)
-	rotation = velocity.angle() + deg_to_rad(90)
+				# If velocity is zero, initialize it
+				if velocity.length() == 0:
+					velocity = desired_dir * speed
+				else:
+					var current_dir = velocity.normalized()
+					var new_dir = current_dir.lerp(desired_dir, turn_speed * delta).normalized()
+					velocity = new_dir * speed
+		
+		move_and_collide(velocity * delta)
+		rotation = velocity.angle() + deg_to_rad(90)
+		
+		GameServer.projectileManager.sync_transform.rpc(projectile_id, global_position, rotation, velocity)

@@ -21,7 +21,7 @@ var ammo_scenes := {
 
 var explosion_scene: PackedScene =preload("res://Entities/Explosion/explosion.tscn")
 
-@export var current_ammo = AmmoType.BULLET
+@export var current_ammo = AmmoType.LASER
 @export var pause_menu: CanvasLayer
 
 @export var speed: float = 150.0
@@ -133,7 +133,7 @@ func shoot_request():
 		return
 	
 	var mouse_pos = get_global_mouse_position()
-	GameServer.projectileManager.request_shoot.rpc_id(1, mouse_pos, current_ammo) # 1 = server
+	GameServer.projectileManager.request_shoot.rpc_id(1, multiplayer.get_unique_id(), mouse_pos, current_ammo) # 1 = server
 
 
 #func shoot(projectile_scene: PackedScene):
@@ -154,12 +154,12 @@ func shoot_request():
 	#fire_timer.start(projectile.fire_cooldown)
 
 
-func server_shoot(mouse_pos: Vector2, ammo_type: int):
+func server_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int):
 	if not fire_timer.is_stopped():
 		return
 	
 	var projectile = ammo_scenes[ammo_type].instantiate()
-	projectile.shooter_id = multiplayer.get_unique_id()
+	projectile.shooter_id = shooter_id
 
 	var bullet_dir = (mouse_pos - global_position).normalized()
 	projectile.global_position = global_position + bullet_dir * 25
