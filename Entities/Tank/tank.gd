@@ -49,6 +49,8 @@ var _health: float = 100
 
 var owner_id
 
+var next_bullet_id = 0
+
 
 func _process(delta):
 	health_bar.value = lerp(health_bar.value, _health, 10 * delta)
@@ -165,7 +167,9 @@ func server_shoot(mouse_pos: Vector2, ammo_type: int):
 
 	get_parent().add_child(projectile)
 	
-	var bullet_id = randi()
+	# generate unique incremental ID
+	next_bullet_id += 1
+	var bullet_id = str(multiplayer.get_unique_id()) + "_" + str(next_bullet_id)
 	projectile.projectile_id = bullet_id
 
 	# tell all clients to spawn it visually

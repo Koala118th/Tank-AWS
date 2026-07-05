@@ -20,8 +20,6 @@ var current_ammo = AmmoType.BULLET
 
 var projectiles := {}
 
-signal ammo_moved(pos: Vector2, rot: float, vel: Vector2)
-
 
 @rpc("any_peer", "call_remote", "reliable")
 func request_shoot(mouse_pos: Vector2, ammo_type: int):
