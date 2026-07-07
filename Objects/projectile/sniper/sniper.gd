@@ -18,6 +18,7 @@ func _physics_process(delta):
 				print(wall_hits)
 			
 			if wall_hits > max_skips:
+				GameServer.projectileManager.sync_delete.rpc(projectile_id)
 				queue_free()
 				return
 			

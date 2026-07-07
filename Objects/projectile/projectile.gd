@@ -42,4 +42,7 @@ func _on_enemy_detection_area_body_entered(body: Node2D) -> void:
 
 
 func _on_delete_timer_timeout() -> void:
+	if not multiplayer.is_server():
+		return
+	GameServer.projectileManager.sync_delete.rpc(projectile_id)
 	queue_free()

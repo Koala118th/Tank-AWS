@@ -64,3 +64,35 @@ func sync_transform(id, pos: Vector2, rot: float, vel: Vector2):
 	p.global_position = pos
 	p.rotation = rot
 	p.velocity = vel
+
+
+@rpc("authority", "call_remote", "unreliable")
+func sync_laser(id, points: PackedVector2Array):
+	if multiplayer.is_server():
+		return
+
+	if not projectiles.has(id):
+		return
+
+	var p = projectiles[id]
+
+	if not is_instance_valid(p):
+		projectiles.erase(id)
+		return
+
+	if p.has_method("apply_laser_points"):
+		p.apply_laser_points(points)
+
+
+@rpc("authority", "call_remote", "reliable")
+func sync_delete(id):
+	if multiplayer.is_server():
+		return
+
+	if not projectiles.has(id):
+		return
+
+	var p = projectiles[id]
+	if is_instance_valid(p):
+		p.queue_free()
+	projectiles.erase(id)
