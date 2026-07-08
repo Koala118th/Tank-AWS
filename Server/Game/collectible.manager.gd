@@ -5,8 +5,7 @@ var maze_generator: Node2D = null
 enum CrateType { SNIPER, SMALL, LASER, CHASER }
 
 const MAX_COLLECTIBLES: int = 3
-const SPAWN_INTERVAL: float = 5.0
-const MIN_DISTANCE: float = 64.0
+const SPAWN_INTERVAL: float = 10.0
 
 # Server-side state
 var _spawn_timer: Timer
@@ -23,7 +22,7 @@ func start_timer() -> void:
 	if not multiplayer.is_server():
 		return
 	if _spawn_timer != null:
-		return  # already started, don't double-start
+		return
 	_spawn_timer = Timer.new()
 	_spawn_timer.wait_time = SPAWN_INTERVAL
 	_spawn_timer.autostart = false
@@ -44,23 +43,28 @@ func _do_spawn() -> void:
 	if floor_positions.is_empty():
 		return
 
-	var valid: Array = floor_positions.filter(func(pos):
+	var valid_positions: Array = floor_positions.filter(func(pos):
 		for data in _active_crates.values():
-			if (data["position"] as Vector2).distance_to(pos) < MIN_DISTANCE:
+			if (data["position"] as Vector2).distance_to(pos) < 64.0:
+				return false
+	
+		var tanks := get_tree().get_nodes_in_group("tank")
+		for tank in tanks:
+			if tank.global_position.distance_to(pos) < 150.0:
 				return false
 		return true
 	)
-	if valid.is_empty():
+	if valid_positions.is_empty():
+		print("[CollectibleManager] No valid positions far enough from tanks, skipping spawn")
 		return
 
-	valid.shuffle()
-	var chosen_pos: Vector2 = valid[0]
-	var chosen_type: int = randi() % CrateType.size()
+	valid_positions.shuffle()
+	var chosen_pos: Vector2 = valid_positions[0]
+	var chosen_type: int = randi() % 4
 	var crate_id: int = _next_id
 	_next_id += 1
 
 	_active_crates[crate_id] = { "type": chosen_type, "position": chosen_pos }
-
 	receive_crate_spawned.rpc(crate_id, chosen_type, chosen_pos)
 
 @rpc("any_peer", "call_remote", "reliable")
