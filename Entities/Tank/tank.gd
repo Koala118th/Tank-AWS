@@ -21,7 +21,7 @@ var ammo_scenes := {
 
 var explosion_scene: PackedScene =preload("res://Entities/Explosion/explosion.tscn")
 
-@export var current_ammo = AmmoType.LASER
+@export var current_ammo = AmmoType.BULLET
 @export var pause_menu: CanvasLayer
 
 @export var speed: float = 150.0
@@ -31,13 +31,20 @@ var explosion_scene: PackedScene =preload("res://Entities/Explosion/explosion.ts
 	get:
 		return _health
 	set(value):
-		var new_health :float = clamp(value, 0, MAX_HEALTH)
+		var new_health: float = clamp(value, 0, MAX_HEALTH)
+
+		# Only the server is allowed to change health
+		if not multiplayer.is_server():
+			return
 
 		if _health > 0 and new_health == 0:
 			die()
 
 		_health = new_health
-		
+
+		# Broadcast to all clients
+		GameServer.tankManager.sync_health.rpc(owner_id, _health)
+
 var _health: float = 100
 
 @onready var body: Node2D = $Body

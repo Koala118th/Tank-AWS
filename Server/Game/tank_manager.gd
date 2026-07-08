@@ -37,6 +37,23 @@ func update_transform(peer_id: int, pos: Vector2, body_rot: float, turret_rot: f
 		tank_moved.emit(peer_id, pos, body_rot, turret_rot)
 
 
+@rpc("authority", "call_remote", "reliable")
+func sync_health(id: int, new_health: float):
+	if multiplayer.is_server():
+		return
+	
+	var tank = find_tank_by_owner(id)
+	if not tank:
+		return
+
+	var was_alive = tank._health > 0
+	
+	tank._health = new_health
+
+	# Trigger death on client
+	if was_alive and new_health == 0:
+		tank.die()
+
 
 func find_tank_by_owner(peer_id: int) -> Node:
 	for tank in get_tree().get_nodes_in_group("tank"):

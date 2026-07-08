@@ -36,8 +36,11 @@ func _physics_process(delta):
 
 
 func _on_enemy_detection_area_body_entered(body: Node2D) -> void:
+	if not multiplayer.is_server():
+		return
 	if body.has_method("get_hit"):
 		body.get_hit(damage)
+		GameServer.projectileManager.sync_delete.rpc(projectile_id)
 		queue_free()
 
 
