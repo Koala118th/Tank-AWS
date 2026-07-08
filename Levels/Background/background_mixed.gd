@@ -28,8 +28,6 @@ func generate():
 	var half_w: int = int(1000 / tile_size.x)
 	var half_h: int = int(500 / tile_size.y)
 
-	print("Background3: generating mixed grass/sand background")
-
 	for x in range(-half_w, half_w):
 		for y in range(-half_h, half_h):
 			var pos = Vector2i(x, y)

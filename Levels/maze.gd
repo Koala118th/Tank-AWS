@@ -20,7 +20,6 @@ func _ready():
 	else:
 		if GameServer.mapManager.current_maze.size() > 0:
 			_apply_maze(GameServer.mapManager.current_maze)
-			_apply_background(GameServer.mapManager.current_bg_index)
 
 	if tilemap == null:
 		push_error("Maze Generator: 'tilemap' export is not assigned!")
@@ -36,6 +35,7 @@ func _ready():
 	
 	if multiplayer.is_server():
 		GameServer.mapManager.bg_count = background_scenes.size()
+		GameServer.mapManager.pick_background()
 
 	nav_reg.bake_navigation_polygon()
 
