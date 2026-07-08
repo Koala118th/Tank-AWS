@@ -2,14 +2,26 @@ extends CharacterBody2D
 class_name Tank
 
 const MAX_HEALTH: int = 100
-var bullet_scene: PackedScene =preload("res://Objects/projectile/bullet/bullet.tscn")
-var sniper_scene: PackedScene =preload("res://Objects/projectile/sniper/sniper.tscn")
-var chaser_scene: PackedScene =preload("res://Objects/projectile/chaser/chaser.tscn")
-var small_scene: PackedScene =preload("res://Objects/projectile/small/small.tscn")
-var laser_scene: PackedScene = preload("res://Objects/projectile/laser/laser.tscn")
+
+enum AmmoType {
+	BULLET,
+	SNIPER,
+	CHASER,
+	SMALL,
+	LASER
+}
+
+var ammo_scenes := {
+	AmmoType.BULLET : preload("res://Objects/projectile/bullet/bullet.tscn"),
+	AmmoType.SNIPER : preload("res://Objects/projectile/sniper/sniper.tscn"),
+	AmmoType.CHASER : preload("res://Objects/projectile/chaser/chaser.tscn"),
+	AmmoType.SMALL : preload("res://Objects/projectile/small/small.tscn"),
+	AmmoType.LASER : preload("res://Objects/projectile/laser/laser.tscn"),
+}
+
 var explosion_scene: PackedScene =preload("res://Entities/Explosion/explosion.tscn")
 
-@export var current_ammo: PackedScene = bullet_scene
+@export var current_ammo = AmmoType.LASER
 @export var pause_menu: CanvasLayer
 
 @export var speed: float = 150.0
@@ -34,6 +46,10 @@ var _health: float = 100
 @onready var fire_timer: Timer = $FireTimer
 @onready var aim_ray: RayCast2D = $AimRay
 @onready var aim_line: Line2D = $AimLine
+
+var owner_id
+
+var next_bullet_id = 0
 
 
 func _process(delta):
@@ -78,7 +94,7 @@ func _physics_process(delta: float):
 	velocity = Vector2.UP.rotated(body.rotation) * forward * speed
 	
 	if Input.is_action_pressed("shoot") == true:
-		shoot(current_ammo)
+		shoot_request()
 	
 	#if current_ammo == laser_scene:
 	aim()
@@ -112,21 +128,59 @@ func aim():
 		aim_line.add_point(aim_line.to_local(p))
 
 
-func shoot(projectile_scene: PackedScene):
+func shoot_request():
 	if not fire_timer.is_stopped():
 		return
-	var projectile = projectile_scene.instantiate()
-	projectile.shooter = self
+	
 	var mouse_pos = get_global_mouse_position()
+	GameServer.projectileManager.request_shoot.rpc_id(1, multiplayer.get_unique_id(), mouse_pos, current_ammo) # 1 = server
+
+
+#func shoot(projectile_scene: PackedScene):
+	#if not fire_timer.is_stopped():
+		#return
+	#var projectile = projectile_scene.instantiate()
+	#projectile.shooter = self
+	#var mouse_pos = get_global_mouse_position()
+	#var bullet_dir = (mouse_pos - global_position).normalized()
+#
+	#projectile.global_position = global_position + bullet_dir * 25
+#
+	#var dir = mouse_pos
+	#projectile.set_direction(dir)
+#
+	#get_parent().add_child(projectile)
+	#
+	#fire_timer.start(projectile.fire_cooldown)
+
+
+func server_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int):
+	if not fire_timer.is_stopped():
+		return
+	
+	var projectile = ammo_scenes[ammo_type].instantiate()
+	projectile.shooter_id = shooter_id
+
 	var bullet_dir = (mouse_pos - global_position).normalized()
-
 	projectile.global_position = global_position + bullet_dir * 25
-
-	var dir = mouse_pos
-	projectile.set_direction(dir)
+	projectile.set_direction(mouse_pos)
 
 	get_parent().add_child(projectile)
 	
+	# generate unique incremental ID
+	next_bullet_id += 1
+	var bullet_id = str(multiplayer.get_unique_id()) + "_" + str(next_bullet_id)
+	projectile.projectile_id = bullet_id
+
+	# tell all clients to spawn it visually
+	GameServer.projectileManager.spawn_projectile.rpc(
+		bullet_id,
+		projectile.global_position,
+		projectile.rotation,
+		bullet_dir,
+		ammo_type
+	)
+
 	fire_timer.start(projectile.fire_cooldown)
 
 

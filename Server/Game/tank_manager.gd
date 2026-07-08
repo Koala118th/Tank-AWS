@@ -2,6 +2,7 @@ extends Node
 
 signal tank_spawned(peer_id: int, assigned_slot)
 signal tank_moved(peer_id: int, pos: Vector2, body_rot: float, turret_rot: float)
+var tanks := {}
 
 # Called by a client once its (post-reload) TankSpawner is ready. The server
 # replies with deliver_spawns, targeted only at that peer, so the client
@@ -28,8 +29,17 @@ func update_transform(peer_id: int, pos: Vector2, body_rot: float, turret_rot: f
 		var sender_id = multiplayer.get_remote_sender_id()
 		if sender_id != peer_id:
 			return  # reject anyone trying to move someone else's tank
+		tank_moved.emit(peer_id, pos, body_rot, turret_rot)
 		for p in multiplayer.get_peers():
 			if p != sender_id:
 				update_transform.rpc_id(p, peer_id, pos, body_rot, turret_rot)
 	else:
 		tank_moved.emit(peer_id, pos, body_rot, turret_rot)
+
+
+
+func find_tank_by_owner(peer_id: int) -> Node:
+	for tank in get_tree().get_nodes_in_group("tank"):
+		if tank.owner_id == peer_id:
+			return tank
+	return null
