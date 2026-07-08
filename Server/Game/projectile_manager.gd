@@ -8,6 +8,14 @@ enum AmmoType {
 	LASER
 }
 
+var ammo_cooldown:= {
+	AmmoType.BULLET: 0.5,
+	AmmoType.SNIPER: 2.0,
+	AmmoType.CHASER: 1.0,
+	AmmoType.SMALL: 0.1,
+	AmmoType.LASER: 1.0
+}
+
 var ammo_scenes := {
 	AmmoType.BULLET : preload("res://Objects/projectile/bullet/bullet.tscn"),
 	AmmoType.SNIPER : preload("res://Objects/projectile/sniper/sniper.tscn"),

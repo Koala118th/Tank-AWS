@@ -53,6 +53,8 @@ var _health: float = 100
 @onready var fire_timer: Timer = $FireTimer
 @onready var aim_ray: RayCast2D = $AimRay
 @onready var aim_line: Line2D = $AimLine
+@onready var muzzle_flash: Sprite2D = $Turret/MuzzleFlash
+@onready var muzzle_timer: Timer = $Turret/MuzzleTimer
 
 var owner_id
 
@@ -139,8 +141,12 @@ func shoot_request():
 	if not fire_timer.is_stopped():
 		return
 	
+	muzzle_flash.visible = true
+	muzzle_timer.start()
+	
 	var mouse_pos = get_global_mouse_position()
-	GameServer.projectileManager.request_shoot.rpc_id(1, multiplayer.get_unique_id(), mouse_pos, current_ammo) # 1 = server
+	GameServer.projectileManager.request_shoot.rpc_id(1, multiplayer.get_unique_id(), mouse_pos, current_ammo)
+	fire_timer.start(ammo_scenes[current_ammo].fire_cooldown)
 
 
 #func shoot(projectile_scene: PackedScene):
@@ -211,3 +217,7 @@ func _on_tank_moved(peer_id: int, pos: Vector2, body_rot: float, turret_rot: flo
 	position = pos
 	body.rotation = body_rot
 	turret.rotation = turret_rot
+
+
+func _on_muzzle_timer_timeout() -> void:
+	muzzle_flash.visible = false
