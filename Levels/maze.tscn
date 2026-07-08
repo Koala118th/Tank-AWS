@@ -49,6 +49,7 @@ tile_set = SubResource("TileSet_tt4vx")
 collision_visibility_mode = 2
 
 [node name="CollectibleSpawner" parent="." unique_id=124313281 node_paths=PackedStringArray("maze_generator") instance=ExtResource("7_fts4d")]
+chaser_crate_scene = null
 maze_generator = NodePath("..")
 
 [node name="GameOverMenu" parent="." unique_id=1132579724 instance=ExtResource("12_dokf5")]
