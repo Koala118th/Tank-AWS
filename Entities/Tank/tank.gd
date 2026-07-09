@@ -222,6 +222,16 @@ func flash_red():
 	flash_tween.tween_property(body, "modulate", Color(1, 1, 1), 0.15)
 
 
+func flash_grey():
+	if flash_tween:
+		flash_tween.kill()
+	
+	body.modulate = Color(0.5, 0.5, 0.5) # grey
+	
+	flash_tween = create_tween()
+	flash_tween.tween_property(body, "modulate", Color(1, 1, 1), 0.15)
+
+
 func _on_tank_moved(peer_id: int, pos: Vector2, body_rot: float, turret_rot: float):
 	if peer_id != get_multiplayer_authority():
 		return

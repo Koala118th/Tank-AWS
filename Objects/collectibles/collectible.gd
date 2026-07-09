@@ -19,6 +19,7 @@ func _on_body_entered(body: Node2D) -> void:
 		return
 
 	body.current_ammo = bullet_scene
+	body.flash_grey()
 
 	if crate_id != -1:
 		GameServer.collectibleManager.notify_crate_picked_up_rpc.rpc_id(1, crate_id)
