@@ -141,12 +141,12 @@ func shoot_request():
 	if not fire_timer.is_stopped():
 		return
 	
+	fire_timer.start(GameServer.projectileManager.ammo_cooldown[current_ammo])
 	muzzle_flash.visible = true
 	muzzle_timer.start()
 	
 	var mouse_pos = get_global_mouse_position()
 	GameServer.projectileManager.request_shoot.rpc_id(1, multiplayer.get_unique_id(), mouse_pos, current_ammo)
-	fire_timer.start(ammo_scenes[current_ammo].fire_cooldown)
 
 
 #func shoot(projectile_scene: PackedScene):
