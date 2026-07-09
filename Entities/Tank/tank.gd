@@ -211,6 +211,17 @@ func die():
 	queue_free()
 
 
+var flash_tween: Tween
+func flash_red():
+	if flash_tween:
+		flash_tween.kill()
+	
+	body.modulate = Color(2, 0.2, 0.2)
+	
+	flash_tween = create_tween()
+	flash_tween.tween_property(body, "modulate", Color(1, 1, 1), 0.15)
+
+
 func _on_tank_moved(peer_id: int, pos: Vector2, body_rot: float, turret_rot: float):
 	if peer_id != get_multiplayer_authority():
 		return

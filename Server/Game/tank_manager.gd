@@ -49,6 +49,7 @@ func sync_health(id: int, new_health: float):
 	var was_alive = tank._health > 0
 	
 	tank._health = new_health
+	tank.flash_red()
 
 	# Trigger death on client
 	if was_alive and new_health == 0:
