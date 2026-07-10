@@ -8,7 +8,7 @@ extends Node2D
 var tile_coords: Vector2i = Vector2i(0, 0)
 
 func _ready():
-
+	add_to_group("background")
 	if tilemap == null:
 		push_error("TileMapLayer is NULL!")
 		return

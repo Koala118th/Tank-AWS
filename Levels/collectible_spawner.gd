@@ -39,3 +39,9 @@ func remove_crate(crate_id: int) -> void:
 	if _crates.has(crate_id):
 		_crates[crate_id].queue_free()
 		_crates.erase(crate_id)
+
+func clear_all() -> void:
+	for crate_id in _crates.keys():
+		if _crates[crate_id] != null:
+			_crates[crate_id].queue_free()
+	_crates.clear()

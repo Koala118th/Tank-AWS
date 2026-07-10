@@ -2,7 +2,6 @@ extends CanvasLayer
 
 @export var tank_spawner: Node2D
 
-# placeholder data — replace with real multiplayer data later
 var placeholder_scores = [
 	{"name": "VK_Tiger88", "wins": 5, "kills": 12, "is_you": true},
 	{"name": "SteelWolf",  "wins": 3, "kills": 9,  "is_you": false},
@@ -14,14 +13,15 @@ var countdown_time := 8
 var countdown_timer: Timer
 var score_row_scene = preload("res://Interfaces/Game Over/score_row.tscn")
 
-@onready var winner_badge   = $Control/VBoxContainer/WinnerBadge
+@onready var winner_badge    = $Control/VBoxContainer/WinnerBadge
 @onready var score_container = $Control/VBoxContainer/ScoreContainer
-@onready var status_label   = $Control/VBoxContainer/NextStatus/StatusLabel
+@onready var status_label    = $Control/VBoxContainer/NextStatus/StatusLabel
 @onready var countdown_label = $Control/VBoxContainer/NextStatus/CountdownLabel
-@onready var match_counter  = $Control/MatchCounter
-@onready var quit_button    = $Control/VBoxContainer/QuitButton
+@onready var match_counter   = $Control/MatchCounter
+@onready var quit_button     = $Control/VBoxContainer/QuitButton
 
 func _ready():
+	add_to_group("game_over_screen")
 	hide()
 	quit_button.pressed.connect(_on_quit_pressed)
 	_setup_countdown_timer()
@@ -37,11 +37,11 @@ func show_screen(scores: Array, match_number: int):
 func _populate_scores(scores: Array):
 	for child in score_container.get_children():
 		child.queue_free()
-
 	for i in scores.size():
 		var row = score_row_scene.instantiate()
 		score_container.add_child(row)
-		row.setup(i + 1, scores[i]["name"], scores[i]["wins"], scores[i]["kills"], scores[i]["is_you"])
+		row.setup(i + 1, scores[i]["name"], scores[i]["wins"],
+			scores[i]["kills"], scores[i]["is_you"])
 
 func _setup_countdown_timer():
 	countdown_timer = Timer.new()
@@ -58,22 +58,12 @@ func _start_countdown():
 func _on_countdown_tick():
 	countdown_time -= 1
 	countdown_label.text = str(countdown_time).pad_zeros(2)
-	
 	if countdown_time <= 3:
 		status_label.text = "Starting match..."
-	
 	if countdown_time <= 0:
 		countdown_timer.stop()
-		_load_next_match()
-
-func _load_next_match():
-	hide()
-	if tank_spawner != null:
-		tank_spawner.start_next_match()
-	else:
-		get_tree().reload_current_scene()
+		hide()
 
 func _on_quit_pressed():
 	countdown_timer.stop()
-	# TODO: replace with NetworkManager.go_to_menu() when multiplayer is ready
 	get_tree().change_scene_to_file("res://Interfaces/Main Menu/main_menu.tscn")

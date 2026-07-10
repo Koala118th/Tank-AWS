@@ -67,6 +67,23 @@ func _do_spawn() -> void:
 	_active_crates[crate_id] = { "type": chosen_type, "position": chosen_pos }
 	receive_crate_spawned.rpc(crate_id, chosen_type, chosen_pos)
 
+func reset() -> void:
+	if not multiplayer.is_server():
+		return
+
+	if _spawn_timer != null:
+		_spawn_timer.stop()
+		_spawn_timer.queue_free()
+		_spawn_timer = null
+	_active_crates.clear()
+	receive_clear_all.rpc()
+
+@rpc("authority", "call_local", "reliable")
+func receive_clear_all() -> void:
+	if _collectible_spawner == null:
+		return
+	_collectible_spawner.clear_all()
+
 @rpc("any_peer", "call_remote", "reliable")
 func notify_crate_picked_up_rpc(crate_id: int) -> void:
 	if not multiplayer.is_server():

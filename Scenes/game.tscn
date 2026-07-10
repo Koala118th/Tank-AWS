@@ -2,6 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://be8spxxqvxqt" path="res://Levels/maze.tscn" id="1_ebmjs"]
 [ext_resource type="Script" uid="uid://bc5atsld61ag6" path="res://Scenes/Game/game.gd" id="1_qxrlw"]
+[ext_resource type="PackedScene" uid="uid://c6hgc7qb4ux7e" path="res://Interfaces/MatchUI/match_ui.tscn" id="3_wrm1d"]
 
 [node name="Game" type="Node2D" unique_id=1209050767]
 script = ExtResource("1_qxrlw")
@@ -9,3 +10,5 @@ script = ExtResource("1_qxrlw")
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1113496506]
 
 [node name="Maze" parent="." unique_id=1984496082 instance=ExtResource("1_ebmjs")]
+
+[node name="MatchUI" parent="." unique_id=740397080 instance=ExtResource("3_wrm1d")]

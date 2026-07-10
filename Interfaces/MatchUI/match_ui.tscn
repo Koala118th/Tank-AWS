@@ -1,0 +1,77 @@
+[gd_scene format=3 uid="uid://c6hgc7qb4ux7e"]
+
+[ext_resource type="Script" uid="uid://crvs0pibroy62" path="res://Interfaces/MatchUI/match_ui.gd" id="1_06msw"]
+
+[node name="MatchUI" type="CanvasLayer" unique_id=740397080]
+layer = 10
+script = ExtResource("1_06msw")
+
+[node name="WaitingScreen" type="ColorRect" parent="." unique_id=1136076789]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Label" type="Label" parent="WaitingScreen" unique_id=1022055089]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Wating for another player..."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="StartingScreen" type="ColorRect" parent="." unique_id=1485286025]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0, 0, 0, 1)
+
+[node name="Label" type="Label" parent="StartingScreen" unique_id=1912152926]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "Starting Match"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CountdownLabel" type="Label" parent="StartingScreen" unique_id=671070576]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -23.0
+grow_horizontal = 2
+grow_vertical = 0
+text = "5, 4, 3, 2, 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="SpectatorOverlay" type="ColorRect" parent="." unique_id=2120653571]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0, 0, 0, 0.53333336)
+
+[node name="Label" type="Label" parent="SpectatorOverlay" unique_id=1895169286]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -89.0
+offset_right = 89.0
+offset_bottom = 23.0
+grow_horizontal = 2
+text = "Waiting for next match"
