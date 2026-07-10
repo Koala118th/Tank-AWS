@@ -8,7 +8,7 @@ class_name Projectile
 var shooter
 var shooter_id: int
 var projectile_id
-
+var explosion_scene: PackedScene =preload("res://Entities/ExplosionSmall/explosion_small.tscn")
 
 func set_direction(dir: Vector2):
 	velocity = (dir - global_position).normalized() * speed
@@ -49,3 +49,11 @@ func _on_delete_timer_timeout() -> void:
 		return
 	GameServer.projectileManager.sync_delete.rpc(projectile_id)
 	queue_free()
+
+
+func explode():
+	set_physics_process(false)
+
+	var explosion = explosion_scene.instantiate()
+	explosion.global_position = global_position
+	get_parent().add_child(explosion)

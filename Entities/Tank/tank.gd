@@ -141,12 +141,15 @@ func shoot_request():
 	if not fire_timer.is_stopped():
 		return
 	
-	fire_timer.start(GameServer.projectileManager.ammo_cooldown[current_ammo])
-	muzzle_flash.visible = true
-	muzzle_timer.start()
-	
 	var mouse_pos = get_global_mouse_position()
 	GameServer.projectileManager.request_shoot.rpc_id(1, multiplayer.get_unique_id(), mouse_pos, current_ammo)
+
+
+func trigger_muzzle_flash(flash: bool = true):
+	fire_timer.start(GameServer.projectileManager.ammo_cooldown[current_ammo]) # Spam blocker
+	if not current_ammo == GameServer.projectileManager.AmmoType.LASER:
+		muzzle_flash.visible = true
+		muzzle_timer.start()
 
 
 #func shoot(projectile_scene: PackedScene):
@@ -191,7 +194,8 @@ func server_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int):
 		projectile.global_position,
 		projectile.rotation,
 		bullet_dir,
-		ammo_type
+		ammo_type,
+		shooter_id
 	)
 
 	fire_timer.start(projectile.fire_cooldown)

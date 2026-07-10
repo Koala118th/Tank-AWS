@@ -44,7 +44,7 @@ func request_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int):
 
 
 @rpc("authority", "call_remote", "reliable")
-func spawn_projectile(id, pos: Vector2, rot: float, dir: Vector2, ammo_type: int):
+func spawn_projectile(id, pos: Vector2, rot: float, dir: Vector2, ammo_type: int, shooter_id: int):
 	var projectile = ammo_scenes[ammo_type].instantiate()
 	projectile.global_position = pos
 	projectile.rotation = rot
@@ -53,6 +53,10 @@ func spawn_projectile(id, pos: Vector2, rot: float, dir: Vector2, ammo_type: int
 	projectiles[id] = projectile
 	
 	get_parent().add_child(projectile)
+	
+	if shooter_id == multiplayer.get_unique_id():
+		var tank = GameServer.tankManager.find_tank_by_owner(shooter_id)
+		tank.trigger_muzzle_flash()
 
 
 @rpc("authority", "call_remote", "unreliable")
@@ -102,5 +106,7 @@ func sync_delete(id):
 
 	var p = projectiles[id]
 	if is_instance_valid(p):
+		if not p is LaserProjectile:
+			p.explode()
 		p.queue_free()
 	projectiles.erase(id)
