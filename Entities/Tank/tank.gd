@@ -21,6 +21,25 @@ var ammo_scenes := {
 
 var explosion_scene: PackedScene =preload("res://Entities/Explosion/explosion.tscn")
 
+var tank_textures := [
+	{
+		"body": preload("res://Assets/PNG/tankBody_green.png"),
+		"turret": preload("res://Assets/PNG/tankGreen_barrel1.png")
+	},
+	{
+		"body": preload("res://Assets/PNG/tankBody_blue.png"),
+		"turret": preload("res://Assets/PNG/tankBlue_barrel1.png")
+	},
+	{
+		"body": preload("res://Assets/PNG/tankBody_red.png"),
+		"turret": preload("res://Assets/PNG/tankRed_barrel1.png")
+	},
+	{
+		"body": preload("res://Assets/PNG/tankBody_sand.png"),
+		"turret": preload("res://Assets/PNG/tankSand_barrel1.png")
+	}
+]
+
 @export var current_ammo = AmmoType.BULLET
 @export var pause_menu: CanvasLayer
 
@@ -49,6 +68,8 @@ var _health: float = 100
 
 @onready var body: Node2D = $Body
 @onready var turret: Node2D = $Turret
+@onready var body_sprite: Sprite2D = $Body/Sprite2D
+@onready var turret_sprite: Sprite2D = $Turret/Sprite2D
 @onready var health_bar: ProgressBar = $ProgressBar
 @onready var fire_timer: Timer = $FireTimer
 @onready var aim_ray: RayCast2D = $AimRay
@@ -57,6 +78,8 @@ var _health: float = 100
 @onready var muzzle_timer: Timer = $Turret/MuzzleTimer
 
 var owner_id
+
+var spawn_index
 
 var next_bullet_id = 0
 
@@ -105,8 +128,10 @@ func _physics_process(delta: float):
 	if Input.is_action_pressed("shoot") == true:
 		shoot_request()
 	
-	#if current_ammo == laser_scene:
-	aim()
+	if current_ammo == GameServer.projectileManager.AmmoType.LASER:
+		aim()
+	else:
+		aim_line.clear_points()
 
 	move_and_slide()
 	
@@ -234,6 +259,21 @@ func flash_grey():
 	
 	flash_tween = create_tween()
 	flash_tween.tween_property(body, "modulate", Color(1, 1, 1), 0.15)
+
+
+func set_visual_by_index(index: int):
+	if index < 0 or index >= tank_textures.size():
+		push_warning("Invalid tank index")
+		return
+	
+	var data = tank_textures[index]
+	body_sprite.texture = data["body"]
+	turret_sprite.texture = data["turret"]
+
+
+func setup_spawn_index(index: int):
+	spawn_index = index
+	set_visual_by_index(index)
 
 
 func _on_tank_moved(peer_id: int, pos: Vector2, body_rot: float, turret_rot: float):

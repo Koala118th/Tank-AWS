@@ -64,6 +64,8 @@ func spawn_tank(owner_peer_id: int, spawn_index: int):
 	tank.owner_id = owner_peer_id
 	tank.tree_exited.connect(_on_tank_died)
 	add_child(tank)
+	
+	tank.setup_spawn_index(spawn_index)
 
 	if multiplayer.is_server():
 		GameServer.collectibleManager.start_timer()
