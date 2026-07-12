@@ -60,8 +60,9 @@ one_shot = true
 [node name="AimRay" type="RayCast2D" parent="." unique_id=847220568]
 
 [node name="AimLine" type="Line2D" parent="." unique_id=475982724]
+z_index = -1
 width = 2.0
-default_color = Color(0.3647059, 0.3647059, 0.3647059, 1)
+default_color = Color(0.5211409, 0.5211405, 0.52114046, 1)
 
 [node name="ProgressBar" type="ProgressBar" parent="." unique_id=1505685711]
 anchors_preset = 15

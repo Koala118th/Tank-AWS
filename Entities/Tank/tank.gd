@@ -40,7 +40,7 @@ var tank_textures := [
 	}
 ]
 
-@export var current_ammo = AmmoType.BULLET
+@export var current_ammo = AmmoType.LASER
 @export var pause_menu: CanvasLayer
 
 @export var speed: float = 150.0
@@ -140,23 +140,41 @@ func _physics_process(delta: float):
 
 func aim():
 	var tank_pos = global_position
-	var current_dir = (get_global_mouse_position() - tank_pos).normalized()
+	var dir = (get_global_mouse_position() - tank_pos).normalized()
 	
-	var current_pos = tank_pos + current_dir * 25
-
+	var start_pos = tank_pos + dir * 25
+	
 	var points = []
-	points.append(current_pos)
+	points.append(start_pos)
 
-	aim_ray.global_position = current_pos
-	aim_ray.target_position = current_dir * 2000
+	# FIRST RAY
+	aim_ray.global_position = start_pos
+	aim_ray.target_position = dir * 2000
 	aim_ray.force_raycast_update()
 
 	if aim_ray.is_colliding():
-		var end_point = aim_ray.get_collision_point()
-		points.append(end_point)
-	else:
-		points.append(current_pos + current_dir * 2000)
+		var hit_point = aim_ray.get_collision_point()
+		var normal = aim_ray.get_collision_normal()
+		
+		points.append(hit_point)
 
+		# REFLECT DIRECTION
+		var bounce_dir = dir.bounce(normal).normalized()
+
+		# SECOND RAY (BOUNCE)
+		aim_ray.global_position = hit_point + bounce_dir * 1  # small offset to avoid self-hit
+		aim_ray.target_position = bounce_dir * 2000
+		aim_ray.force_raycast_update()
+
+		if aim_ray.is_colliding():
+			points.append(aim_ray.get_collision_point())
+		else:
+			points.append(hit_point + bounce_dir * 2000)
+
+	else:
+		points.append(start_pos + dir * 2000)
+
+	# DRAW
 	aim_line.clear_points()
 	for p in points:
 		aim_line.add_point(aim_line.to_local(p))

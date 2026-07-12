@@ -26,6 +26,6 @@ z_index = -1
 script = ExtResource("1_6iscw")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=2104367523]
-z_index = -1
+z_index = -5
 tile_set = SubResource("TileSet_knkok")
 navigation_enabled = false
