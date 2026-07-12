@@ -5,10 +5,14 @@ class_name Projectile
 @export var speed: float
 @export var damage: float
 @export var fire_cooldown: float
+@export var projectile_textures := []
+
 var shooter
 var shooter_id: int
 var projectile_id
 var explosion_scene: PackedScene =preload("res://Entities/ExplosionSmall/explosion_small.tscn")
+
+@onready var projectile_sprite: Sprite2D = $Sprite2D
 
 func set_direction(dir: Vector2):
 	velocity = (dir - global_position).normalized() * speed
@@ -57,3 +61,12 @@ func explode():
 	var explosion = explosion_scene.instantiate()
 	explosion.global_position = global_position
 	get_parent().add_child(explosion)
+
+
+func set_visual_by_index(index: int):
+	if index < 0 or index >= projectile_textures.size():
+		push_warning("Invalid index")
+		return
+	
+	var data = projectile_textures[index]
+	projectile_sprite.texture = data

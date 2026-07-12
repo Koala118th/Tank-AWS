@@ -30,7 +30,7 @@ var projectiles := {}
 
 
 @rpc("any_peer", "call_remote", "reliable")
-func request_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int):
+func request_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int, spawn_index: int):
 	if not multiplayer.is_server():
 		return
 	
@@ -40,11 +40,11 @@ func request_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int):
 	if tank == null:
 		return
 	
-	tank.server_shoot(shooter_id, mouse_pos, ammo_type)
+	tank.server_shoot(shooter_id, mouse_pos, ammo_type, spawn_index)
 
 
 @rpc("authority", "call_remote", "reliable")
-func spawn_projectile(id, pos: Vector2, rot: float, dir: Vector2, ammo_type: int, shooter_id: int):
+func spawn_projectile(id, pos: Vector2, rot: float, dir: Vector2, ammo_type: int, shooter_id: int, spawn_index: int):
 	var projectile = ammo_scenes[ammo_type].instantiate()
 	projectile.global_position = pos
 	projectile.rotation = rot
@@ -53,6 +53,7 @@ func spawn_projectile(id, pos: Vector2, rot: float, dir: Vector2, ammo_type: int
 	projectiles[id] = projectile
 	
 	get_parent().add_child(projectile)
+	projectile.set_visual_by_index(spawn_index)
 	
 	if shooter_id == multiplayer.get_unique_id():
 		var tank = GameServer.tankManager.find_tank_by_owner(shooter_id)

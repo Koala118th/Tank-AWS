@@ -5,7 +5,6 @@ class_name Sniper
 var wall_hits :float= 0
 var max_skips :float= 8
 
-
 func _physics_process(delta):
 	if multiplayer.is_server():
 		var motion = velocity * delta

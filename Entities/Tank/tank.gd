@@ -167,7 +167,7 @@ func shoot_request():
 		return
 	
 	var mouse_pos = get_global_mouse_position()
-	GameServer.projectileManager.request_shoot.rpc_id(1, multiplayer.get_unique_id(), mouse_pos, current_ammo)
+	GameServer.projectileManager.request_shoot.rpc_id(1, multiplayer.get_unique_id(), mouse_pos, current_ammo, spawn_index)
 
 
 func trigger_muzzle_flash(flash: bool = true):
@@ -195,7 +195,7 @@ func trigger_muzzle_flash(flash: bool = true):
 	#fire_timer.start(projectile.fire_cooldown)
 
 
-func server_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int):
+func server_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int, spawn_index: int):
 	if not fire_timer.is_stopped():
 		return
 	
@@ -220,7 +220,8 @@ func server_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int):
 		projectile.rotation,
 		bullet_dir,
 		ammo_type,
-		shooter_id
+		shooter_id,
+		spawn_index
 	)
 
 	fire_timer.start(projectile.fire_cooldown)
