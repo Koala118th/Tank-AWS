@@ -65,5 +65,5 @@ func _on_countdown_tick():
 		hide()
 
 func _on_quit_pressed():
-	countdown_timer.stop()
+	GameServer.disconnect_client()
 	get_tree().change_scene_to_file("res://Interfaces/Main Menu/main_menu.tscn")

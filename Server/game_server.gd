@@ -62,9 +62,12 @@ func _on_peer_connected(id: int):
 
 func _on_peer_disconnected(id: int):
 	print("SERVER: Player disconnected — id: ", id)
-	playerManager.remove_slot(id)
-	if match_state == MatchState.STARTING and playerManager.player_count < 2:
-		_cancel_countdown()
+	if match_state == MatchState.IN_MATCH and id in playerManager.actives_players:
+		# Leave tank alive as AFK during match — just mark them as disconnected
+		playerManager.mark_disconnected(id)
+	else:
+		# Not in match or was spectator — clean up fully
+		playerManager.remove_slot(id)
 
 # ─────────────────────────────────────────
 #  SIGNAL HANDLERS FROM PLAYER MANAGER
@@ -143,10 +146,22 @@ func _start_game_over_countdown():
 	add_child(_game_over_timer)
 	_game_over_timer.start()
 
-# game_server.gd
 func _on_game_over_finished():
 	_game_over_timer.queue_free()
 	_game_over_timer = null
+	# Clean up disconnected players
+	for pid in playerManager.disconnected_players.duplicate():
+		playerManager.remove_slot(pid)
+	playerManager.disconnected_players.clear()
+
+	# Check if enough players remain for a new match
+	if playerManager.player_count < 2:
+		match_state = MatchState.WAITING
+		# Notify remaining player to show waiting screen
+		for pid in playerManager.actives_players + playerManager.spectators:
+			notify_waiting.rpc_id(pid)
+		return
+
 	collectibleManager.reset()
 	playerManager.reload_game.rpc()
 	mapManager.start_maze()
@@ -242,3 +257,8 @@ func _on_connection_failed():
 
 func _on_server_disconnected():
 	print("CLIENT: Server disconnected.")
+
+func disconnect_client() -> void:
+	if multiplayer.multiplayer_peer:
+		multiplayer.multiplayer_peer.close()
+		multiplayer.multiplayer_peer = null

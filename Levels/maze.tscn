@@ -52,3 +52,4 @@ collision_visibility_mode = 2
 maze_generator = NodePath("..")
 
 [node name="GameOverMenu" parent="." unique_id=1132579724 instance=ExtResource("12_dokf5")]
+layer = 10

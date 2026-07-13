@@ -40,6 +40,7 @@ func remove_slot(peer_id: int) -> void:
 			player_count -= 1
 			actives_players.erase(peer_id)
 			spectators.erase(peer_id)
+			disconnected_players.erase(peer_id)
 			print("SERVER: Player ", peer_id, " removed from slot ", slot)
 			return
 
@@ -77,6 +78,12 @@ func _route_new_player(peer_id: int, match_state: int) -> void:
 var player_count: int = 0
 var actives_players: Array = []
 var spectators: Array = []
+var disconnected_players: Array = []
+
+func mark_disconnected(peer_id: int) -> void:
+	if peer_id not in disconnected_players:
+		disconnected_players.append(peer_id)
+	print("SERVER: Player ", peer_id, " marked as disconnected — tank stays alive")
 
 func make_active_player(peer_id: int) -> void:
 	spectators.erase(peer_id)

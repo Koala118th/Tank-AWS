@@ -9,6 +9,7 @@ var tanks: Dictionary = {}
 var match_number: int = 1
 var _match_active: bool = false
 
+# tank_spawner.gd
 func _ready():
 	add_to_group("tank_spawner")
 	await get_tree().process_frame
@@ -25,12 +26,19 @@ func _ready():
 
 		for c in tankManager.spawns_ready.get_connections():
 			tankManager.spawns_ready.disconnect(c["callable"])
-		tankManager.spawns_ready.connect(_on_spawns_ready)
 
 		var my_id = multiplayer.get_unique_id()
 		print("TANKSPAWNER READY — peer: ", my_id,
 			" pending_screen: ", GameServer.pending_screen,
 			" pending_match_state: ", GameServer.pending_match_state)
+
+		if GameServer.pending_screen == "spectator" \
+		and GameServer.pending_match_state == 2: # IN_MATCH
+			# Tanks already exist — request immediately, don't wait for spawns_ready
+			tankManager.request_spawns.rpc_id(1, my_id)
+		else:
+			# Active players and STARTING spectators wait for spawns_ready
+			tankManager.spawns_ready.connect(_on_spawns_ready)
 
 func _on_spawns_ready():
 	var my_id = multiplayer.get_unique_id()

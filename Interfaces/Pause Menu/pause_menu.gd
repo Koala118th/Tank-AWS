@@ -16,5 +16,7 @@ func close():
 func _on_resume():
 	resumed.emit()
 
+# pause_menu.gd
 func _on_quit():
+	GameServer.disconnect_client()
 	get_tree().change_scene_to_file("res://Interfaces/Main Menu/main_menu.tscn")
