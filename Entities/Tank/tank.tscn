@@ -65,6 +65,7 @@ width = 2.0
 default_color = Color(0.5211409, 0.5211405, 0.52114046, 1)
 
 [node name="ProgressBar" type="ProgressBar" parent="." unique_id=1505685711]
+z_index = 2
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0

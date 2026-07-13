@@ -139,40 +139,44 @@ func _physics_process(delta: float):
 
 
 func aim():
-	var tank_pos = global_position
-	var dir = (get_global_mouse_position() - tank_pos).normalized()
-	
-	var start_pos = tank_pos + dir * 25
+	var current_dir = (get_global_mouse_position() - global_position).normalized()
+	var current_pos = global_position + current_dir * 25
 	
 	var points = []
-	points.append(start_pos)
+	points.append(current_pos)
 
-	# FIRST RAY
-	aim_ray.global_position = start_pos
-	aim_ray.target_position = dir * 2000
-	aim_ray.force_raycast_update()
+	var has_bounced = false
 
-	if aim_ray.is_colliding():
-		var hit_point = aim_ray.get_collision_point()
-		var normal = aim_ray.get_collision_normal()
-		
-		points.append(hit_point)
-
-		# REFLECT DIRECTION
-		var bounce_dir = dir.bounce(normal).normalized()
-
-		# SECOND RAY (BOUNCE)
-		aim_ray.global_position = hit_point + bounce_dir * 1  # small offset to avoid self-hit
-		aim_ray.target_position = bounce_dir * 2000
+	for i in range(10):
+		aim_ray.global_position = current_pos
+		aim_ray.target_position = current_dir * 1000
 		aim_ray.force_raycast_update()
 
-		if aim_ray.is_colliding():
-			points.append(aim_ray.get_collision_point())
-		else:
-			points.append(hit_point + bounce_dir * 2000)
+		if not aim_ray.is_colliding():
+			points.append(current_pos + current_dir * 1000)
+			break
 
-	else:
-		points.append(start_pos + dir * 2000)
+		var collider = aim_ray.get_collider()
+		var hit_point = aim_ray.get_collision_point()
+
+		if collider.is_in_group("tank"):
+			# pass through
+			current_pos = hit_point + current_dir * 1
+			continue
+
+		elif collider.is_in_group("wall") and not has_bounced:
+			points.append(hit_point)
+
+			var normal = aim_ray.get_collision_normal()
+			current_dir = current_dir.bounce(normal).normalized()
+			current_pos = hit_point + current_dir * 2
+
+			has_bounced = true
+			continue
+
+		else:
+			points.append(hit_point)
+			break
 
 	# DRAW
 	aim_line.clear_points()
