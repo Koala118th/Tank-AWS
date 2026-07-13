@@ -22,7 +22,7 @@ var ammo_scenes := {
 var explosion_scene: PackedScene =preload("res://Entities/Explosion/explosion.tscn")
 
 @export var current_ammo = AmmoType.BULLET
-@export var pause_menu: CanvasLayer
+
 
 @export var speed: float = 150.0
 @export var turn_speed: float = 5.0
@@ -65,25 +65,19 @@ func _process(delta):
 var paused := false
 
 func _unhandled_input(event):
-	if event.is_action_pressed("ui_cancel"):
-		if paused:
-			_resume()
-		else:
-			_pause()
+	# Pause handled by a single per-game UI (not per-tank) to avoid multiple menus.
+	pass
 
 func _ready():
 	add_to_group("tank")
 	GameServer.tankManager.tank_moved.connect(_on_tank_moved)
-	if pause_menu != null:
-		pause_menu.resumed.connect(_resume)
+
 
 func _pause():
 	paused = true
-	pause_menu.open()
 
 func _resume():
 	paused = false
-	pause_menu.close()
 
 func _physics_process(delta: float):
 	if multiplayer.multiplayer_peer == null:
