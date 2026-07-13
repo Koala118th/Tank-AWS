@@ -1,6 +1,6 @@
 extends Node
 
-signal tank_spawned(peer_id: int, assigned_slot)
+signal tank_spawned(peer_id: int, floor_positions: Array, assigned_slot)
 signal tank_moved(peer_id: int, pos: Vector2, body_rot: float, turret_rot: float)
 var tanks := {}
 
@@ -15,11 +15,11 @@ func request_spawns(requesting_peer_id: int) -> void:
 	var slots: Dictionary = playerManager.slots
 	for slot in slots.keys():
 		if slots[slot] != null:
-			deliver_spawns.rpc_id(requesting_peer_id, slots[slot], slot)
+			deliver_spawns.rpc_id(requesting_peer_id, slots[slot], GameServer.mapManager.server_floor_positions, slot)
 
 @rpc("authority", "call_remote", "reliable")
-func deliver_spawns(peer_id: int, assigned_slot) -> void:
-	tank_spawned.emit(peer_id, assigned_slot)
+func deliver_spawns(peer_id: int, floor_positions: Array, assigned_slot) -> void:
+	tank_spawned.emit(peer_id, floor_positions, assigned_slot)
 	print(multiplayer.get_unique_id() , " received spawn for ", peer_id, " at slot ", assigned_slot)
 
 

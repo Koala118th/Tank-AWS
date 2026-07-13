@@ -20,7 +20,7 @@ func _ready():
 		var slots: Dictionary = playerManager.slots
 		for slot in slots.keys():
 			if slots[slot] != null:
-				spawn_tank(slots[slot], slot)
+				spawn_tank(slots[slot], GameServer.mapManager.server_floor_positions, slot)
 		playerManager.slot_filled.connect(spawn_tank)
 	else:
 		#print("READY")
@@ -54,7 +54,7 @@ func shuffle_floor_positions():
 	return floor_positions
 
 
-func spawn_tank(owner_peer_id: int, spawn_index: int):
+func spawn_tank(owner_peer_id: int, floor_positions: Array, spawn_index: int):
 	var tank: Tank = tank_scene.instantiate()
 	tank.set_multiplayer_authority(owner_peer_id)
 	print("SPAWN")
@@ -64,7 +64,7 @@ func spawn_tank(owner_peer_id: int, spawn_index: int):
 	#print(multiplayer.multiplayer_peer)
 	
 	print(multiplayer.get_unique_id(), " spawn a tank for ", owner_peer_id, " at ", spawn_index, ": ", tank)
-	tank.position = GameServer.mapManager.server_floor_positions[spawn_index]
+	tank.position = floor_positions[spawn_index]
 	tank.owner_id = owner_peer_id
 	tank.tree_exited.connect(_on_tank_died)
 	add_child(tank)

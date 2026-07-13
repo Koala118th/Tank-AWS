@@ -127,7 +127,6 @@ func _physics_process(delta: float):
 	if multiplayer.is_server():
 		apply_input(current_input, delta)
 		print("Tank:", owner_id, " Input:", current_input)
-		print(current_input)
 		
 		GameServer.tankManager.sync_state.rpc(
 			owner_id,
@@ -153,7 +152,7 @@ func _physics_process(delta: float):
 	else:
 		# interpolation
 		global_position = global_position.lerp(target_pos, delta * interp_speed)
-		body.rotation = lerp_angle(rotation, target_body_rot, delta * interp_speed)
+		body.rotation = lerp_angle(body.rotation, target_body_rot, delta * interp_speed)
 		turret.rotation = lerp_angle(turret.rotation, target_turret_rot, delta * interp_speed)
 
 
@@ -193,7 +192,7 @@ func reconcile(server_pos, server_body_rot, server_turret_rot):
 	else:
 		# smooth correction
 		global_position = global_position.lerp(server_pos, 0.2)
-		body.rotation = lerp_angle(rotation, server_body_rot, 0.2)
+		body.rotation = lerp_angle(body.rotation, server_body_rot, 0.2)
 		turret.rotation = lerp_angle(turret.rotation, server_turret_rot, 0.2)
 
 

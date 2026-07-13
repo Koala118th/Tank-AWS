@@ -2,7 +2,7 @@ extends Node
 # ─────────────────────────────────────────
 #  SLOT MANAGEMENT
 # ─────────────────────────────────────────
-signal slot_filled(peer_id: int, slot: int)
+signal slot_filled(peer_id: int, floor_positions: Array, slot: int)
 var slots: Dictionary = {
 	0: null,
 	1: null,
@@ -14,7 +14,7 @@ func assign_slot(peer_id: int):
 	if slot != -1:
 		slots[slot] = peer_id
 		player_count += 1
-		slot_filled.emit(peer_id, slot)
+		slot_filled.emit(peer_id, GameServer.mapManager.server_floor_positions, slot)
 		
 		if slot != -1:
 			load_game_scene.rpc()
