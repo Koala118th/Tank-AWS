@@ -40,7 +40,7 @@ func request_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int, spawn_in
 	if tank == null:
 		return
 	
-	tank.server_shoot(shooter_id, mouse_pos, ammo_type, spawn_index)
+	tank.server_shoot(shooter_id, mouse_pos, ammo_type)
 
 
 @rpc("authority", "call_remote", "reliable")

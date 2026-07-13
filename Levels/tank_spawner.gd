@@ -16,6 +16,7 @@ func _ready():
 	var tankManager = GameServer.tankManager
 	
 	if GameServer.is_server_mode():
+		GameServer.mapManager.server_floor_positions = shuffle_floor_positions()
 		var slots: Dictionary = playerManager.slots
 		for slot in slots.keys():
 			if slots[slot] != null:
@@ -34,7 +35,7 @@ func _ready():
 		tankManager.request_spawns.rpc_id(1, multiplayer.get_unique_id())
 
 
-func spawn_tank(owner_peer_id: int, spawn_index: int):
+func shuffle_floor_positions():
 	if maze_generator == null:
 		push_error("TankSpawner: maze_generator is not assigned!")
 		return
@@ -50,7 +51,10 @@ func spawn_tank(owner_peer_id: int, spawn_index: int):
 		return
 
 	floor_positions.shuffle()
+	return floor_positions
 
+
+func spawn_tank(owner_peer_id: int, spawn_index: int):
 	var tank: Tank = tank_scene.instantiate()
 	tank.set_multiplayer_authority(owner_peer_id)
 	print("SPAWN")
@@ -60,7 +64,7 @@ func spawn_tank(owner_peer_id: int, spawn_index: int):
 	#print(multiplayer.multiplayer_peer)
 	
 	print(multiplayer.get_unique_id(), " spawn a tank for ", owner_peer_id, " at ", spawn_index, ": ", tank)
-	tank.position = floor_positions[spawn_index]
+	tank.position = GameServer.mapManager.server_floor_positions[spawn_index]
 	tank.owner_id = owner_peer_id
 	tank.tree_exited.connect(_on_tank_died)
 	add_child(tank)
