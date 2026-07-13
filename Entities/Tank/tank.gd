@@ -40,6 +40,13 @@ var tank_textures := [
 	}
 ]
 
+var colors := [
+	Color(0.188, 1.0, 0.455),
+	Color(0x378cc4ff),
+	Color.RED,
+	Color(0.76, 0.70, 0.50)
+]
+
 @export var current_ammo = AmmoType.LASER
 @export var pause_menu: CanvasLayer
 
@@ -76,6 +83,7 @@ var _health: float = 100
 @onready var aim_line: Line2D = $AimLine
 @onready var muzzle_flash: Sprite2D = $Turret/MuzzleFlash
 @onready var muzzle_timer: Timer = $Turret/MuzzleTimer
+@onready var direction_arrow: Polygon2D = $Body/Polygon2D
 
 var owner_id
 
@@ -288,6 +296,8 @@ func set_visual_by_index(index: int):
 	if index < 0 or index >= tank_textures.size():
 		push_warning("Invalid tank index")
 		return
+	
+	direction_arrow.color = colors[index]
 	
 	var data = tank_textures[index]
 	body_sprite.texture = data["body"]
