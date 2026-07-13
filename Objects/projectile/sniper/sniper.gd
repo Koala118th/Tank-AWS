@@ -7,6 +7,8 @@ var max_skips :float= 8
 
 
 func _physics_process(delta):
+	if multiplayer.multiplayer_peer == null:
+		return
 	if multiplayer.is_server():
 		var motion = velocity * delta
 		

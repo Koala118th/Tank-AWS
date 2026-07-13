@@ -85,6 +85,8 @@ func _resume():
 	pause_menu.close()
 
 func _physics_process(delta: float):
+	if multiplayer.multiplayer_peer == null:
+		return
 	if paused:
 		return
 	
@@ -108,7 +110,7 @@ func _physics_process(delta: float):
 
 	move_and_slide()
 	
-	GameServer.tankManager.update_transform.rpc(multiplayer.get_unique_id(), position, body.rotation, turret.rotation)
+	GameServer.tankManager.update_transform.rpc(owner_id, position, body.rotation, turret.rotation)
 
 
 func aim():
@@ -140,7 +142,7 @@ func shoot_request():
 		return
 	
 	var mouse_pos = get_global_mouse_position()
-	GameServer.projectileManager.request_shoot.rpc_id(1, multiplayer.get_unique_id(), mouse_pos, current_ammo) # 1 = server
+	GameServer.projectileManager.request_shoot.rpc_id(1, owner_id, mouse_pos, current_ammo) # 1 = server
 
 
 #func shoot(projectile_scene: PackedScene):

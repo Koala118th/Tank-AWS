@@ -35,10 +35,13 @@ func _ready():
 		if GameServer.pending_screen == "spectator" \
 		and GameServer.pending_match_state == 2: # IN_MATCH
 			# Tanks already exist — request immediately, don't wait for spawns_ready
+			if not tankManager.spawns_ready.is_connected(_on_spawns_ready):
+				tankManager.spawns_ready.connect(_on_spawns_ready)
 			tankManager.request_spawns.rpc_id(1, my_id)
 		else:
 			# Active players and STARTING spectators wait for spawns_ready
-			tankManager.spawns_ready.connect(_on_spawns_ready)
+			if not tankManager.spawns_ready.is_connected(_on_spawns_ready):
+				tankManager.spawns_ready.connect(_on_spawns_ready)
 
 func _on_spawns_ready():
 	var my_id = multiplayer.get_unique_id()

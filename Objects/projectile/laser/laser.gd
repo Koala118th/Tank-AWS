@@ -19,6 +19,8 @@ func set_direction(target_pos: Vector2):
 
 
 func _physics_process(delta):
+	if multiplayer.multiplayer_peer == null:
+		return
 	if not multiplayer.is_server():
 		return
 

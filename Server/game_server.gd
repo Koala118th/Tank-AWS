@@ -237,11 +237,22 @@ func _get_match_ui():
 # ─────────────────────────────────────────
 var my_id = null
 
+func _reset_client_session_state() -> void:
+	my_id = null
+	pending_screen = ""
+	pending_countdown = 0.0
+	pending_match_state = -1
+	match_state = MatchState.WAITING
+
 func start_client():
+	_reset_client_session_state()
 	var peer = ENetMultiplayerPeer.new()
-	multiplayer.connected_to_server.connect(_on_connected_to_server)
-	multiplayer.connection_failed.connect(_on_connection_failed)
-	multiplayer.server_disconnected.connect(_on_server_disconnected)
+	if not multiplayer.connected_to_server.is_connected(_on_connected_to_server):
+		multiplayer.connected_to_server.connect(_on_connected_to_server)
+	if not multiplayer.connection_failed.is_connected(_on_connection_failed):
+		multiplayer.connection_failed.connect(_on_connection_failed)
+	if not multiplayer.server_disconnected.is_connected(_on_server_disconnected):
+		multiplayer.server_disconnected.connect(_on_server_disconnected)
 	var err = peer.create_client(SERVER_IP, PORT)
 	if err != OK:
 		print("CLIENT: Failed to connect: ", err)
@@ -257,8 +268,10 @@ func _on_connection_failed():
 
 func _on_server_disconnected():
 	print("CLIENT: Server disconnected.")
+	_reset_client_session_state()
 
 func disconnect_client() -> void:
 	if multiplayer.multiplayer_peer:
 		multiplayer.multiplayer_peer.close()
 		multiplayer.multiplayer_peer = null
+	_reset_client_session_state()

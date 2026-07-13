@@ -62,15 +62,24 @@ func get_empty_slot() -> int:
 func _route_new_player(peer_id: int, match_state: int) -> void:
 	match match_state:
 		0: # WAITING
-			if player_count == 1:
+			if _has_live_tanks() or GameServer._game_over_timer != null:
+				make_spectator(peer_id)
+				player_needs_spectator_screen.emit(peer_id, 2)
+			elif player_count == 1:
 				make_active_player(peer_id)
 				player_needs_waiting_screen.emit(peer_id)
 			elif player_count == 2:
 				make_active_player(peer_id)
 				ready_to_start.emit()
+			else:
+				make_spectator(peer_id)
+				player_needs_spectator_screen.emit(peer_id, match_state)
 		1, 2:
 			make_spectator(peer_id)
 			player_needs_spectator_screen.emit(peer_id, match_state)
+
+func _has_live_tanks() -> bool:
+	return get_tree().get_nodes_in_group("tank").size() > 0
 
 # ─────────────────────────────────────────
 #  PLAYER MANAGEMENT

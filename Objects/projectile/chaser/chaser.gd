@@ -35,6 +35,8 @@ func get_closest_tank():
 
 
 func _physics_process(delta):
+	if multiplayer.multiplayer_peer == null:
+		return
 	if multiplayer.is_server():
 		if !is_instance_valid(target):
 			target = get_closest_tank()
