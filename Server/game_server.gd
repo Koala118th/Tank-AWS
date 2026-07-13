@@ -48,6 +48,7 @@ func start_server():
 	# Listen to PlayerManager signals
 	playerManager.player_needs_waiting_screen.connect(_on_player_needs_waiting_screen)
 	playerManager.player_needs_spectator_screen.connect(_on_player_needs_spectator_screen)
+	playerManager.player_needs_game_over_screen.connect(_on_player_needs_game_over_screen)
 	playerManager.ready_to_start.connect(_on_ready_to_start)
 
 	mapManager.start_maze()
@@ -62,12 +63,13 @@ func _on_peer_connected(id: int):
 
 func _on_peer_disconnected(id: int):
 	print("SERVER: Player disconnected — id: ", id)
-	if match_state == MatchState.IN_MATCH and id in playerManager.actives_players:
-		# Leave tank alive as AFK during match — just mark them as disconnected
-		playerManager.mark_disconnected(id)
-	else:
-		# Not in match or was spectator — clean up fully
-		playerManager.remove_slot(id)
+	var tank_spawner = _get_tank_spawner()
+	if tank_spawner:
+		print("SERVER: deleting tank for disconnected peer ", id)
+		tank_spawner.remove_tank_by_owner(id)
+		for peer_id in multiplayer.get_peers():
+			tankManager.sync_delete_tank.rpc_id(peer_id, id)
+	playerManager.remove_slot(id)
 
 # ─────────────────────────────────────────
 #  SIGNAL HANDLERS FROM PLAYER MANAGER
@@ -81,6 +83,9 @@ func _on_player_needs_spectator_screen(peer_id: int, current_match_state: int):
 		remaining = _countdown_timer.time_left
 		print("SERVER: spectator joining, timer.time_left: ", remaining)
 	notify_spectator.rpc_id(peer_id, current_match_state, remaining)
+
+func _on_player_needs_game_over_screen(peer_id: int, remaining_time: float):
+	notify_game_over_join.rpc_id(peer_id, remaining_time)
 
 func _on_ready_to_start():
 	_begin_countdown()
@@ -98,6 +103,8 @@ func _begin_countdown():
 	for pid in playerManager.actives_players:
 		print("  sending notify_starting to: ", pid)
 		notify_starting.rpc_id(pid, float(COUNTDOWN_SECONDS))
+	for pid in playerManager.spectators:
+		notify_spectator.rpc_id(pid, MatchState.STARTING, float(COUNTDOWN_SECONDS))
 
 	_countdown_timer = Timer.new()
 	_countdown_timer.wait_time = COUNTDOWN_SECONDS
@@ -127,6 +134,8 @@ func _start_match():
 	await get_tree().process_frame
 	await get_tree().process_frame
 	tankManager.notify_spawns_ready.rpc()
+	for pid in playerManager.spectators:
+		notify_spectator.rpc_id(pid, MatchState.IN_MATCH, 0.0)
 
 # ─────────────────────────────────────────
 #  MATCH END
@@ -149,18 +158,14 @@ func _start_game_over_countdown():
 func _on_game_over_finished():
 	_game_over_timer.queue_free()
 	_game_over_timer = null
-	# Clean up disconnected players
-	for pid in playerManager.disconnected_players.duplicate():
-		playerManager.remove_slot(pid)
-	playerManager.disconnected_players.clear()
 
-	# Check if enough players remain for a new match
-	if playerManager.player_count < 2:
+	# If only one player remains, stay in waiting (no new match).
+	if playerManager.player_count <= 1:
 		match_state = MatchState.WAITING
-		# Notify remaining player to show waiting screen
 		for pid in playerManager.actives_players + playerManager.spectators:
 			notify_waiting.rpc_id(pid)
 		return
+
 
 	collectibleManager.reset()
 	playerManager.reload_game.rpc()
@@ -194,6 +199,7 @@ func _get_game_over_screen():
 var pending_screen: String = ""
 var pending_countdown: float = 0.0
 var pending_match_state: int = -1
+var _pending_game_over_retries: int = 0
 
 @rpc("authority", "call_remote", "reliable")
 func notify_waiting():
@@ -223,6 +229,33 @@ func notify_spectator(current_match_state: int, match_start_time: float):
 
 	if current_match_state == 2: # IN_MATCH
 		GameServer.tankManager.request_spawns.rpc_id(1, multiplayer.get_unique_id())
+
+@rpc("authority", "call_remote", "reliable")
+func notify_game_over_join(remaining_time: float):
+	pending_screen = "game_over"
+	pending_countdown = remaining_time
+	_pending_game_over_retries = 10
+	var ui = _get_match_ui()
+	if ui:
+		ui.show_spectator()
+	var go_screen = _get_game_over_screen()
+	if go_screen:
+		go_screen.show_screen(go_screen.placeholder_scores, 1, remaining_time)
+		_pending_game_over_retries = 0
+	else:
+		call_deferred("_try_show_pending_game_over_join")
+
+func _try_show_pending_game_over_join() -> void:
+	if pending_screen != "game_over":
+		return
+	var go_screen = _get_game_over_screen()
+	if go_screen:
+		go_screen.show_screen(go_screen.placeholder_scores, 1, pending_countdown)
+		_pending_game_over_retries = 0
+		return
+	if _pending_game_over_retries > 0:
+		_pending_game_over_retries -= 1
+		call_deferred("_try_show_pending_game_over_join")
 
 func _get_tank_spawner():
 	var nodes = get_tree().get_nodes_in_group("tank_spawner")

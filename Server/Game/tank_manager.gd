@@ -61,9 +61,24 @@ func sync_health(id: int, new_health: float):
 	if was_alive and new_health == 0:
 		tank.die()
 
+@rpc("authority", "call_remote", "reliable")
+func sync_delete_tank(owner_peer_id: int) -> void:
+	if multiplayer.is_server():
+		return
+
+	print("sync_delete_tank received on peer ", multiplayer.get_unique_id(), " for owner ", owner_peer_id)
+	var spawners = get_tree().get_nodes_in_group("tank_spawner")
+	if spawners.size() > 0:
+		spawners[0].remove_tank_by_owner(owner_peer_id)
+	else:
+		print("sync_delete_tank found no tank_spawner for owner ", owner_peer_id)
+
 
 func find_tank_by_owner(peer_id: int) -> Node:
+	print("find_tank_by_owner on peer ", multiplayer.get_unique_id(), " searching for owner ", peer_id)
 	for tank in get_tree().get_nodes_in_group("tank"):
 		if tank.owner_id == peer_id:
+			print("find_tank_by_owner matched tank ", tank, " for owner ", peer_id)
 			return tank
+	print("find_tank_by_owner did not find owner ", peer_id)
 	return null

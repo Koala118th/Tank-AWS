@@ -9,7 +9,6 @@ var tanks: Dictionary = {}
 var match_number: int = 1
 var _match_active: bool = false
 
-# tank_spawner.gd
 func _ready():
 	add_to_group("tank_spawner")
 	await get_tree().process_frame
@@ -33,13 +32,11 @@ func _ready():
 			" pending_match_state: ", GameServer.pending_match_state)
 
 		if GameServer.pending_screen == "spectator" \
-		and GameServer.pending_match_state == 2: # IN_MATCH
-			# Tanks already exist — request immediately, don't wait for spawns_ready
+		and GameServer.pending_match_state == 2:
 			if not tankManager.spawns_ready.is_connected(_on_spawns_ready):
 				tankManager.spawns_ready.connect(_on_spawns_ready)
 			tankManager.request_spawns.rpc_id(1, my_id)
 		else:
-			# Active players and STARTING spectators wait for spawns_ready
 			if not tankManager.spawns_ready.is_connected(_on_spawns_ready):
 				tankManager.spawns_ready.connect(_on_spawns_ready)
 
@@ -66,6 +63,21 @@ func _on_game_reloaded_server():
 		var slot = playerManager.get_player_slot(pid)
 		spawn_tank(pid, slot)
 
+func _on_tank_removed_recheck_round_end() -> void:
+	if not multiplayer.is_server():
+		return
+	if not _match_active:
+		return
+	await get_tree().process_frame
+	if not _match_active:
+		return
+	var alive := get_tanks_alive()
+	print("Recheck after removal — tanks alive: ", alive)
+	if alive == 1:
+		_on_round_over()
+
+
+
 # ─────────────────────────────────────────
 #  CLIENT
 # ─────────────────────────────────────────
@@ -91,6 +103,7 @@ func spawn_tank(owner_peer_id: int, spawn_index: int):
 	tank.owner_id = owner_peer_id
 	tank.tree_exited.connect(_on_tank_died)
 	add_child(tank)
+	tanks[owner_peer_id] = tank
 
 	print(multiplayer.get_unique_id(), " spawn a tank for ", owner_peer_id, " at slot ", spawn_index)
 
@@ -104,12 +117,29 @@ func _clear_tanks():
 		if child is Tank:
 			child.tree_exited.disconnect(_on_tank_died)
 			child.free()
+	tanks.clear()
 
 func clear_tanks_client():
 	for child in get_children():
 		if child is Tank:
 			child.tree_exited.disconnect(_on_tank_died)
 			child.queue_free()
+	tanks.clear()
+
+func remove_tank_by_owner(owner_peer_id: int) -> void:
+	for child in get_children():
+		if child is Tank and child.owner_id == owner_peer_id:
+			child.tree_exited.disconnect(_on_tank_died)
+			child.queue_free()
+			tanks.erase(owner_peer_id)
+			print(multiplayer.get_unique_id(), " removed tank for owner ", owner_peer_id)
+
+			if _match_active:
+				call_deferred("_on_tank_removed_recheck_round_end")
+			return
+	print(multiplayer.get_unique_id(), " could not find tank for owner ", owner_peer_id, " to remove")
+
+
 
 # ─────────────────────────────────────────
 #  ROUND END
@@ -127,26 +157,36 @@ func _on_tank_died():
 	if not is_inside_tree():
 		return
 	await get_tree().process_frame
-	if not is_inside_tree():
+	if not _match_active:
 		return
-	var tanks_alive = get_tanks_alive()
+
+	var tanks_alive := get_tanks_alive()
 	print("Tanks remaining: ", tanks_alive)
 	if tanks_alive == 1:
-		_match_active = false
 		_on_round_over()
+
 
 func _on_round_over():
 	if not multiplayer.is_server():
 		return
-	
+
+	if not _match_active:
+		return
+	_match_active = false
+
+	if get_tanks_alive() != 1:
+		return
+
+
 	var winner_id = -1
 	for child in get_children():
 		if child is Tank:
 			winner_id = child.owner_id
 			break
-	
+
 	print("SERVER: Round over. Winner id: ", winner_id)
 	GameServer.on_match_ended(winner_id)
+
 
 func start_next_match():
 	match_number += 1

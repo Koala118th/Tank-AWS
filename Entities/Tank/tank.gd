@@ -72,6 +72,7 @@ func _unhandled_input(event):
 			_pause()
 
 func _ready():
+	add_to_group("tank")
 	GameServer.tankManager.tank_moved.connect(_on_tank_moved)
 	if pause_menu != null:
 		pause_menu.resumed.connect(_resume)

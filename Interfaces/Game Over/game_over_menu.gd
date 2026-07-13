@@ -25,14 +25,19 @@ func _ready():
 	hide()
 	quit_button.pressed.connect(_on_quit_pressed)
 	_setup_countdown_timer()
+	if GameServer.pending_screen == "game_over":
+		show_screen(placeholder_scores, 1, GameServer.pending_countdown)
 
-func show_screen(scores: Array, match_number: int):
+func show_screen(scores: Array, match_number: int, remaining_time: float = -1.0):
 	scores.sort_custom(func(a, b): return a["wins"] > b["wins"])
 	winner_badge.text = "🏆  " + scores[0]["name"] + " wins the round"
 	match_counter.text = "Match #" + str(match_number)
 	_populate_scores(scores)
 	show()
-	_start_countdown()
+	if remaining_time >= 0.0:
+		_start_countdown(max(1, int(ceil(remaining_time))))
+	else:
+		_start_countdown(8)
 
 func _populate_scores(scores: Array):
 	for child in score_container.get_children():
@@ -49,9 +54,9 @@ func _setup_countdown_timer():
 	countdown_timer.timeout.connect(_on_countdown_tick)
 	add_child(countdown_timer)
 
-func _start_countdown():
-	countdown_time = 8
-	countdown_label.text = "08"
+func _start_countdown(start_seconds: int):
+	countdown_time = start_seconds
+	countdown_label.text = str(countdown_time).pad_zeros(2)
 	status_label.text = "Generating next map"
 	countdown_timer.start()
 

@@ -29,10 +29,12 @@ func _apply_pending_screen():
 			show_starting(gs.pending_countdown)
 		"spectator":
 			if gs.pending_match_state == 1:
-				show_starting(gs.pending_countdown)
+				show_starting(gs.pending_countdown, false)
 				_show_spectator_after_countdown(gs.pending_countdown)
 			else:
 				show_spectator()
+		"game_over":
+			show_spectator()
 
 func _get_remaining() -> float:
 	var now = Time.get_ticks_msec() / 1000.0
@@ -47,16 +49,22 @@ func _show_spectator_after_countdown(seconds: float):
 	show_spectator()
 
 func show_waiting():
+	if _countdown_tween:
+		_countdown_tween.kill()
+		_countdown_tween = null
 	hide_all()
 	waiting_screen.visible = true
 
-func show_starting(seconds: float):
+func show_starting(seconds: float, hide_on_end: bool = true):
 	hide_all()
 	starting_screen.visible = true
 	_countdown_end_time = Time.get_ticks_msec() / 1000.0 + seconds
-	_run_countdown(seconds)
+	_run_countdown(seconds, hide_on_end)
 
 func show_spectator():
+	if _countdown_tween:
+		_countdown_tween.kill()
+		_countdown_tween = null
 	print("show_spectator called — overlay node: ", spectator_overlay)
 	if spectator_overlay == null:
 		push_error("spectator_overlay is null!")
@@ -72,7 +80,7 @@ func hide_all():
 	starting_screen.visible   = false
 	spectator_overlay.visible = false
 
-func _run_countdown(total_seconds: float):
+func _run_countdown(total_seconds: float, hide_on_end: bool = true):
 	countdown_label.text = str(int(ceil(_get_remaining())))
 	if _countdown_tween:
 		_countdown_tween.kill()
@@ -87,6 +95,7 @@ func _run_countdown(total_seconds: float):
 		if _countdown_tween:
 			_countdown_tween.kill()
 			_countdown_tween = null
-		hide_all()
+		if hide_on_end:
+			hide_all()
 	)
 	

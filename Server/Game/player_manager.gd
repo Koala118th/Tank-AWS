@@ -6,6 +6,7 @@ extends Node
 signal slot_filled(peer_id: int, slot: int)
 signal player_needs_waiting_screen(peer_id: int)
 signal player_needs_spectator_screen(peer_id: int, current_match_state: int)
+signal player_needs_game_over_screen(peer_id: int, remaining_time: float)
 signal ready_to_start
 signal game_reloaded
 signal match_begun
@@ -40,7 +41,6 @@ func remove_slot(peer_id: int) -> void:
 			player_count -= 1
 			actives_players.erase(peer_id)
 			spectators.erase(peer_id)
-			disconnected_players.erase(peer_id)
 			print("SERVER: Player ", peer_id, " removed from slot ", slot)
 			return
 
@@ -62,7 +62,11 @@ func get_empty_slot() -> int:
 func _route_new_player(peer_id: int, match_state: int) -> void:
 	match match_state:
 		0: # WAITING
-			if _has_live_tanks() or GameServer._game_over_timer != null:
+			if GameServer._game_over_timer != null:
+				make_spectator(peer_id)
+				queue_spectator_next_match(peer_id)
+				player_needs_game_over_screen.emit(peer_id, GameServer._game_over_timer.time_left)
+			elif _has_live_tanks():
 				make_spectator(peer_id)
 				player_needs_spectator_screen.emit(peer_id, 2)
 			elif player_count == 1:
@@ -87,12 +91,11 @@ func _has_live_tanks() -> bool:
 var player_count: int = 0
 var actives_players: Array = []
 var spectators: Array = []
-var disconnected_players: Array = []
+var _spectators_next_match: Array = []
 
-func mark_disconnected(peer_id: int) -> void:
-	if peer_id not in disconnected_players:
-		disconnected_players.append(peer_id)
-	print("SERVER: Player ", peer_id, " marked as disconnected — tank stays alive")
+func queue_spectator_next_match(peer_id: int) -> void:
+	if peer_id not in _spectators_next_match:
+		_spectators_next_match.append(peer_id)
 
 func make_active_player(peer_id: int) -> void:
 	spectators.erase(peer_id)
@@ -122,11 +125,16 @@ func sync_active_players(active_list: Array) -> void:
 
 @rpc("authority", "call_local", "reliable")
 func reload_game() -> void:
+	var keep_spectator := _spectators_next_match.duplicate()
 	actives_players.clear()
 	spectators.clear()
 	for slot in slots.keys():
 		if slots[slot] != null:
-			make_active_player(slots[slot])
+			if slots[slot] in keep_spectator:
+				make_spectator(slots[slot])
+			else:
+				make_active_player(slots[slot])
+	_spectators_next_match.clear()
 	print("RELOAD — actives: ", actives_players, " spectators: ", spectators, " on peer: ", multiplayer.get_unique_id())
 	game_reloaded.emit()
 
