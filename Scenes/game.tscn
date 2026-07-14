@@ -4,6 +4,7 @@
 [ext_resource type="Script" uid="uid://bc5atsld61ag6" path="res://Scenes/Game/game.gd" id="1_qxrlw"]
 [ext_resource type="PackedScene" uid="uid://c6hgc7qb4ux7e" path="res://Interfaces/MatchUI/match_ui.tscn" id="3_wrm1d"]
 [ext_resource type="PackedScene" uid="uid://d040au338m11y" path="res://Interfaces/Pause Menu/pause_menu.tscn" id="4_xw5m5"]
+[ext_resource type="PackedScene" uid="uid://dp6oajpitk3l8" path="res://Interfaces/Game Over/game_over_menu.tscn" id="5_hh6a1"]
 
 [node name="Game" type="Node2D" unique_id=1209050767]
 script = ExtResource("1_qxrlw")
@@ -15,3 +16,6 @@ script = ExtResource("1_qxrlw")
 [node name="MatchUI" parent="." unique_id=740397080 instance=ExtResource("3_wrm1d")]
 
 [node name="PauseMenu" parent="." unique_id=740397081 instance=ExtResource("4_xw5m5")]
+
+[node name="GameOverMenu" parent="." unique_id=740397082 instance=ExtResource("5_hh6a1")]
+layer = 10

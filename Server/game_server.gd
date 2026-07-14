@@ -99,6 +99,7 @@ var _game_over_timer: Timer = null
 
 func _begin_countdown():
 	match_state = MatchState.STARTING
+	tankManager.clear_tanks.rpc()
 	print("_begin_countdown — notifying actives: ", playerManager.actives_players)
 	for pid in playerManager.actives_players:
 		print("  sending notify_starting to: ", pid)
@@ -159,19 +160,39 @@ func _on_game_over_finished():
 	_game_over_timer.queue_free()
 	_game_over_timer = null
 
-	# If only one player remains, stay in waiting (no new match).
-	if playerManager.player_count <= 1:
+	var future_actives: int = playerManager.actives_players.size() \
+		+ playerManager.spectators.size() \
+		+ playerManager._spectators_next_match.size()
+
+	if future_actives <= 1:
 		match_state = MatchState.WAITING
+		playerManager._promote_queued_spectators()
+		tankManager.clear_tanks.rpc()
+		collectibleManager.reset()
 		for pid in playerManager.actives_players + playerManager.spectators:
 			notify_waiting.rpc_id(pid)
 		return
 
+	var needs_countdown: bool = playerManager._spectators_next_match.size() > 0
+	print("needs_countdown: ", needs_countdown,
+		" _spectators_next_match: ", playerManager._spectators_next_match,
+		" _keep_spectator_next_match: ", playerManager._keep_spectator_next_match)
 
 	collectibleManager.reset()
 	playerManager.reload_game.rpc()
 	mapManager.start_maze()
 	mapManager.pick_background()
-	await get_tree().create_timer(0.5).timeout
+	await get_tree().process_frame
+
+	if needs_countdown:
+		match_state = MatchState.STARTING
+		for pid in playerManager.actives_players:
+			notify_starting.rpc_id(pid, float(COUNTDOWN_SECONDS))
+		for pid in playerManager.spectators:
+			notify_spectator.rpc_id(pid, MatchState.STARTING, float(COUNTDOWN_SECONDS))
+		await get_tree().create_timer(float(COUNTDOWN_SECONDS)).timeout
+
+	match_state = MatchState.IN_MATCH
 	playerManager.begin_match.rpc()
 	await get_tree().process_frame
 	await get_tree().process_frame

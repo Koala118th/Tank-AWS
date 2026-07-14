@@ -7,7 +7,7 @@
 [ext_resource type="PackedScene" uid="uid://bnpbf21tettv7" path="res://Levels/tank_spawner.tscn" id="5_qtbyg"]
 [ext_resource type="PackedScene" uid="uid://cinbd346kuavh" path="res://Levels/Background/Background1.tscn" id="5_tt4vx"]
 [ext_resource type="PackedScene" uid="uid://ces1j6g4ykfwr" path="res://Levels/collectible_spawner.tscn" id="7_fts4d"]
-[ext_resource type="PackedScene" uid="uid://dp6oajpitk3l8" path="res://Interfaces/Game Over/game_over_menu.tscn" id="12_dokf5"]
+
 
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_egmw7"]
 vertices = PackedVector2Array(556, -304.0078, 556, 304.96094, -557, 303.03125, -557, -304.97656)
@@ -51,5 +51,4 @@ collision_visibility_mode = 2
 [node name="CollectibleSpawner" parent="." unique_id=124313281 node_paths=PackedStringArray("maze_generator") instance=ExtResource("7_fts4d")]
 maze_generator = NodePath("..")
 
-[node name="GameOverMenu" parent="." unique_id=1132579724 instance=ExtResource("12_dokf5")]
-layer = 10
+

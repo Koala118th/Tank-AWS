@@ -63,22 +63,32 @@ func _route_new_player(peer_id: int, match_state: int) -> void:
 	match match_state:
 		0: # WAITING
 			if GameServer._game_over_timer != null:
+				var confirmed_actives = actives_players.size() \
+					+ spectators.size() \
+					- _spectators_next_match.size()
 				make_spectator(peer_id)
-				queue_spectator_next_match(peer_id)
+				if confirmed_actives >= 2:
+					queue_keep_spectator(peer_id)
+				else:
+					queue_spectator_next_match(peer_id)
 				player_needs_game_over_screen.emit(peer_id, GameServer._game_over_timer.time_left)
-			elif _has_live_tanks():
+			elif _has_live_tanks() and GameServer.match_state == GameServer.MatchState.IN_MATCH:
 				make_spectator(peer_id)
 				player_needs_spectator_screen.emit(peer_id, 2)
 			elif player_count == 1:
 				make_active_player(peer_id)
 				player_needs_waiting_screen.emit(peer_id)
-			elif player_count == 2:
+			elif player_count >= 2:
+				_promote_queued_spectators()
 				make_active_player(peer_id)
-				ready_to_start.emit()
-			else:
-				make_spectator(peer_id)
-				player_needs_spectator_screen.emit(peer_id, match_state)
-		1, 2:
+				if actives_players.size() >= 2:
+					ready_to_start.emit()
+				else:
+					player_needs_waiting_screen.emit(peer_id)
+		1: # STARTING
+			make_spectator(peer_id)
+			player_needs_spectator_screen.emit(peer_id, match_state)
+		2: # IN_MATCH
 			make_spectator(peer_id)
 			player_needs_spectator_screen.emit(peer_id, match_state)
 
@@ -92,10 +102,15 @@ var player_count: int = 0
 var actives_players: Array = []
 var spectators: Array = []
 var _spectators_next_match: Array = []
+var _keep_spectator_next_match: Array = []
 
 func queue_spectator_next_match(peer_id: int) -> void:
 	if peer_id not in _spectators_next_match:
 		_spectators_next_match.append(peer_id)
+
+func queue_keep_spectator(peer_id: int) -> void:
+	if peer_id not in _keep_spectator_next_match:
+		_keep_spectator_next_match.append(peer_id)
 
 func make_active_player(peer_id: int) -> void:
 	spectators.erase(peer_id)
@@ -106,6 +121,14 @@ func make_spectator(peer_id: int) -> void:
 	actives_players.erase(peer_id)
 	if peer_id not in spectators:
 		spectators.append(peer_id)
+
+func _promote_queued_spectators() -> void:
+	for pid in _spectators_next_match:
+		make_active_player(pid)
+	_spectators_next_match.clear()
+	for pid in spectators.duplicate():
+		make_active_player(pid)
+	_keep_spectator_next_match.clear()
 
 # ─────────────────────────────────────────
 #  GAME MANAGEMENT
@@ -125,17 +148,18 @@ func sync_active_players(active_list: Array) -> void:
 
 @rpc("authority", "call_local", "reliable")
 func reload_game() -> void:
-	var keep_spectator := _spectators_next_match.duplicate()
+	var stay_spectator: Array = _keep_spectator_next_match.duplicate()
 	actives_players.clear()
 	spectators.clear()
 	for slot in slots.keys():
 		if slots[slot] != null:
-			if slots[slot] in keep_spectator:
-				make_spectator(slots[slot])
+			var pid = slots[slot]
+			if pid in stay_spectator:
+				make_spectator(pid)
 			else:
-				make_active_player(slots[slot])
+				make_active_player(pid)
 	_spectators_next_match.clear()
-	print("RELOAD — actives: ", actives_players, " spectators: ", spectators, " on peer: ", multiplayer.get_unique_id())
+	_keep_spectator_next_match.clear()
 	game_reloaded.emit()
 
 @rpc("authority", "call_remote", "reliable")
