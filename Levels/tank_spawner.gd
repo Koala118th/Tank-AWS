@@ -8,6 +8,7 @@ extends Node2D
 var tanks: Dictionary = {}
 var match_number: int = 1
 var _match_active: bool = false
+var _spawn_positions: Dictionary = {}
 
 func _ready():
 	add_to_group("tank_spawner")
@@ -21,7 +22,10 @@ func _ready():
 	else:
 		for c in tankManager.tank_spawned.get_connections():
 			tankManager.tank_spawned.disconnect(c["callable"])
-		tankManager.tank_spawned.connect(spawn_tank)
+		tankManager.tank_spawned.connect(
+			func(peer_id: int, slot: int, pos: Vector2):
+				spawn_tank(peer_id, slot, pos)
+		)
 
 		for c in tankManager.spawns_ready.get_connections():
 			tankManager.spawns_ready.disconnect(c["callable"])
@@ -49,9 +53,16 @@ func _on_match_begun_server():
 	await get_tree().process_frame
 	_match_active = true
 	var playerManager = GameServer.playerManager
+
+	# Server shuffles ONCE and records positions
+	var floor_positions: Array = maze_generator.get_floor_positions()
+	floor_positions.shuffle()
+
 	for pid in playerManager.actives_players:
 		var slot = playerManager.get_player_slot(pid)
-		spawn_tank(pid, slot)
+		var pos: Vector2 = floor_positions[slot]
+		_spawn_positions[pid] = pos
+		spawn_tank(pid, slot, pos)
 
 # ─────────────────────────────────────────
 #  SERVER
@@ -87,26 +98,30 @@ func _on_game_reloaded_client():
 # ─────────────────────────────────────────
 #  SHARED
 # ─────────────────────────────────────────
-func spawn_tank(owner_peer_id: int, spawn_index: int):
+func get_spawn_position(peer_id: int) -> Vector2:
+	return _spawn_positions.get(peer_id, Vector2.ZERO)
+
+func spawn_tank(owner_peer_id: int, spawn_index: int, spawn_pos: Vector2 = Vector2.ZERO):
 	if maze_generator == null:
 		push_error("TankSpawner: maze_generator is not assigned!")
 		return
-	var floor_positions: Array = maze_generator.get_floor_positions()
-	if floor_positions.is_empty():
-		push_error("TankSpawner: no floor positions found!")
-		return
 
-	floor_positions.shuffle()
+	# Server uses pre-shuffled position, clients use position sent from server
+	var pos: Vector2
+	if multiplayer.is_server():
+		pos = spawn_pos
+	else:
+		pos = spawn_pos  # comes from deliver_spawns → tank_spawned signal
+
 	var tank: Tank = tank_scene.instantiate()
 	tank.set_multiplayer_authority(owner_peer_id)
-	tank.position = floor_positions[spawn_index]
+	tank.position = pos
 	tank.owner_id = owner_peer_id
 	tank.tree_exited.connect(_on_tank_died)
 	add_child(tank)
 	tanks[owner_peer_id] = tank
 
 	print(multiplayer.get_unique_id(), " spawn a tank for ", owner_peer_id, " at slot ", spawn_index)
-	
 	tank.setup_spawn_index(spawn_index)
 
 	if multiplayer.is_server():

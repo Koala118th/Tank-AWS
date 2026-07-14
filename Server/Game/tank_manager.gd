@@ -1,6 +1,6 @@
 extends Node
 
-signal tank_spawned(peer_id: int, assigned_slot)
+signal tank_spawned(peer_id: int, assigned_slot: int, spawn_pos: Vector2)
 signal tank_moved(peer_id: int, pos: Vector2, body_rot: float, turret_rot: float)
 signal spawns_ready
 var tanks := {}
@@ -14,16 +14,19 @@ func request_spawns(requesting_peer_id: int) -> void:
 	if not multiplayer.is_server():
 		return
 	var playerManager = GameServer.playerManager
-	print("request_spawns — actives: ", playerManager.actives_players, " for requester: ", requesting_peer_id)
+	var spawner = get_tree().get_nodes_in_group("tank_spawner")
+	if spawner.is_empty():
+		return
+	var tank_spawner = spawner[0]
 	for pid in playerManager.actives_players:
 		var slot = playerManager.get_player_slot(pid)
-		if slot != -1:
-			deliver_spawns.rpc_id(requesting_peer_id, pid, slot)
+		var pos: Vector2 = tank_spawner.get_spawn_position(pid)
+		deliver_spawns.rpc_id(requesting_peer_id, pid, slot, pos)
 
 @rpc("authority", "call_remote", "reliable")
-func deliver_spawns(peer_id: int, assigned_slot) -> void:
-	tank_spawned.emit(peer_id, assigned_slot)
-	print(multiplayer.get_unique_id() , " received spawn for ", peer_id, " at slot ", assigned_slot)
+func deliver_spawns(peer_id: int, assigned_slot: int, spawn_pos: Vector2) -> void:
+	tank_spawned.emit(peer_id, assigned_slot, spawn_pos)
+	print(multiplayer.get_unique_id(), " received spawn for ", peer_id, " at slot ", assigned_slot)
 
 
 @rpc("any_peer", "call_remote", "unreliable_ordered")
