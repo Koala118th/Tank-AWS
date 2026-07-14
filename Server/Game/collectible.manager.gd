@@ -2,7 +2,7 @@ extends Node
 
 var maze_generator: Node2D = null
 
-enum CrateType { SNIPER, SMALL, LASER, CHASER }
+enum CrateType { SNIPER, CHASER, SMALL, LASER }
 
 const MAX_COLLECTIBLES: int = 3
 const SPAWN_INTERVAL: float = 10.0
@@ -60,7 +60,7 @@ func _do_spawn() -> void:
 
 	valid_positions.shuffle()
 	var chosen_pos: Vector2 = valid_positions[0]
-	var chosen_type: int = randi() % 4
+	var chosen_type: int = randi() % 4 + 1
 	var crate_id: int = _next_id
 	_next_id += 1
 
@@ -85,13 +85,24 @@ func receive_clear_all() -> void:
 	_collectible_spawner.clear_all()
 
 @rpc("any_peer", "call_remote", "reliable")
-func notify_crate_picked_up_rpc(crate_id: int) -> void:
+func notify_crate_picked_up_rpc(crate_id: int, tank_peer_id: int) -> void:
 	if not multiplayer.is_server():
 		return
 	if not _active_crates.has(crate_id):
 		push_warning("[CollectibleManager] crate_id %d not found in _active_crates!" % crate_id)
 		return
+
+	var crate_type: int = _active_crates[crate_id]["type"]
+
 	_active_crates.erase(crate_id)
+
+	# Server stores the authoritative ammo type for this tank
+	GameServer.tankManager.set_tank_ammo(tank_peer_id, crate_type)
+
+	# Broadcast ammo change visually to all peers
+	GameServer.tankManager.sync_ammo.rpc(tank_peer_id, crate_type)
+
+	# Remove crate from all peers
 	receive_crate_removed.rpc(crate_id)
 
 	if is_inside_tree() and _spawn_timer != null:

@@ -1,11 +1,11 @@
 extends Node
 
 enum AmmoType {
-	BULLET,
-	SNIPER,
-	CHASER,
-	SMALL,
-	LASER
+	BULLET,   # 0
+	SNIPER,   # 1
+	CHASER,   # 2
+	SMALL,    # 3
+	LASER     # 4
 }
 
 var ammo_cooldown:= {
@@ -43,17 +43,20 @@ func receive_clear_all() -> void:
 
 
 @rpc("any_peer", "call_remote", "reliable")
-func request_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int, spawn_index: int):
+func request_shoot(shooter_id: int, mouse_pos: Vector2, spawn_index: int) -> void:
 	if not multiplayer.is_server():
 		return
-	
 	var sender_id = multiplayer.get_remote_sender_id()
-	
-	var tank: Tank = GameServer.tankManager.find_tank_by_owner(sender_id)
-	if tank == null:
+	if sender_id != shooter_id:
 		return
-	
-	tank.server_shoot(shooter_id, mouse_pos, ammo_type, spawn_index)
+
+	var ammo_type: int = GameServer.tankManager.get_tank_ammo(shooter_id)
+	print("[ProjectileManager] request_shoot | shooter: %d | ammo_type: %d" % [shooter_id, ammo_type])
+	var tank = GameServer.tankManager.find_tank_by_owner(shooter_id)
+	if tank:
+		tank.server_shoot(shooter_id, mouse_pos, ammo_type, spawn_index)
+	else:
+		push_warning("[ProjectileManager] No tank found for shooter_id %d" % shooter_id)
 
 
 @rpc("authority", "call_remote", "reliable")

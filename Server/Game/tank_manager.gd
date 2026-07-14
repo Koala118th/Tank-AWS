@@ -4,6 +4,7 @@ signal tank_spawned(peer_id: int, assigned_slot: int, spawn_pos: Vector2)
 signal tank_moved(peer_id: int, pos: Vector2, body_rot: float, turret_rot: float)
 signal spawns_ready
 var tanks := {}
+var tank_ammo: Dictionary = {}
 
 @rpc("authority", "call_remote", "reliable")
 func notify_spawns_ready() -> void:
@@ -78,6 +79,14 @@ func sync_delete_tank(owner_peer_id: int) -> void:
 		print("sync_delete_tank found no tank_spawner for owner ", owner_peer_id)
 
 
+# Broadcast ammo change to all peers so they render the correct bullet visually
+@rpc("authority", "call_local", "reliable")
+func sync_ammo(tank_peer_id: int, ammo_type: int) -> void:
+	var tank = find_tank_by_owner(tank_peer_id)
+	if tank:
+		tank.current_ammo = ammo_type
+
+
 func find_tank_by_owner(peer_id: int) -> Node:
 	print("find_tank_by_owner on peer ", multiplayer.get_unique_id(), " searching for owner ", peer_id)
 	for tank in get_tree().get_nodes_in_group("tank"):
@@ -86,3 +95,17 @@ func find_tank_by_owner(peer_id: int) -> Node:
 			return tank
 	print("find_tank_by_owner did not find owner ", peer_id)
 	return null
+
+
+func set_tank_ammo(tank_peer_id: int, ammo_type: int) -> void:
+	tank_ammo[tank_peer_id] = ammo_type
+	print("[TankManager] Set ammo for peer %d to type %d" % [tank_peer_id, ammo_type])
+
+
+func get_tank_ammo(tank_peer_id: int) -> int:
+	return tank_ammo.get(tank_peer_id, 0)  # 0 = default BULLET
+
+
+# Clear ammo state between matches
+func reset_ammo() -> void:
+	tank_ammo.clear()

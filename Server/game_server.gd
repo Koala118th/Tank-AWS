@@ -172,6 +172,7 @@ func _on_game_over_finished():
 		tankManager.clear_tanks.rpc()
 		projectileManager.receive_clear_all.rpc()
 		collectibleManager.reset()
+		tankManager.reset_ammo()
 		for pid in playerManager.actives_players + playerManager.spectators:
 			notify_waiting.rpc_id(pid)
 		return
@@ -182,6 +183,7 @@ func _on_game_over_finished():
 		" _keep_spectator_next_match: ", playerManager._keep_spectator_next_match)
 
 	collectibleManager.reset()
+	tankManager.reset_ammo()
 	projectileManager.receive_clear_all.rpc()
 	playerManager.reload_game.rpc()
 	mapManager.start_maze()

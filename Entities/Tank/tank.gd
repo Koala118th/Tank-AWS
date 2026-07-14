@@ -47,8 +47,7 @@ var colors := [
 	Color(0.76, 0.70, 0.50)
 ]
 
-@export var current_ammo = AmmoType.LASER
-@export var pause_menu: CanvasLayer
+@export var current_ammo = AmmoType.BULLET
 
 @export var speed: float = 150.0
 @export var turn_speed: float = 5.0
@@ -192,9 +191,9 @@ func aim():
 func shoot_request():
 	if not fire_timer.is_stopped():
 		return
-	
 	var mouse_pos = get_global_mouse_position()
-	GameServer.projectileManager.request_shoot.rpc_id(1, owner_id, mouse_pos, current_ammo, spawn_index)
+	# No ammo type sent — server decides from its own tank_ammo dict
+	GameServer.projectileManager.request_shoot.rpc_id(1, owner_id, mouse_pos, spawn_index)
 
 
 func trigger_muzzle_flash(flash: bool = true):

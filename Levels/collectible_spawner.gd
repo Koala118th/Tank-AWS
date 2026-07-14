@@ -18,10 +18,10 @@ func _ready() -> void:
 
 func get_crate_scene(crate_type: int) -> PackedScene:
 	match crate_type:
-		0: return sniper_crate_scene
-		1: return small_crate_scene
-		2: return laser_crate_scene
-		3: return chaser_crate_scene
+		1: return sniper_crate_scene
+		2: return chaser_crate_scene
+		3: return small_crate_scene
+		4: return laser_crate_scene
 	return null
 
 func spawn_crate(crate_id: int, crate_type: int, pos: Vector2) -> void:

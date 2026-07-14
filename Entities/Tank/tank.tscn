@@ -14,10 +14,9 @@ bg_color = Color(1, 0, 0, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dahrd"]
 bg_color = Color(0.28627452, 0.70980394, 0, 1)
 
-[node name="Tank" type="CharacterBody2D" unique_id=1826538697 node_paths=PackedStringArray("pause_menu") groups=["tank"]]
+[node name="Tank" type="CharacterBody2D" unique_id=1826538697 groups=["tank"]]
 collision_layer = 11
 script = ExtResource("1_dlw22")
-pause_menu = NodePath("PauseMenu")
 
 [node name="Body" type="Node2D" parent="." unique_id=1157753539]
 
