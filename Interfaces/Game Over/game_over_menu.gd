@@ -9,9 +9,9 @@ var placeholder_scores = [
 	{"name": "IronBarrel", "wins": 1, "kills": 4,  "is_you": false},
 ]
 
-var countdown_time := 8
-var countdown_timer: Timer
 var score_row_scene = preload("res://Interfaces/Game Over/score_row.tscn")
+var _end_time: float = 0.0
+var countdown_timer: Timer
 
 @onready var winner_badge    = $Control/VBoxContainer/WinnerBadge
 @onready var score_container = $Control/VBoxContainer/ScoreContainer
@@ -28,16 +28,13 @@ func _ready():
 	if GameServer.pending_screen == "game_over":
 		show_screen(placeholder_scores, 1, GameServer.pending_countdown)
 
-func show_screen(scores: Array, match_number: int, remaining_time: float = -1.0):
+func show_screen(scores: Array, match_number: int, countdown_seconds: float = 8.0):
 	scores.sort_custom(func(a, b): return a["wins"] > b["wins"])
 	winner_badge.text = "🏆  " + scores[0]["name"] + " wins the round"
 	match_counter.text = "Match #" + str(match_number)
 	_populate_scores(scores)
 	show()
-	if remaining_time >= 0.0:
-		_start_countdown(max(1, int(ceil(remaining_time))))
-	else:
-		_start_countdown(8)
+	_start_countdown(countdown_seconds)
 
 func _populate_scores(scores: Array):
 	for child in score_container.get_children():
@@ -50,22 +47,25 @@ func _populate_scores(scores: Array):
 
 func _setup_countdown_timer():
 	countdown_timer = Timer.new()
-	countdown_timer.wait_time = 1.0
+	countdown_timer.wait_time = 0.1
 	countdown_timer.timeout.connect(_on_countdown_tick)
 	add_child(countdown_timer)
 
-func _start_countdown(start_seconds: int):
-	countdown_time = start_seconds
-	countdown_label.text = str(countdown_time).pad_zeros(2)
+func _start_countdown(seconds: float):
+	_end_time = Time.get_ticks_msec() / 1000.0 + seconds
+	countdown_label.text = str(int(ceil(_get_remaining()))).pad_zeros(2)
 	status_label.text = "Generating next map"
 	countdown_timer.start()
 
+func _get_remaining() -> float:
+	return max(0.0, _end_time - Time.get_ticks_msec() / 1000.0)
+
 func _on_countdown_tick():
-	countdown_time -= 1
-	countdown_label.text = str(countdown_time).pad_zeros(2)
-	if countdown_time <= 3:
+	var remaining = _get_remaining()
+	countdown_label.text = str(int(ceil(remaining))).pad_zeros(2)
+	if remaining <= 3.0:
 		status_label.text = "Starting match..."
-	if countdown_time <= 0:
+	if remaining <= 0.0:
 		countdown_timer.stop()
 		hide()
 

@@ -145,7 +145,8 @@ func _start_match():
 func on_match_ended(winner_id: int):
 	match_state = MatchState.WAITING
 	print("SERVER: Match ended. Winner: ", winner_id)
-	show_game_over.rpc(winner_id)
+	show_game_over(winner_id, float(GAME_OVER_COUNTDOWN))
+	show_game_over.rpc(winner_id, float(GAME_OVER_COUNTDOWN))
 	_start_game_over_countdown()
 
 func _start_game_over_countdown():
@@ -200,15 +201,15 @@ func _on_game_over_finished():
 	await get_tree().process_frame
 	tankManager.notify_spawns_ready.rpc()
 
-@rpc("authority", "call_local", "reliable")
-func show_game_over(winner_id: int):
+@rpc("authority", "call_remote", "reliable")
+func show_game_over(winner_id: int, countdown_seconds: float):
 	pending_screen = ""
 	var ui = _get_match_ui()
 	if ui:
 		ui.hide_all()
 	var go_screen = _get_game_over_screen()
 	if go_screen:
-		go_screen.show_screen(go_screen.placeholder_scores, 1)
+		go_screen.show_screen(go_screen.placeholder_scores, 1, countdown_seconds)
 
 func _get_game_over_screen():
 	var nodes = get_tree().get_nodes_in_group("game_over_screen")
