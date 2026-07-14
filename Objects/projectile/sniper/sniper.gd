@@ -16,7 +16,6 @@ func _physics_process(delta):
 		if collision:
 			if collision.get_collider().is_in_group("wall"):
 				wall_hits += 1
-				print(wall_hits)
 			
 			if wall_hits > max_skips:
 				GameServer.projectileManager.sync_delete.rpc(projectile_id)

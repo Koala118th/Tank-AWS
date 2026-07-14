@@ -15,6 +15,14 @@ var _next_id: int = 0
 # Client-side spawner reference
 var _collectible_spawner: Node2D = null
 
+func _get_ammo_remaining(crate_type: int) -> int:
+	match crate_type:
+		1: return 1
+		2: return 1
+		3: return 12
+		4: return 1
+	return -1
+
 func init_collectibles(spawner_node: Node) -> void:
 	_collectible_spawner = spawner_node
 
@@ -89,20 +97,15 @@ func notify_crate_picked_up_rpc(crate_id: int, tank_peer_id: int) -> void:
 	if not multiplayer.is_server():
 		return
 	if not _active_crates.has(crate_id):
-		push_warning("[CollectibleManager] crate_id %d not found in _active_crates!" % crate_id)
+		push_warning("[CollectibleManager] crate_id %d not found!" % crate_id)
 		return
 
 	var crate_type: int = _active_crates[crate_id]["type"]
-
 	_active_crates.erase(crate_id)
 
-	# Server stores the authoritative ammo type for this tank
-	GameServer.tankManager.set_tank_ammo(tank_peer_id, crate_type)
-
-	# Broadcast ammo change visually to all peers
+	var ammo_remaining: int = _get_ammo_remaining(crate_type)
+	GameServer.tankManager.set_tank_ammo(tank_peer_id, crate_type, ammo_remaining)
 	GameServer.tankManager.sync_ammo.rpc(tank_peer_id, crate_type)
-
-	# Remove crate from all peers
 	receive_crate_removed.rpc(crate_id)
 
 	if is_inside_tree() and _spawn_timer != null:

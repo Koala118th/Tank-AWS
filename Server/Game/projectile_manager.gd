@@ -51,10 +51,10 @@ func request_shoot(shooter_id: int, mouse_pos: Vector2, spawn_index: int) -> voi
 		return
 
 	var ammo_type: int = GameServer.tankManager.get_tank_ammo(shooter_id)
-	print("[ProjectileManager] request_shoot | shooter: %d | ammo_type: %d" % [shooter_id, ammo_type])
 	var tank = GameServer.tankManager.find_tank_by_owner(shooter_id)
 	if tank:
 		tank.server_shoot(shooter_id, mouse_pos, ammo_type, spawn_index)
+		GameServer.tankManager.consume_ammo(shooter_id)
 	else:
 		push_warning("[ProjectileManager] No tank found for shooter_id %d" % shooter_id)
 

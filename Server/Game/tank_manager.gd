@@ -5,6 +5,7 @@ signal tank_moved(peer_id: int, pos: Vector2, body_rot: float, turret_rot: float
 signal spawns_ready
 var tanks := {}
 var tank_ammo: Dictionary = {}
+var tank_ammo_remaining: Dictionary = {}
 
 @rpc("authority", "call_remote", "reliable")
 func notify_spawns_ready() -> void:
@@ -71,7 +72,6 @@ func sync_delete_tank(owner_peer_id: int) -> void:
 	if multiplayer.is_server():
 		return
 
-	print("sync_delete_tank received on peer ", multiplayer.get_unique_id(), " for owner ", owner_peer_id)
 	var spawners = get_tree().get_nodes_in_group("tank_spawner")
 	if spawners.size() > 0:
 		spawners[0].remove_tank_by_owner(owner_peer_id)
@@ -88,24 +88,40 @@ func sync_ammo(tank_peer_id: int, ammo_type: int) -> void:
 
 
 func find_tank_by_owner(peer_id: int) -> Node:
-	print("find_tank_by_owner on peer ", multiplayer.get_unique_id(), " searching for owner ", peer_id)
 	for tank in get_tree().get_nodes_in_group("tank"):
 		if tank.owner_id == peer_id:
-			print("find_tank_by_owner matched tank ", tank, " for owner ", peer_id)
 			return tank
-	print("find_tank_by_owner did not find owner ", peer_id)
 	return null
 
 
-func set_tank_ammo(tank_peer_id: int, ammo_type: int) -> void:
+func set_tank_ammo(tank_peer_id: int, ammo_type: int, remaining: int) -> void:
 	tank_ammo[tank_peer_id] = ammo_type
-	print("[TankManager] Set ammo for peer %d to type %d" % [tank_peer_id, ammo_type])
+	tank_ammo_remaining[tank_peer_id] = remaining
 
 
 func get_tank_ammo(tank_peer_id: int) -> int:
-	return tank_ammo.get(tank_peer_id, 0)  # 0 = default BULLET
+	return tank_ammo.get(tank_peer_id, 0)
+
+
+func consume_ammo(tank_peer_id: int) -> void:
+	if not tank_ammo_remaining.has(tank_peer_id):
+		return
+	var remaining: int = tank_ammo_remaining[tank_peer_id]
+	if remaining == -1:
+		return  # unlimited, do nothing
+	remaining -= 1
+	tank_ammo_remaining[tank_peer_id] = remaining
+	if remaining <= 0:
+		_reset_to_default(tank_peer_id)
+
+
+func _reset_to_default(tank_peer_id: int) -> void:
+	tank_ammo[tank_peer_id] = 0
+	tank_ammo_remaining[tank_peer_id] = -1
+	sync_ammo.rpc(tank_peer_id, 0)
 
 
 # Clear ammo state between matches
 func reset_ammo() -> void:
 	tank_ammo.clear()
+	tank_ammo_remaining.clear()
