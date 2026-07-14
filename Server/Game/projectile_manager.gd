@@ -29,6 +29,19 @@ var current_ammo = AmmoType.BULLET
 var projectiles := {}
 
 
+func clear_all_projectiles() -> void:
+	for id in projectiles.keys():
+		var p = projectiles[id]
+		if is_instance_valid(p):
+			p.queue_free()
+	projectiles.clear()
+
+
+@rpc("authority", "call_local", "reliable")
+func receive_clear_all() -> void:
+	clear_all_projectiles()
+
+
 @rpc("any_peer", "call_remote", "reliable")
 func request_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int, spawn_index: int):
 	if not multiplayer.is_server():

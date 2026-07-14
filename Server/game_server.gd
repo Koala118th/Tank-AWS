@@ -100,6 +100,7 @@ var _game_over_timer: Timer = null
 func _begin_countdown():
 	match_state = MatchState.STARTING
 	tankManager.clear_tanks.rpc()
+	projectileManager.receive_clear_all.rpc()
 	print("_begin_countdown — notifying actives: ", playerManager.actives_players)
 	for pid in playerManager.actives_players:
 		print("  sending notify_starting to: ", pid)
@@ -169,6 +170,7 @@ func _on_game_over_finished():
 		match_state = MatchState.WAITING
 		playerManager._promote_queued_spectators()
 		tankManager.clear_tanks.rpc()
+		projectileManager.receive_clear_all.rpc()
 		collectibleManager.reset()
 		for pid in playerManager.actives_players + playerManager.spectators:
 			notify_waiting.rpc_id(pid)
@@ -180,6 +182,7 @@ func _on_game_over_finished():
 		" _keep_spectator_next_match: ", playerManager._keep_spectator_next_match)
 
 	collectibleManager.reset()
+	projectileManager.receive_clear_all.rpc()
 	playerManager.reload_game.rpc()
 	mapManager.start_maze()
 	mapManager.pick_background()
