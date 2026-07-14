@@ -47,7 +47,13 @@ func _apply_background(bg_index: int):
 	if picked == null:
 		push_error("Maze Generator: picked background scene is null!")
 		return
+	
+	for child in get_parent().get_children():
+		if child.is_in_group("background"):
+			child.queue_free()
+	
 	var background = picked.instantiate()
+	background.add_to_group("background")
 	get_parent().add_child.call_deferred(background)
 	print("Background spawned: ", picked.resource_path)
 

@@ -27,6 +27,8 @@ func _ready():
 
 
 func _physics_process(delta):
+	if multiplayer.multiplayer_peer == null:
+		return
 	if multiplayer.is_server():
 		var collision = move_and_collide(velocity * delta)
 
@@ -40,7 +42,7 @@ func _physics_process(delta):
 
 
 func _on_enemy_detection_area_body_entered(body: Node2D) -> void:
-	if not multiplayer.is_server():
+	if multiplayer.multiplayer_peer == null or not multiplayer.is_server():
 		return
 	if body.has_method("get_hit"):
 		body.get_hit(damage)
@@ -49,7 +51,7 @@ func _on_enemy_detection_area_body_entered(body: Node2D) -> void:
 
 
 func _on_delete_timer_timeout() -> void:
-	if not multiplayer.is_server():
+	if multiplayer.multiplayer_peer == null or not multiplayer.is_server():
 		return
 	GameServer.projectileManager.sync_delete.rpc(projectile_id)
 	queue_free()

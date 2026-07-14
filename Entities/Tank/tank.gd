@@ -98,26 +98,23 @@ func _process(delta):
 var paused := false
 
 func _unhandled_input(event):
-	if event.is_action_pressed("ui_cancel"):
-		if paused:
-			_resume()
-		else:
-			_pause()
+	# Pause handled by a single per-game UI (not per-tank) to avoid multiple menus.
+	pass
 
 func _ready():
+	add_to_group("tank")
 	GameServer.tankManager.tank_moved.connect(_on_tank_moved)
-	if pause_menu != null:
-		pause_menu.resumed.connect(_resume)
+
 
 func _pause():
 	paused = true
-	pause_menu.open()
 
 func _resume():
 	paused = false
-	pause_menu.close()
 
 func _physics_process(delta: float):
+	if multiplayer.multiplayer_peer == null:
+		return
 	if paused:
 		return
 	
@@ -143,7 +140,7 @@ func _physics_process(delta: float):
 
 	move_and_slide()
 	
-	GameServer.tankManager.update_transform.rpc(multiplayer.get_unique_id(), position, body.rotation, turret.rotation)
+	GameServer.tankManager.update_transform.rpc(owner_id, position, body.rotation, turret.rotation)
 
 
 func aim():
@@ -197,7 +194,7 @@ func shoot_request():
 		return
 	
 	var mouse_pos = get_global_mouse_position()
-	GameServer.projectileManager.request_shoot.rpc_id(1, multiplayer.get_unique_id(), mouse_pos, current_ammo, spawn_index)
+	GameServer.projectileManager.request_shoot.rpc_id(1, owner_id, mouse_pos, current_ammo, spawn_index)
 
 
 func trigger_muzzle_flash(flash: bool = true):

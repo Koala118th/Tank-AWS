@@ -36,8 +36,6 @@ func start_maze():
 	print("starting maze")
 	if multiplayer.is_server():
 		generate()
-
-		# send to all connected players
 		receive_maze.rpc(current_maze)
 
 
