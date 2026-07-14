@@ -2,7 +2,7 @@ extends CanvasLayer
 
 @onready var waiting_screen    : Control = $WaitingScreen
 @onready var starting_screen   : Control = $StartingScreen
-@onready var countdown_label   : Label   = $StartingScreen/CountdownLabel
+@onready var countdown_label: Label = $StartingScreen/Center/VBox/CountdownLabel
 @onready var spectator_overlay : Control = $SpectatorOverlay
 
 var _countdown_tween: Tween = null
