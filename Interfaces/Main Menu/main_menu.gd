@@ -11,7 +11,8 @@ var _client: WebSocketPeer
 var _waiting_for_open := false
 
 func _ready() -> void:
-	GameServer.game_started.connect(_on_game_start)
+	#GameServer.game_started.connect(_on_game_start)
+	pass
 
 func _on_start_button_pressed() -> void:
 	play_button.disabled = true

@@ -60,9 +60,9 @@ public partial class GameLiftBridge : Node
         var serverParameters = new ServerParameters(
             "wss://ap-southeast-2.api.amazongamelift.com",
             $"process-{System.Guid.NewGuid()}",
-            "my-laptop-compute",
+            "my-ec2-compute",
             "fleet-418af44f-1431-41dc-8fe8-c4348f3138f4",
-            "d37f71a8-7b34-4190-8bac-f9f64697f226"
+            "22b64496-d7c6-40e8-a399-6e4b1597ba9c"
         );
 
         var initOutcome = GameLiftServerAPI.InitSDK(serverParameters);
