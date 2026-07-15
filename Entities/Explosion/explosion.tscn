@@ -21,15 +21,12 @@ animations = [{
 "texture": ExtResource("3_lfqbx")
 }, {
 "duration": 1.0,
-"texture": ExtResource("3_lfqbx")
-}, {
-"duration": 1.0,
 "texture": ExtResource("4_2abxb")
 }, {
 "duration": 1.0,
 "texture": ExtResource("5_aotw3")
 }],
-"loop": false,
+"loop": 0,
 "name": &"explode",
 "speed": 10.0
 }]

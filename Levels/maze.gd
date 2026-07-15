@@ -14,6 +14,7 @@ var current_maze: Array = []
 
 func _ready():
 	GameServer.mapManager.maze_received.connect(_apply_maze)
+	GameServer.mapManager.background_received.connect(_apply_background)
 	if not multiplayer.is_server():
 		GameServer.mapManager.request_maze.rpc_id(1)
 	else:
@@ -31,30 +32,30 @@ func _ready():
 	if not tilemap.tile_set.has_source(source_id):
 		push_error("Maze Generator: source_id " + str(source_id) + " not found!")
 		return
+	
+	if multiplayer.is_server():
+		GameServer.mapManager.bg_count = background_scenes.size()
+		GameServer.mapManager.pick_background()
 
-	spawn_background()
 	nav_reg.bake_navigation_polygon()
 
-func spawn_background():
+func _apply_background(bg_index: int):
 	if background_scenes.is_empty():
 		push_error("Maze Generator: no background scenes assigned!")
 		return
-
-	var picked: PackedScene = background_scenes[randi() % background_scenes.size()]
-
+	var picked: PackedScene = background_scenes[bg_index]
 	if picked == null:
 		push_error("Maze Generator: picked background scene is null!")
 		return
-
+	
+	for child in get_parent().get_children():
+		if child.is_in_group("background"):
+			child.queue_free()
+	
 	var background = picked.instantiate()
-
-	# Defer the add_child call until the parent is done setting up
+	background.add_to_group("background")
 	get_parent().add_child.call_deferred(background)
-	
-	
-
 	print("Background spawned: ", picked.resource_path)
-
 
 func _apply_maze(grid: Array):
 	tilemap.clear()

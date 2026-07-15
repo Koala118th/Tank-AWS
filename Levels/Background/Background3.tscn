@@ -49,5 +49,5 @@ sand_source_2 = 4
 transition_source = 2
 
 [node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=378721051]
-z_index = -1
+z_index = -5
 tile_set = SubResource("TileSet_v7ppv")

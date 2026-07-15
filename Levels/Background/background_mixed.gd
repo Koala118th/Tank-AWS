@@ -13,6 +13,7 @@ extends Node2D
 var tile_coords: Vector2i = Vector2i(0, 0)
 
 func _ready():
+	add_to_group("background")
 	if tilemap == null:
 		push_error("Background3: TileMapLayer is NULL!")
 		return
@@ -27,8 +28,6 @@ func generate():
 	var tile_size = tilemap.tile_set.tile_size
 	var half_w: int = int(1000 / tile_size.x)
 	var half_h: int = int(500 / tile_size.y)
-
-	print("Background3: generating mixed grass/sand background")
 
 	for x in range(-half_w, half_w):
 		for y in range(-half_h, half_h):

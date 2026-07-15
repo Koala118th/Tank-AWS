@@ -11,6 +11,7 @@ class_name LaserProjectile
 var segments: Array[Sprite2D] = []
 var direction: Vector2
 var hit_targets := {}  # prevent multi-hit same frame
+var last_points: PackedVector2Array = []
 
 
 func set_direction(target_pos: Vector2):
@@ -18,45 +19,46 @@ func set_direction(target_pos: Vector2):
 
 
 func _physics_process(delta):
-	clear_segments()
+	if multiplayer.multiplayer_peer == null:
+		return
+	if not multiplayer.is_server():
+		return
 
+	var points := PackedVector2Array()
 	var current_pos = global_position
 	var current_dir = direction
+	points.append(current_pos)
 
 	for i in range(max_bounces):
 		ray.global_position = current_pos
 		ray.target_position = current_dir * max_length
 		ray.force_raycast_update()
 
-		var end_point: Vector2
-
 		if ray.is_colliding():
 			var collider = ray.get_collider()
-			end_point = ray.get_collision_point()
+			var end_point = ray.get_collision_point()
+			points.append(end_point)
 
-			create_segment(current_pos, end_point)
-
-			# DAMAGE
 			if collider.has_method("get_hit"):
 				if collider not in hit_targets:
 					collider.get_hit(damage)
 					hit_targets[collider] = true
-
 				current_pos = end_point + current_dir * 1
-
-			# BOUNCE on walls
+				continue
 			elif collider.is_in_group("wall"):
 				var normal = ray.get_collision_normal()
 				current_dir = current_dir.bounce(normal)
 				current_pos = end_point + current_dir * 2
-
+				continue
 			else:
 				break
-
 		else:
-			end_point = current_pos + current_dir * max_length
-			create_segment(current_pos, end_point)
+			points.append(current_pos + current_dir * max_length)
 			break
+
+	last_points = points
+	
+	GameServer.projectileManager.sync_laser.rpc(projectile_id, get_laser_points())
 
 
 func create_segment(start: Vector2, end: Vector2):
@@ -76,7 +78,21 @@ func create_segment(start: Vector2, end: Vector2):
 	segments.append(sprite)
 
 
+func apply_laser_points(points: PackedVector2Array):
+	draw_segments(points)
+
+
+func draw_segments(points: PackedVector2Array):
+	clear_segments()
+	for i in range(points.size() - 1):
+		create_segment(points[i], points[i + 1])
+
+
 func clear_segments():
 	for s in segments:
 		s.queue_free()
 	segments.clear()
+
+
+func get_laser_points() -> PackedVector2Array:
+	return last_points

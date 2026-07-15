@@ -4,10 +4,11 @@
 [ext_resource type="PackedScene" uid="uid://driwdok4cabt5" path="res://Objects/collectibles/sniper/sniper_crate.tscn" id="2_qjcts"]
 [ext_resource type="PackedScene" uid="uid://oiq4ubq3rxw4" path="res://Objects/collectibles/small/small_crate.tscn" id="3_7oq6y"]
 [ext_resource type="PackedScene" uid="uid://c0de3letot3w0" path="res://Objects/collectibles/laser/laser_crate.tscn" id="4_sekjj"]
+[ext_resource type="PackedScene" uid="uid://b6rem01mnf6h1" path="res://Objects/collectibles/chaser/chaser_crate.tscn" id="5_qjcts"]
 
-[node name="CollectibleSpawner" type="Node2D" unique_id=124313281 node_paths=PackedStringArray("maze_generator")]
+[node name="CollectibleSpawner" type="Node2D" unique_id=124313281]
 script = ExtResource("1_lrkyp")
 sniper_crate_scene = ExtResource("2_qjcts")
 small_crate_scene = ExtResource("3_7oq6y")
 laser_crate_scene = ExtResource("4_sekjj")
-maze_generator = NodePath("")
+chaser_crate_scene = ExtResource("5_qjcts")

@@ -4,4 +4,5 @@ extends Collectible
 
 func _ready() -> void:
 	bullet_scene = laser_bullet
+	ammo_type = 4
 	super._ready()

@@ -5,7 +5,11 @@ extends Node
 var tile_cols: int = 0
 var tile_rows: int = 0
 var current_maze: Array = []
+var bg_count = 1
+var current_bg_index: int = 0
+
 signal maze_received(grid)
+signal background_received(bg_index)
 
 @rpc("any_peer", "call_remote", "reliable")
 func request_maze():
@@ -16,19 +20,22 @@ func request_maze():
 	
 	if current_maze.size() > 0:
 		receive_maze.rpc_id(sender_id, current_maze)
+		receive_background.rpc_id(sender_id, current_bg_index)
 
 
-@rpc("authority", "call_remote", "reliable")
+@rpc("authority", "call_local", "reliable")
 func receive_maze(grid: Array):
 	emit_signal("maze_received", grid)
 
+
+@rpc("authority", "call_local", "reliable")
+func receive_background(bg_index: int):
+	emit_signal("background_received", bg_index)
 
 func start_maze():
 	print("starting maze")
 	if multiplayer.is_server():
 		generate()
-
-		# send to all connected players
 		receive_maze.rpc(current_maze)
 
 
@@ -49,7 +56,11 @@ func generate():
 
 	current_maze = expand_grid(maze_grid)
 	print("Maze generated")
-	
+
+
+func pick_background():
+	current_bg_index = randi() % bg_count
+	receive_background.rpc(current_bg_index)
 
 func divide_grid(maze_grid: Array, y: int, x: int, height: int, width: int):
 
