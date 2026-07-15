@@ -60,6 +60,7 @@ var _health: float = 100
 @onready var body: Node2D = $Body
 @onready var turret: Node2D = $Turret
 @onready var body_sprite: Sprite2D = $Body/Sprite2D
+@onready var collision_shape: CollisionShape2D = $CollisionShape2D
 @onready var turret_sprite: Sprite2D = $Turret/Sprite2D
 @onready var health_bar: ProgressBar = $ProgressBar
 @onready var fire_timer: Timer = $FireTimer
@@ -153,6 +154,7 @@ func _physics_process(delta: float):
 		# interpolation
 		global_position = global_position.lerp(target_pos, delta * interp_speed)
 		body.rotation = lerp_angle(body.rotation, target_body_rot, delta * interp_speed)
+		collision_shape.rotation = body.rotation
 		turret.rotation = lerp_angle(turret.rotation, target_turret_rot, delta * interp_speed)
 
 
@@ -169,7 +171,7 @@ func apply_input(input: Dictionary, delta: float):
 	# BODY ROTATION
 	var turn = input["turn"]
 	body.rotation += turn * turn_speed * delta
-	$CollisionShape2D.rotation += turn * turn_speed * delta
+	collision_shape.rotation = body.rotation
 	
 	# MOVEMENT
 	var forward = input["forward"]
@@ -193,6 +195,7 @@ func reconcile(server_pos, server_body_rot, server_turret_rot):
 		# smooth correction
 		global_position = global_position.lerp(server_pos, 0.2)
 		body.rotation = lerp_angle(body.rotation, server_body_rot, 0.2)
+		collision_shape.rotation = body.rotation
 		turret.rotation = lerp_angle(turret.rotation, server_turret_rot, 0.2)
 
 
@@ -256,7 +259,7 @@ func shoot_request():
 		return
 	
 	var mouse_pos = get_global_mouse_position()
-	GameServer.projectileManager.request_shoot.rpc_id(1, multiplayer.get_unique_id(), mouse_pos, current_ammo, spawn_index)
+	GameServer.projectileManager.request_shoot.rpc_id(1, multiplayer.get_unique_id(), mouse_pos, current_ammo)
 
 
 func trigger_muzzle_flash(flash: bool = true):

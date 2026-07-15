@@ -30,7 +30,7 @@ var projectiles := {}
 
 
 @rpc("any_peer", "call_remote", "reliable")
-func request_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int, spawn_index: int):
+func request_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int):
 	if not multiplayer.is_server():
 		return
 	
