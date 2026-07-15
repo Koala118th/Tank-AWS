@@ -113,6 +113,8 @@ func spawn_tank(owner_peer_id: int, spawn_index: int, spawn_pos: Vector2 = Vecto
 	else:
 		pos = spawn_pos  # comes from deliver_spawns → tank_spawned signal
 
+
+func spawn_tank(owner_peer_id: int, floor_positions: Array, spawn_index: int):
 	var tank: Tank = tank_scene.instantiate()
 	tank.set_multiplayer_authority(owner_peer_id)
 	tank.position = pos

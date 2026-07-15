@@ -3,22 +3,6 @@ class_name Tank
 
 const MAX_HEALTH: int = 100
 
-enum AmmoType {
-	BULLET,
-	SNIPER,
-	CHASER,
-	SMALL,
-	LASER
-}
-
-var ammo_scenes := {
-	AmmoType.BULLET : preload("res://Objects/projectile/bullet/bullet.tscn"),
-	AmmoType.SNIPER : preload("res://Objects/projectile/sniper/sniper.tscn"),
-	AmmoType.CHASER : preload("res://Objects/projectile/chaser/chaser.tscn"),
-	AmmoType.SMALL : preload("res://Objects/projectile/small/small.tscn"),
-	AmmoType.LASER : preload("res://Objects/projectile/laser/laser.tscn"),
-}
-
 var explosion_scene: PackedScene =preload("res://Entities/Explosion/explosion.tscn")
 
 var tank_textures := [
@@ -47,7 +31,14 @@ var colors := [
 	Color(0.76, 0.70, 0.50)
 ]
 
-@export var current_ammo = AmmoType.BULLET
+var track_scene: PackedScene = preload("res://Entities/Tank/Track/track.tscn")
+var last_track_pos: Vector2
+var track_timer := 0.0
+@export var track_interval := 0.07
+@export var track_distance := 7.0
+
+@export var current_ammo = GameServer.projectileManager.AmmoType.BULLET
+@export var pause_menu: CanvasLayer
 
 @export var speed: float = 150.0
 @export var turn_speed: float = 5.0
@@ -75,6 +66,7 @@ var _health: float = 100
 @onready var body: Node2D = $Body
 @onready var turret: Node2D = $Turret
 @onready var body_sprite: Sprite2D = $Body/Sprite2D
+@onready var collision_shape: CollisionShape2D = $CollisionShape2D
 @onready var turret_sprite: Sprite2D = $Turret/Sprite2D
 @onready var health_bar: ProgressBar = $ProgressBar
 @onready var fire_timer: Timer = $FireTimer
@@ -90,6 +82,20 @@ var spawn_index
 
 var next_bullet_id = 0
 
+var target_pos: Vector2
+var target_body_rot: float
+var target_turret_rot: float
+
+var interp_speed := 10.0
+
+var reconcile_threshold := 20.0
+
+var current_input := {
+	"forward": 0.0,
+	"turn": 0.0,
+	"mouse": Vector2.ZERO,
+	"shoot": false
+}
 
 func _process(delta):
 	health_bar.value = lerp(health_bar.value, _health, 10 * delta)
@@ -103,6 +109,12 @@ func _unhandled_input(event):
 func _ready():
 	add_to_group("tank")
 	GameServer.tankManager.tank_moved.connect(_on_tank_moved)
+	if pause_menu != null:
+		pause_menu.resumed.connect(_resume)
+	
+	target_pos = global_position
+	target_body_rot = body.rotation
+	target_turret_rot = turret.rotation
 
 
 func _pause():
@@ -117,29 +129,87 @@ func _physics_process(delta: float):
 	if paused:
 		return
 	
-	if not is_multiplayer_authority():
-		return
-
-	turret.look_at(get_global_mouse_position())
-	turret.rotation += deg_to_rad(90)
-	var turn = Input.get_axis("turn_left", "turn_right")
-	body.rotation += turn * turn_speed * delta
-	$CollisionShape2D.rotation += turn * turn_speed * delta
-
-	var forward = Input.get_axis("move_backward", "move_forward")
-	velocity = Vector2.UP.rotated(body.rotation) * forward * speed
+	if multiplayer.is_server():
+		apply_input(current_input, delta)
+		
+		GameServer.tankManager.sync_state.rpc(
+			owner_id,
+			global_position,
+			body.rotation,
+			turret.rotation
+		)
 	
-	if Input.is_action_pressed("shoot") == true:
-		shoot_request()
-	
-	if current_ammo == GameServer.projectileManager.AmmoType.LASER:
-		aim()
+	elif is_multiplayer_authority():
+		# prediction
+		var input = get_input_state()
+		GameServer.tankManager.send_input.rpc_id(1, input)
+		apply_input(input, delta)
+		spawn_tracks(delta)
+		
+		if Input.is_action_pressed("shoot") == true:
+			shoot_request()
+		
+		if current_ammo == GameServer.projectileManager.AmmoType.LASER:
+			aim()
+		else:
+			aim_line.clear_points()
 	else:
-		aim_line.clear_points()
+		# interpolation
+		global_position = global_position.lerp(target_pos, delta * interp_speed)
+		body.rotation = lerp_angle(body.rotation, target_body_rot, delta * interp_speed)
+		collision_shape.rotation = body.rotation
+		turret.rotation = lerp_angle(turret.rotation, target_turret_rot, delta * interp_speed)
+		spawn_tracks(delta)
 
+
+func get_input_state():
+	return {
+		"forward": Input.get_axis("move_backward", "move_forward"),
+		"turn": Input.get_axis("turn_left", "turn_right"),
+		"mouse": get_global_mouse_position(),
+		"shoot": Input.is_action_pressed("shoot")
+	}
+
+
+func apply_input(input: Dictionary, delta: float):
+	# BODY ROTATION
+	var turn = input["turn"]
+	body.rotation += turn * turn_speed * delta
+	collision_shape.rotation = body.rotation
+	
+	# MOVEMENT
+	var forward = input["forward"]
+	velocity = Vector2.UP.rotated(body.rotation) * forward * speed
 	move_and_slide()
 	
-	GameServer.tankManager.update_transform.rpc(owner_id, position, body.rotation, turret.rotation)
+	# TURRET
+	turret.look_at(input["mouse"])
+	turret.rotation += deg_to_rad(90)
+
+
+func reconcile(server_pos, server_body_rot, server_turret_rot):
+	var error = global_position.distance_to(server_pos)
+	
+	if error > reconcile_threshold:
+		# snap
+		global_position = server_pos
+		body.rotation = server_body_rot
+		turret.rotation = server_turret_rot
+	else:
+		# smooth correction
+		global_position = global_position.lerp(server_pos, 0.2)
+		body.rotation = lerp_angle(body.rotation, server_body_rot, 0.2)
+		collision_shape.rotation = body.rotation
+		turret.rotation = lerp_angle(turret.rotation, server_turret_rot, 0.2)
+
+
+func apply_server_state(pos, body_rot, turret_rot):
+	if is_multiplayer_authority():
+		reconcile(pos, body_rot, turret_rot)
+	else:
+		target_pos = pos
+		target_body_rot = body_rot
+		target_turret_rot = turret_rot
 
 
 func aim():
@@ -221,11 +291,11 @@ func trigger_muzzle_flash(flash: bool = true):
 	#fire_timer.start(projectile.fire_cooldown)
 
 
-func server_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int, spawn_index: int):
+func server_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int):
 	if not fire_timer.is_stopped():
 		return
 	
-	var projectile = ammo_scenes[ammo_type].instantiate()
+	var projectile = GameServer.projectileManager.ammo_scenes[ammo_type].instantiate()
 	projectile.shooter_id = shooter_id
 
 	var bullet_dir = (mouse_pos - global_position).normalized()
@@ -303,6 +373,30 @@ func set_visual_by_index(index: int):
 func setup_spawn_index(index: int):
 	spawn_index = index
 	set_visual_by_index(index)
+
+
+func spawn_tracks(delta: float):
+	# detect movement using distance (works for ALL tanks)
+	var dist = global_position.distance_to(last_track_pos)
+	
+	if dist < track_distance:
+		return
+	
+	track_timer -= delta
+	if track_timer > 0:
+		return
+	
+	track_timer = track_interval
+	last_track_pos = global_position
+	
+	var track = track_scene.instantiate()
+	
+	# spawn behind tank
+	var offset = Vector2.DOWN.rotated(body.rotation) * 10
+	track.global_position = global_position + offset
+	track.rotation = body.rotation
+	
+	get_parent().add_child(track)
 
 
 func _on_tank_moved(peer_id: int, pos: Vector2, body_rot: float, turret_rot: float):
