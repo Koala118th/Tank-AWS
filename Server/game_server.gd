@@ -5,7 +5,7 @@ extends Node
 # ─────────────────────────────────────────
 func _ready():
 	if is_server_mode():
-		start_server()
+		pass
 		
 func is_server_mode() -> bool:
 	return "--server" in OS.get_cmdline_args() \
@@ -54,25 +54,32 @@ func _on_peer_disconnected(id: int):
 #  CLIENT
 # ─────────────────────────────────────────
 var my_id = null
-func start_client():
+var _player_session = null
+func start_client(server_ip, port, player_session, game_session):
 	var peer = ENetMultiplayerPeer.new()
 	
 	multiplayer.connected_to_server.connect(_on_connected_to_server)
 	multiplayer.connection_failed.connect(_on_connection_failed)
 	multiplayer.server_disconnected.connect(_on_server_disconnected)
 	
-	var err = peer.create_client(SERVER_IP, PORT)
+	var err = peer.create_client(server_ip, port)
 	if err != OK:
 		print("CLIENT: Failed to connect: ", err)
 		return
 	multiplayer.multiplayer_peer = peer
 
+	_player_session = player_session
+
+@rpc("any_peer", "call_remote")
+func send_player_session(player_session_id: String):
+	print("CLIENT: Sending player session ID to server: ", player_session_id)
+	GameLiftBridge.AcceptPlayerSession(player_session_id)
 
 func _on_connected_to_server():
 	my_id = multiplayer.get_unique_id()
+	send_player_session.rpc_id(1, _player_session)
 	
 	print("CLIENT: Connected! My ID is ", my_id)
-	#game_started.emit()
 
 func _on_connection_failed():
 	print("CLIENT: Connection failed.")
