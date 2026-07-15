@@ -31,6 +31,12 @@ var colors := [
 	Color(0.76, 0.70, 0.50)
 ]
 
+var track_scene: PackedScene = preload("res://Entities/Tank/Track/track.tscn")
+var last_track_pos: Vector2
+var track_timer := 0.0
+@export var track_interval := 0.07
+@export var track_distance := 7.0
+
 @export var current_ammo = GameServer.projectileManager.AmmoType.LASER
 @export var pause_menu: CanvasLayer
 
@@ -127,7 +133,6 @@ func _physics_process(delta: float):
 	
 	if multiplayer.is_server():
 		apply_input(current_input, delta)
-		print("Tank:", owner_id, " Input:", current_input)
 		
 		GameServer.tankManager.sync_state.rpc(
 			owner_id,
@@ -135,13 +140,13 @@ func _physics_process(delta: float):
 			body.rotation,
 			turret.rotation
 		)
-		print("SERVER POS:", global_position, body.rotation,", ", turret.rotation)
 	
 	elif is_multiplayer_authority():
 		# prediction
 		var input = get_input_state()
 		GameServer.tankManager.send_input.rpc_id(1, input)
 		apply_input(input, delta)
+		spawn_tracks(delta)
 		
 		if Input.is_action_pressed("shoot") == true:
 			shoot_request()
@@ -156,6 +161,7 @@ func _physics_process(delta: float):
 		body.rotation = lerp_angle(body.rotation, target_body_rot, delta * interp_speed)
 		collision_shape.rotation = body.rotation
 		turret.rotation = lerp_angle(turret.rotation, target_turret_rot, delta * interp_speed)
+		spawn_tracks(delta)
 
 
 func get_input_state():
@@ -369,6 +375,30 @@ func set_visual_by_index(index: int):
 func setup_spawn_index(index: int):
 	spawn_index = index
 	set_visual_by_index(index)
+
+
+func spawn_tracks(delta: float):
+	# detect movement using distance (works for ALL tanks)
+	var dist = global_position.distance_to(last_track_pos)
+	
+	if dist < track_distance:
+		return
+	
+	track_timer -= delta
+	if track_timer > 0:
+		return
+	
+	track_timer = track_interval
+	last_track_pos = global_position
+	
+	var track = track_scene.instantiate()
+	
+	# spawn behind tank
+	var offset = Vector2.DOWN.rotated(body.rotation) * 10
+	track.global_position = global_position + offset
+	track.rotation = body.rotation
+	
+	get_parent().add_child(track)
 
 
 func _on_tank_moved(peer_id: int, pos: Vector2, body_rot: float, turret_rot: float):
