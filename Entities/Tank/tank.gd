@@ -273,25 +273,7 @@ func trigger_muzzle_flash(flash: bool = true):
 		muzzle_timer.start()
 
 
-#func shoot(projectile_scene: PackedScene):
-	#if not fire_timer.is_stopped():
-		#return
-	#var projectile = projectile_scene.instantiate()
-	#projectile.shooter = self
-	#var mouse_pos = get_global_mouse_position()
-	#var bullet_dir = (mouse_pos - global_position).normalized()
-#
-	#projectile.global_position = global_position + bullet_dir * 25
-#
-	#var dir = mouse_pos
-	#projectile.set_direction(dir)
-#
-	#get_parent().add_child(projectile)
-	#
-	#fire_timer.start(projectile.fire_cooldown)
-
-
-func server_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int):
+func server_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int, spawn_index: int):
 	if not fire_timer.is_stopped():
 		return
 	
