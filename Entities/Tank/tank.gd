@@ -3,7 +3,7 @@ class_name Tank
 
 const MAX_HEALTH: int = 100
 
-var explosion_scene: PackedScene =preload("res://Entities/Explosion/explosion.tscn")
+var explosion_scene: PackedScene =preload("res://Assets/Scenes/Explosion/explosion.tscn")
 
 var tank_textures := [
 	{
@@ -31,7 +31,7 @@ var colors := [
 	Color(0.76, 0.70, 0.50)
 ]
 
-var track_scene: PackedScene = preload("res://Entities/Tank/Track/track.tscn")
+var track_scene: PackedScene = preload("res://Assets/Scenes/Track/track.tscn")
 var last_track_pos: Vector2
 var track_timer := 0.0
 @export var track_interval := 0.07
@@ -86,7 +86,7 @@ var target_pos: Vector2
 var target_body_rot: float
 var target_turret_rot: float
 
-var interp_speed := 10.0
+var interp_speed := 16.0
 
 var reconcile_threshold := 20.0
 
@@ -155,10 +155,12 @@ func _physics_process(delta: float):
 			aim_line.clear_points()
 	else:
 		# interpolation
-		global_position = global_position.lerp(target_pos, delta * interp_speed)
-		body.rotation = lerp_angle(body.rotation, target_body_rot, delta * interp_speed)
+		var t = clamp(delta * interp_speed, 0.0, 1.0)
+		
+		global_position = global_position.lerp(target_pos, t)
+		body.rotation = lerp_angle(body.rotation, target_body_rot, t)
 		collision_shape.rotation = body.rotation
-		turret.rotation = lerp_angle(turret.rotation, target_turret_rot, delta * interp_speed)
+		turret.rotation = lerp_angle(turret.rotation, target_turret_rot, t)
 		spawn_tracks(delta)
 
 

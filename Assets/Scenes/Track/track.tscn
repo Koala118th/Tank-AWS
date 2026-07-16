@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://dl6udc28r03gv"]
 
-[ext_resource type="Script" uid="uid://dxyl0gehkra86" path="res://Entities/Tank/Track/track.gd" id="1_ddqad"]
+[ext_resource type="Script" uid="uid://dxyl0gehkra86" path="res://Assets/Scenes/Track/track.gd" id="1_ddqad"]
 [ext_resource type="Texture2D" uid="uid://cxi643vixrxl0" path="res://Assets/PNG/tracksLarge-1.png" id="2_5bk6l"]
 
 [node name="Track" type="Node2D" unique_id=79666576]

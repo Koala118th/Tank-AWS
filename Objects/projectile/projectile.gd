@@ -10,7 +10,11 @@ class_name Projectile
 var shooter
 var shooter_id: int
 var projectile_id
-var explosion_scene: PackedScene =preload("res://Entities/ExplosionSmall/explosion_small.tscn")
+var explosion_scene: PackedScene =preload("res://Assets/Scenes/ExplosionSmall/explosion_small.tscn")
+
+var target_pos: Vector2
+var target_rot: float
+var interp_speed := 60.0
 
 @onready var projectile_sprite: Sprite2D = $Sprite2D
 
@@ -21,6 +25,9 @@ func set_direction(dir: Vector2):
 
 
 func _ready():
+	target_pos = global_position
+	target_rot = rotation
+	
 	$EnemyDetectionArea/CollisionShape2D.disabled = true
 	await get_tree().create_timer(0.08).timeout
 	$EnemyDetectionArea/CollisionShape2D.disabled = false
@@ -39,6 +46,14 @@ func _physics_process(delta):
 			rotation += deg_to_rad(90)
 		
 		GameServer.projectileManager.sync_transform.rpc(projectile_id, global_position, rotation, velocity)
+	else:
+		# interpolation
+		var t = clamp(delta * interp_speed, 0.0, 1.0)
+
+		var predicted_pos = target_pos + velocity * delta
+
+		global_position = global_position.lerp(predicted_pos, t)
+		rotation = lerp_angle(rotation, target_rot, t)
 
 
 func _on_enemy_detection_area_body_entered(body: Node2D) -> void:

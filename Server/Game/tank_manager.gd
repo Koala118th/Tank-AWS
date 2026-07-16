@@ -56,19 +56,6 @@ func sync_state(id: int, pos: Vector2, body_rot: float, turret_rot: float):
 	tank.apply_server_state(pos, body_rot, turret_rot)
 
 
-@rpc("any_peer", "call_remote", "unreliable_ordered")
-func update_transform(peer_id: int, pos: Vector2, body_rot: float, turret_rot: float) -> void:
-	if multiplayer.is_server():
-		var sender_id = multiplayer.get_remote_sender_id()
-		if sender_id != peer_id:
-			return
-		tank_moved.emit(peer_id, pos, body_rot, turret_rot)
-		for p in multiplayer.get_peers():
-			if p != sender_id:
-				update_transform.rpc_id(p, peer_id, pos, body_rot, turret_rot)
-	else:
-		tank_moved.emit(peer_id, pos, body_rot, turret_rot)
-
 @rpc("authority", "call_remote", "reliable")
 func clear_tanks() -> void:
 	var spawners = get_tree().get_nodes_in_group("tank_spawner")

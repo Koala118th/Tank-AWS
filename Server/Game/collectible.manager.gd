@@ -5,7 +5,7 @@ var maze_generator: Node2D = null
 enum CrateType { SNIPER, CHASER, SMALL, LASER }
 
 const MAX_COLLECTIBLES: int = 3
-const SPAWN_INTERVAL: float = 10.0
+const SPAWN_INTERVAL: float = 7
 
 # Server-side state
 var _spawn_timer: Timer
@@ -17,10 +17,10 @@ var _collectible_spawner: Node2D = null
 
 func _get_ammo_remaining(crate_type: int) -> int:
 	match crate_type:
-		1: return 3
-		2: return 3
-		3: return 30
-		4: return 3
+		1: return -1
+		2: return -1
+		3: return -1
+		4: return -1
 	return -1
 
 func init_collectibles(spawner_node: Node) -> void:

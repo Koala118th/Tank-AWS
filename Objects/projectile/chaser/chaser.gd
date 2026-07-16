@@ -61,3 +61,10 @@ func _physics_process(delta):
 		rotation = velocity.angle() + deg_to_rad(90)
 		
 		GameServer.projectileManager.sync_transform.rpc(projectile_id, global_position, rotation, velocity)
+	else:
+		var t = clamp(delta * interp_speed, 0.0, 1.0)
+
+		var predicted_pos = target_pos + velocity * delta
+
+		global_position = global_position.lerp(predicted_pos, t)
+		rotation = lerp_angle(rotation, target_rot, t)
