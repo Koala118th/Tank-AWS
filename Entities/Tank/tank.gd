@@ -316,6 +316,9 @@ func die():
 	explosion.global_position = global_position
 	get_parent().add_child(explosion)
 
+	# ADD THIS
+	AudioManager.play_at(AudioManager.sfx_explosion, global_position)
+
 	queue_free()
 
 

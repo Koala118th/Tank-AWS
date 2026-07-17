@@ -75,6 +75,15 @@ func spawn_projectile(id, pos: Vector2, rot: float, dir: Vector2, ammo_type: int
 		var tank = GameServer.tankManager.find_tank_by_owner(shooter_id)
 		tank.trigger_muzzle_flash()
 
+	var shoot_sfx: AudioStream
+	match ammo_type:
+		AmmoType.SNIPER: shoot_sfx = AudioManager.sfx_shoot_sniper
+		AmmoType.LASER:  shoot_sfx = AudioManager.sfx_shoot_laser
+		AmmoType.BULLET: shoot_sfx = AudioManager.sfx_shoot
+		AmmoType.CHASER: shoot_sfx = AudioManager.sfx_shoot
+		AmmoType.SMALL: shoot_sfx = AudioManager.sfx_shoot_small
+	AudioManager.play_at(shoot_sfx, pos)
+
 
 @rpc("authority", "call_remote", "unreliable")
 func sync_transform(id, pos: Vector2, rot: float, vel: Vector2):
@@ -117,10 +126,8 @@ func sync_laser(id, points: PackedVector2Array):
 func sync_delete(id):
 	if multiplayer.is_server():
 		return
-
 	if not projectiles.has(id):
 		return
-
 	var p = projectiles[id]
 	if is_instance_valid(p):
 		if not p is LaserProjectile:

@@ -101,12 +101,13 @@ func notify_crate_picked_up_rpc(crate_id: int, tank_peer_id: int) -> void:
 		return
 
 	var crate_type: int = _active_crates[crate_id]["type"]
+	var crate_pos: Vector2 = _active_crates[crate_id]["position"]  # grab before erase
 	_active_crates.erase(crate_id)
 
 	var ammo_remaining: int = _get_ammo_remaining(crate_type)
 	GameServer.tankManager.set_tank_ammo(tank_peer_id, crate_type, ammo_remaining)
 	GameServer.tankManager.sync_ammo.rpc(tank_peer_id, crate_type)
-	receive_crate_removed.rpc(crate_id)
+	receive_crate_removed.rpc(crate_id, crate_pos)  # pass pos along
 
 	if is_inside_tree() and _spawn_timer != null:
 		_spawn_timer.stop()
@@ -120,10 +121,11 @@ func receive_crate_spawned(crate_id: int, crate_type: int, pos: Vector2) -> void
 	_collectible_spawner.spawn_crate(crate_id, crate_type, pos)
 
 @rpc("authority", "call_local", "reliable")
-func receive_crate_removed(crate_id: int) -> void:
+func receive_crate_removed(crate_id: int, crate_pos: Vector2) -> void:
 	if _collectible_spawner == null:
 		push_warning("[CollectibleManager] _collectible_spawner is null!")
 		return
+	AudioManager.play_at(AudioManager.sfx_pickup, crate_pos)
 	_collectible_spawner.remove_crate(crate_id)
 
 @rpc("any_peer", "call_remote", "reliable")
