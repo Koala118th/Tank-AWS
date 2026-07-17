@@ -24,6 +24,9 @@ var tank_textures := [
 	}
 ]
 
+var muzzle_flash_texture = preload("res://Assets/PNG/shotLarge.png")
+var sniper_muzzle_flash_texture = preload("res://Assets/PNG/shotRed.png")
+
 var colors := [
 	Color(0.188, 1.0, 0.455),
 	Color(0x378cc4ff),
@@ -271,6 +274,10 @@ func shoot_request():
 func trigger_muzzle_flash(flash: bool = true):
 	fire_timer.start(GameServer.projectileManager.ammo_cooldown[current_ammo]) # Spam blocker
 	if not current_ammo == GameServer.projectileManager.AmmoType.LASER:
+		if current_ammo == GameServer.projectileManager.AmmoType.SNIPER:
+			muzzle_flash.texture = sniper_muzzle_flash_texture
+		else:
+			muzzle_flash.texture = muzzle_flash_texture
 		muzzle_flash.visible = true
 		muzzle_timer.start()
 
