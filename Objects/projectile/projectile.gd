@@ -14,7 +14,7 @@ var explosion_scene: PackedScene =preload("res://Assets/Scenes/ExplosionSmall/ex
 
 var target_pos: Vector2
 var target_rot: float
-var interp_speed := 60.0
+var interp_speed := 45.0
 
 @onready var projectile_sprite: Sprite2D = $Sprite2D
 
