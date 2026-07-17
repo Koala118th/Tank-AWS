@@ -184,8 +184,13 @@ func apply_input(input: Dictionary, delta: float):
 	
 	# MOVEMENT
 	var forward = input["forward"]
-	velocity = Vector2.UP.rotated(body.rotation) * forward * speed
-	move_and_slide()
+	var motion = Vector2.UP.rotated(body.rotation) * forward * speed * get_physics_process_delta_time()
+
+	var collision = move_and_collide(motion)
+	if collision:
+		# Slide along the collision surface, but don't push
+		var slide_motion = collision.get_remainder().slide(collision.get_normal())
+		move_and_collide(slide_motion)
 	
 	# TURRET
 	turret.look_at(input["mouse"])

@@ -5,8 +5,9 @@
 [ext_resource type="Texture2D" uid="uid://dhd61cu0w2geg" path="res://Assets/PNG/tankGreen_barrel1.png" id="3_f3kol"]
 [ext_resource type="Texture2D" uid="uid://bjc6r2mi8r51i" path="res://Assets/PNG/shotLarge.png" id="5_rt1q2"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_f3kol"]
-size = Vector2(40, 43)
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_f3kol"]
+radius = 20.0
+height = 43.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f3kol"]
 bg_color = Color(1, 0, 0, 1)
@@ -46,7 +47,7 @@ wait_time = 0.1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1835032232]
 position = Vector2(0, -1.5)
-shape = SubResource("RectangleShape2D_f3kol")
+shape = SubResource("CapsuleShape2D_f3kol")
 
 [node name="HealthBar" type="Node2D" parent="." unique_id=101778963]
 position = Vector2(14, -31.5)
