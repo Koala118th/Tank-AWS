@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://bqwtoh3e17r72"]
 
-[ext_resource type="Script" uid="uid://g331kr3tyrn5" path="res://Assets/Scenes/WallPen/wall_pen.gd" id="1_5sd7v"]
+[ext_resource type="Script" uid="uid://g331kr3tyrn5" path="res://Assets/VFX Scenes/WallPen/wall_pen.gd" id="1_5sd7v"]
 [ext_resource type="Texture2D" uid="uid://damf56xsi31d5" path="res://Assets/PNG/explosionSmoke5.png" id="2_xab85"]
 
 [node name="WallPen" type="Node2D" unique_id=1786682785]

@@ -5,7 +5,7 @@ class_name Sniper
 var wall_hits :float= 0
 var max_skips :float= 8
 
-var wall_pen_scene: PackedScene =preload("res://Assets/Scenes/WallPen/wall_pen.tscn")
+var wall_pen_scene: PackedScene =preload("res://Assets/VFX Scenes/WallPen/wall_pen.tscn")
 var was_in_wall := false
 
 func _physics_process(delta):

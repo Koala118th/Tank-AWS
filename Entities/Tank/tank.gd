@@ -3,7 +3,7 @@ class_name Tank
 
 const MAX_HEALTH: int = 100
 
-var explosion_scene: PackedScene =preload("res://Assets/Scenes/Explosion/explosion.tscn")
+var explosion_scene: PackedScene =preload("res://Assets/VFX Scenes/Explosion/explosion.tscn")
 
 var tank_textures := [
 	{
@@ -31,7 +31,7 @@ var colors := [
 	Color(0.76, 0.70, 0.50)
 ]
 
-var track_scene: PackedScene = preload("res://Assets/Scenes/Track/track.tscn")
+var track_scene: PackedScene = preload("res://Assets/VFX Scenes/Track/track.tscn")
 var last_track_pos: Vector2
 var track_timer := 0.0
 @export var track_interval := 0.07

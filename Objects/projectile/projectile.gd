@@ -10,7 +10,7 @@ class_name Projectile
 var shooter
 var shooter_id: int
 var projectile_id
-var explosion_scene: PackedScene =preload("res://Assets/Scenes/ExplosionSmall/explosion_small.tscn")
+var explosion_scene: PackedScene =preload("res://Assets/VFX Scenes/ExplosionSmall/explosion_small.tscn")
 
 var target_pos: Vector2
 var target_rot: float
