@@ -24,6 +24,9 @@ var tank_textures := [
 	}
 ]
 
+var muzzle_flash_texture = preload("res://Assets/PNG/shotLarge.png")
+var sniper_muzzle_flash_texture = preload("res://Assets/PNG/shotRed.png")
+
 var colors := [
 	Color(0.188, 1.0, 0.455),
 	Color(0x378cc4ff),
@@ -181,8 +184,13 @@ func apply_input(input: Dictionary, delta: float):
 	
 	# MOVEMENT
 	var forward = input["forward"]
-	velocity = Vector2.UP.rotated(body.rotation) * forward * speed
-	move_and_slide()
+	var motion = Vector2.UP.rotated(body.rotation) * forward * speed * get_physics_process_delta_time()
+
+	var collision = move_and_collide(motion)
+	if collision:
+		# Slide along the collision surface, but don't push
+		var slide_motion = collision.get_remainder().slide(collision.get_normal())
+		move_and_collide(slide_motion)
 	
 	# TURRET
 	turret.look_at(input["mouse"])
@@ -271,6 +279,10 @@ func shoot_request():
 func trigger_muzzle_flash(flash: bool = true):
 	fire_timer.start(GameServer.projectileManager.ammo_cooldown[current_ammo]) # Spam blocker
 	if not current_ammo == GameServer.projectileManager.AmmoType.LASER:
+		if current_ammo == GameServer.projectileManager.AmmoType.SNIPER:
+			muzzle_flash.texture = sniper_muzzle_flash_texture
+		else:
+			muzzle_flash.texture = muzzle_flash_texture
 		muzzle_flash.visible = true
 		muzzle_timer.start()
 

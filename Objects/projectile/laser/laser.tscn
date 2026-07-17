@@ -2,7 +2,10 @@
 
 [ext_resource type="PackedScene" uid="uid://dt6g3kf66otjm" path="res://Objects/projectile/projectile.tscn" id="1_ceqft"]
 [ext_resource type="Script" uid="uid://b2i3hjbv5fh21" path="res://Objects/projectile/laser/laser.gd" id="2_rqvie"]
+[ext_resource type="Texture2D" uid="uid://dcaiwq5f7wpkf" path="res://Assets/PNG/laserGreen01.png" id="3_jm82b"]
 [ext_resource type="Texture2D" uid="uid://blpeiva54uwrn" path="res://Assets/PNG/laserBlue01.png" id="3_rqvie"]
+[ext_resource type="Texture2D" uid="uid://jlsd6h1dlix2" path="res://Assets/PNG/laserRed01.png" id="5_s3lir"]
+[ext_resource type="Texture2D" uid="uid://bgykxkna0m58m" path="res://Assets/PNG/laserSand01.png" id="6_m8g2b"]
 
 [node name="Laser" unique_id=2093711468 instance=ExtResource("1_ceqft")]
 script = ExtResource("2_rqvie")
@@ -10,6 +13,7 @@ max_bounces = 5
 max_length = 1000.0
 damage = 40.0
 fire_cooldown = 1.0
+projectile_textures = [ExtResource("3_jm82b"), ExtResource("3_rqvie"), ExtResource("5_s3lir"), ExtResource("6_m8g2b")]
 
 [node name="Sprite2D" parent="." index="0" unique_id=1784469120]
 visible = false
