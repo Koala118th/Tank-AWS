@@ -70,6 +70,35 @@ func _on_peer_disconnected(id: int):
 		for peer_id in multiplayer.get_peers():
 			tankManager.sync_delete_tank.rpc_id(peer_id, id)
 	playerManager.remove_slot(id)
+	# If server is now empty, full reset
+	if playerManager.player_count == 0:
+		_reset_server()
+
+func _reset_server() -> void:
+	print("SERVER: No players remaining — resetting server state")
+	# Cancel any running timers
+	if _countdown_timer:
+		_countdown_timer.stop()
+		_countdown_timer.queue_free()
+		_countdown_timer = null
+	if _game_over_timer:
+		_game_over_timer.stop()
+		_game_over_timer.queue_free()
+		_game_over_timer = null
+	# Reset all state
+	match_state = MatchState.WAITING
+	collectibleManager.reset()
+	playerManager._spectators_next_match.clear()
+	playerManager._keep_spectator_next_match.clear()
+	# Clear tanks and projectiles on server
+	var tank_spawner = _get_tank_spawner()
+	if tank_spawner:
+		tank_spawner._clear_tanks()
+	projectileManager.clear_all_projectiles()
+	# Generate fresh maze ready for next players
+	mapManager.start_maze()
+	mapManager.pick_background()
+	print("SERVER: Reset complete — waiting for players")
 
 # ─────────────────────────────────────────
 #  SIGNAL HANDLERS FROM PLAYER MANAGER
