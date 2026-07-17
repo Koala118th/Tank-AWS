@@ -290,7 +290,7 @@ func server_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int, spawn_ind
 	
 	# generate unique incremental ID
 	next_bullet_id += 1
-	var bullet_id = str(multiplayer.get_unique_id()) + "_" + str(next_bullet_id)
+	var bullet_id = str(owner_id) + "_" + str(next_bullet_id)
 	projectile.projectile_id = bullet_id
 
 	# tell all clients to spawn it visually
