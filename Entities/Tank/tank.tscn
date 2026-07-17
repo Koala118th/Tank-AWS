@@ -56,6 +56,7 @@ rotation = 1.5707964
 one_shot = true
 
 [node name="AimRay" type="RayCast2D" parent="." unique_id=847220568]
+visible = false
 
 [node name="AimLine" type="Line2D" parent="." unique_id=475982724]
 z_index = -1
