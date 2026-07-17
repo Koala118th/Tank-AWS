@@ -18,6 +18,11 @@ config/icon="res://icon.svg"
 [autoload]
 
 GameServer="*uid://djbvowfvclxkf"
+AudioManager="*uid://bxa3y805pjdw5"
+
+[display]
+
+window/stretch/mode="canvas_items"
 
 [display]
 
