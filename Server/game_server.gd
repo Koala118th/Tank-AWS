@@ -69,6 +69,8 @@ func _on_peer_disconnected(id: int):
 		tank_spawner.remove_tank_by_owner(id)
 		for peer_id in multiplayer.get_peers():
 			tankManager.sync_delete_tank.rpc_id(peer_id, id)
+	GameLiftBridge.RemovePlayerSession(player_session_store[id])
+	player_session_store.erase(id)
 	playerManager.remove_slot(id)
 
 # ─────────────────────────────────────────
@@ -304,7 +306,11 @@ func _reset_client_session_state() -> void:
 	pending_match_state = -1
 	match_state = MatchState.WAITING
 
+#Player session client
 var _player_session = null
+#Player sessions server
+var player_session_store: Dictionary = {}
+
 func start_client(server_ip, port, player_session, game_session):
 	_reset_client_session_state()
 	var peer = ENetMultiplayerPeer.new()
@@ -323,13 +329,14 @@ func start_client(server_ip, port, player_session, game_session):
 	_player_session = player_session
 
 @rpc("any_peer", "call_remote")
-func send_player_session(player_session_id: String):
+func send_player_session(player_session_id: String, peer_id):
 	print("CLIENT: Sending player session ID to server: ", player_session_id)
+	player_session_store[peer_id] = player_session_id
 	GameLiftBridge.AcceptPlayerSession(player_session_id)
 
 func _on_connected_to_server():
 	my_id = multiplayer.get_unique_id()
-	send_player_session.rpc_id(1, _player_session)
+	send_player_session.rpc_id(1, _player_session, my_id)
 	
 	print("CLIENT: Connected! My ID is ", my_id)
 

@@ -60,9 +60,9 @@ public partial class GameLiftBridge : Node
         var serverParameters = new ServerParameters(
             "wss://ap-southeast-2.api.amazongamelift.com",
             $"process-{System.Guid.NewGuid()}",
-            "my-ec2-compute",
+            "my-laptop-compute",
             "fleet-418af44f-1431-41dc-8fe8-c4348f3138f4",
-            "22b64496-d7c6-40e8-a399-6e4b1597ba9c"
+            "a34180dc-38c8-4cd9-8af8-433dbce5c142"
         );
 
         var initOutcome = GameLiftServerAPI.InitSDK(serverParameters);
@@ -133,6 +133,30 @@ public partial class GameLiftBridge : Node
             GD.Print(
                 "===============================\n" +
                 "AcceptPlayerSession succeeded for player session: " +
+                playerSessionId +
+                "\n==============================="
+            );
+        }
+    }
+
+    void RemovePlayerSession(string playerSessionId)
+    {
+        var removeOutcome = GameLiftServerAPI.RemovePlayerSession(playerSessionId);
+
+        if (!removeOutcome.Success)
+        {
+            GD.PrintErr(
+                "===============================\n" +
+                "RemovePlayerSession failed: " +
+                removeOutcome.Error.ErrorMessage +
+                "\n==============================="
+            );
+        }
+        else
+        {
+            GD.Print(
+                "===============================\n" +
+                "RemovePlayerSession succeeded for player session: " +
                 playerSessionId +
                 "\n==============================="
             );

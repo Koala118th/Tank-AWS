@@ -69,6 +69,7 @@ func _on_message(text: String) -> void:
 
 	if server_ip.is_empty():
 		print("Missing server IP")
+		play_button.disabled = false
 		return
 		
 	GameServer.start_client(server_ip, port, player_session_id, game_session_id)
