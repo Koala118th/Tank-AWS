@@ -13,6 +13,18 @@ shader = ExtResource("2_neyqc")
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_neyqc"]
 shader = ExtResource("3_sulmp")
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ccvi"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(1, 0.6862745, 0.3137255, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sulmp"]
 bg_color = Color(0.29803923, 0.6862745, 0.3137255, 1)
 corner_radius_top_left = 5
@@ -122,12 +134,6 @@ theme_override_font_sizes/font_size = 12
 text = "·    ·    ·    ·    ·    ·    ·    ·    ·    ·    ·    ·    ·"
 horizontal_alignment = 1
 
-[node name="HSeparator" type="HSeparator" parent="CenterContainer/VBoxContainer" unique_id=1427808590]
-modulate = Color(1, 1, 1, 0)
-self_modulate = Color(1, 1, 1, 0)
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-
 [node name="TankRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=1221371435]
 layout_mode = 2
 alignment = 1
@@ -146,6 +152,18 @@ layout_mode = 2
 custom_minimum_size = Vector2(52, 52)
 layout_mode = 2
 texture = ExtResource("5_xpv52")
+
+[node name="HSeparator" type="HSeparator" parent="CenterContainer/VBoxContainer" unique_id=1427808590]
+modulate = Color(1, 1, 1, 0)
+self_modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
+
+[node name="LineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer" unique_id=1468972938]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("4_xpv52")
+theme_override_styles/normal = SubResource("StyleBoxFlat_2ccvi")
+placeholder_text = "   Username"
 
 [node name="PlayButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=2130037411 groups=["ui_buttons"]]
 custom_minimum_size = Vector2(200, 46)
