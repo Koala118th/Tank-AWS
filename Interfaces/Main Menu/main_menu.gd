@@ -10,9 +10,16 @@ const WEBSOCKET_URL = "wss://my8oxjq6ea.execute-api.ap-southeast-2.amazonaws.com
 var _client: WebSocketPeer
 var _waiting_for_open := false
 
-func _ready() -> void:
-	#GameServer.game_started.connect(_on_game_start)
-	pass
+
+func _ready():
+	_connect_button_sounds($CenterContainer/VBoxContainer/PlayButton)
+	_connect_button_sounds($CenterContainer/VBoxContainer/SettingsButton)
+	_connect_button_sounds($CenterContainer/VBoxContainer/QuitButton)
+
+func _ready():
+	_connect_button_sounds($CenterContainer/VBoxContainer/PlayButton)
+	_connect_button_sounds($CenterContainer/VBoxContainer/SettingsButton)
+	_connect_button_sounds($CenterContainer/VBoxContainer/QuitButton)
 
 func _on_start_button_pressed() -> void:
 	play_button.disabled = true
@@ -79,3 +86,12 @@ func _on_game_start() -> void:
 	get_tree().change_scene_to_file("res://Scenes/game.tscn")
 	_client.close()
 	_client = null
+
+
+func _on_quit_button_pressed() -> void:
+	get_tree().quit()
+
+
+func _connect_button_sounds(button: Button) -> void:
+	button.mouse_entered.connect(func(): AudioManager.play_ui(AudioManager.sfx_button_hover))
+	button.pressed.connect(func(): AudioManager.play_ui(AudioManager.sfx_button_click))

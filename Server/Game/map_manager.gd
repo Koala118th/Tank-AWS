@@ -8,6 +8,8 @@ var current_maze: Array = []
 var bg_count = 1
 var current_bg_index: int = 0
 
+var server_floor_positions: Array
+
 signal maze_received(grid)
 signal background_received(bg_index)
 

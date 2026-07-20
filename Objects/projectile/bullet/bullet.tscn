@@ -10,7 +10,7 @@ size = Vector2(4, 10)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_fmpon"]
 size = Vector2(4, 10)
 
-[node name="Bullet" unique_id=746364472 instance=ExtResource("1_tv54y")]
+[node name="Bullet" unique_id=746364472 groups=["projectile"] instance=ExtResource("1_tv54y")]
 script = ExtResource("2_0g0mr")
 speed = 400.0
 damage = 10.0

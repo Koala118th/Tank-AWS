@@ -17,3 +17,9 @@ func setup(rank: int, player_name: String, wins: int, kills: int, is_you: bool):
 		wins_label.add_theme_color_override("font_color", Color("#4caf50"))
 	else:
 		name_label.text = player_name
+		name_label.add_theme_color_override("font_color", Color("#a0c0a0"))
+		rank_label.add_theme_color_override("font_color", Color("#3a5a3a"))
+		wins_label.add_theme_color_override("font_color", Color("#5a7a5a"))
+	
+	# kills always dim regardless of who
+	kills_label.add_theme_color_override("font_color", Color("#5a7a5a"))

@@ -21,6 +21,8 @@ var countdown_timer: Timer
 @onready var quit_button     = $Control/VBoxContainer/QuitButton
 
 func _ready():
+	_connect_button_sounds($Control/VBoxContainer/QuitButton)
+	
 	add_to_group("game_over_screen")
 	hide()
 	quit_button.pressed.connect(_on_quit_pressed)
@@ -28,9 +30,13 @@ func _ready():
 	if GameServer.pending_screen == "game_over":
 		show_screen(placeholder_scores, 1, GameServer.pending_countdown)
 
+func _connect_button_sounds(button: Button) -> void:
+	button.mouse_entered.connect(func(): AudioManager.play_ui(AudioManager.sfx_button_hover))
+	button.pressed.connect(func(): AudioManager.play_ui(AudioManager.sfx_button_click))
+
 func show_screen(scores: Array, match_number: int, countdown_seconds: float = 8.0):
 	scores.sort_custom(func(a, b): return a["wins"] > b["wins"])
-	winner_badge.text = "🏆  " + scores[0]["name"] + " wins the round"
+	winner_badge.text = "🏆  " + str(scores[0]["name"]) + " wins the round"
 	match_counter.text = "Match #" + str(match_number)
 	_populate_scores(scores)
 	show()
@@ -42,7 +48,7 @@ func _populate_scores(scores: Array):
 	for i in scores.size():
 		var row = score_row_scene.instantiate()
 		score_container.add_child(row)
-		row.setup(i + 1, scores[i]["name"], scores[i]["wins"],
+		row.setup(i + 1, str(scores[i]["name"]), scores[i]["wins"],
 			scores[i]["kills"], scores[i]["is_you"])
 
 func _setup_countdown_timer():

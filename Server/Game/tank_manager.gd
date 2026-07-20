@@ -31,18 +31,34 @@ func deliver_spawns(peer_id: int, assigned_slot: int, spawn_pos: Vector2) -> voi
 	print(multiplayer.get_unique_id(), " received spawn for ", peer_id, " at slot ", assigned_slot)
 
 
-@rpc("any_peer", "call_remote", "unreliable_ordered")
-func update_transform(peer_id: int, pos: Vector2, body_rot: float, turret_rot: float) -> void:
+@rpc("any_peer", "call_remote", "unreliable")
+func send_input(input: Dictionary):
+	if not multiplayer.is_server():
+		return
+	
+	var sender_id = multiplayer.get_remote_sender_id()
+	
+	var tank = find_tank_by_owner(sender_id)
+	
+	if tank == null:
+		print("Tank not found for peer: ", sender_id)
+		return
+	
+	tank.current_input = input
+
+
+@rpc("authority", "call_remote", "unreliable")
+func sync_state(id: int, pos: Vector2, body_rot: float, turret_rot: float):
 	if multiplayer.is_server():
-		var sender_id = multiplayer.get_remote_sender_id()
-		if sender_id != peer_id:
-			return
-		tank_moved.emit(peer_id, pos, body_rot, turret_rot)
-		for p in multiplayer.get_peers():
-			if p != sender_id:
-				update_transform.rpc_id(p, peer_id, pos, body_rot, turret_rot)
-	else:
-		tank_moved.emit(peer_id, pos, body_rot, turret_rot)
+		return
+	
+	var tank = find_tank_by_owner(id)
+	
+	if not is_instance_valid(tank):
+		return
+	
+	tank.apply_server_state(pos, body_rot, turret_rot)
+
 
 @rpc("authority", "call_remote", "reliable")
 func clear_tanks() -> void:
@@ -63,6 +79,8 @@ func sync_health(id: int, new_health: float):
 	
 	tank._health = new_health
 	tank.flash_red()
+	var death_pos: Vector2 = tank.global_position
+	AudioManager.play_at(AudioManager.sfx_impact, death_pos)
 
 	if was_alive and new_health == 0:
 		tank.die()

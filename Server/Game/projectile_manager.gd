@@ -64,6 +64,8 @@ func spawn_projectile(id, pos: Vector2, rot: float, dir: Vector2, ammo_type: int
 	var projectile = ammo_scenes[ammo_type].instantiate()
 	projectile.global_position = pos
 	projectile.rotation = rot
+	projectile.target_pos = pos
+	projectile.target_rot = rot
 	projectile.set_direction(dir)
 	
 	projectiles[id] = projectile
@@ -71,9 +73,17 @@ func spawn_projectile(id, pos: Vector2, rot: float, dir: Vector2, ammo_type: int
 	get_parent().add_child(projectile)
 	projectile.set_visual_by_index(spawn_index)
 	
-	if shooter_id == multiplayer.get_unique_id():
-		var tank = GameServer.tankManager.find_tank_by_owner(shooter_id)
-		tank.trigger_muzzle_flash()
+	var tank = GameServer.tankManager.find_tank_by_owner(shooter_id)
+	tank.trigger_muzzle_flash()
+
+	var shoot_sfx: AudioStream
+	match ammo_type:
+		AmmoType.SNIPER: shoot_sfx = AudioManager.sfx_shoot_sniper
+		AmmoType.LASER:  shoot_sfx = AudioManager.sfx_shoot_laser
+		AmmoType.BULLET: shoot_sfx = AudioManager.sfx_shoot
+		AmmoType.CHASER: shoot_sfx = AudioManager.sfx_shoot
+		AmmoType.SMALL: shoot_sfx = AudioManager.sfx_shoot_small
+	AudioManager.play_at(shoot_sfx, pos)
 
 
 @rpc("authority", "call_remote", "unreliable")
@@ -90,8 +100,8 @@ func sync_transform(id, pos: Vector2, rot: float, vel: Vector2):
 		projectiles.erase(id)
 		return
 	
-	p.global_position = pos
-	p.rotation = rot
+	p.target_pos = pos
+	p.target_rot = rot
 	p.velocity = vel
 
 
@@ -117,10 +127,8 @@ func sync_laser(id, points: PackedVector2Array):
 func sync_delete(id):
 	if multiplayer.is_server():
 		return
-
 	if not projectiles.has(id):
 		return
-
 	var p = projectiles[id]
 	if is_instance_valid(p):
 		if not p is LaserProjectile:

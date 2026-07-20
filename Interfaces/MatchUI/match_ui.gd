@@ -8,6 +8,7 @@ extends CanvasLayer
 var _countdown_tween: Tween = null
 var _screen_applied: bool = false
 var _countdown_end_time: float = 0.0
+var _last_countdown_number: int = -1
 
 func _ready():
 	add_to_group("match_ui")
@@ -89,7 +90,14 @@ func _run_countdown(total_seconds: float, hide_on_end: bool = true):
 	for i in range(steps):
 		_countdown_tween.tween_callback(
 			func():
-				countdown_label.text = str(int(ceil(_get_remaining())))
+				var remaining = int(ceil(_get_remaining()))
+				countdown_label.text = str(remaining)
+				if remaining != _last_countdown_number:
+					_last_countdown_number = remaining
+					if remaining <= 1:
+						AudioManager.play_ui(AudioManager.sfx_countdown_go)
+					else:
+						AudioManager.play_ui(AudioManager.sfx_countdown_tick)
 		).set_delay(0.1)
 	_countdown_tween.tween_callback(func():
 		if _countdown_tween:
@@ -98,4 +106,3 @@ func _run_countdown(total_seconds: float, hide_on_end: bool = true):
 		if hide_on_end:
 			hide_all()
 	)
-	

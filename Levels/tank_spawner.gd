@@ -132,7 +132,8 @@ func _clear_tanks():
 	_match_active = false
 	for child in get_children():
 		if child is Tank:
-			child.tree_exited.disconnect(_on_tank_died)
+			if child.tree_exited.is_connected(_on_tank_died):
+				child.tree_exited.disconnect(_on_tank_died)
 			child.free()
 	tanks.clear()
 
@@ -146,11 +147,11 @@ func clear_tanks_client():
 func remove_tank_by_owner(owner_peer_id: int) -> void:
 	for child in get_children():
 		if child is Tank and child.owner_id == owner_peer_id:
-			child.tree_exited.disconnect(_on_tank_died)
+			if child.tree_exited.is_connected(_on_tank_died):
+				child.tree_exited.disconnect(_on_tank_died)
 			child.queue_free()
 			tanks.erase(owner_peer_id)
 			print(multiplayer.get_unique_id(), " removed tank for owner ", owner_peer_id)
-
 			if _match_active:
 				call_deferred("_on_tank_removed_recheck_round_end")
 			return
