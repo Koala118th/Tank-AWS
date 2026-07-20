@@ -78,6 +78,7 @@ var _last_attacker_id: int = -1
 @onready var muzzle_flash: Sprite2D = $Turret/MuzzleFlash
 @onready var muzzle_timer: Timer = $Turret/MuzzleTimer
 @onready var direction_arrow: Polygon2D = $Body/Polygon2D
+@onready var pause_menu = get_node("/root/Game/PauseMenu")
 
 var owner_id
 
@@ -103,8 +104,6 @@ var current_input := {
 func _process(delta):
 	health_bar.value = lerp(health_bar.value, _health, 10 * delta)
 
-var paused := false
-
 func _ready():
 	add_to_group("tank")
 	GameServer.tankManager.tank_moved.connect(_on_tank_moved)
@@ -113,17 +112,8 @@ func _ready():
 	target_body_rot = body.rotation
 	target_turret_rot = turret.rotation
 
-
-func _pause():
-	paused = true
-
-func _resume():
-	paused = false
-
 func _physics_process(delta: float):
 	if multiplayer.multiplayer_peer == null:
-		return
-	if paused:
 		return
 	
 	if multiplayer.is_server():
@@ -137,6 +127,9 @@ func _physics_process(delta: float):
 		)
 	
 	elif is_multiplayer_authority():
+		if pause_menu != null and pause_menu.is_paused():
+			return
+		
 		# prediction
 		var input = get_input_state()
 		GameServer.tankManager.send_input.rpc_id(1, input)

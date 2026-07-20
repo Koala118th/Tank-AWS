@@ -14,6 +14,7 @@ shader = ExtResource("2_neyqc")
 shader = ExtResource("3_sulmp")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ccvi"]
+content_margin_left = 5.0
 bg_color = Color(0.6, 0.6, 0.6, 0)
 border_width_left = 1
 border_width_top = 1
@@ -24,6 +25,20 @@ corner_radius_top_left = 2
 corner_radius_top_right = 2
 corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o655f"]
+content_margin_left = 5.0
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.99999994, 0.7445435, 0.40941727, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+corner_detail = 10
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_sulmp"]
 bg_color = Color(0.29803923, 0.6862745, 0.3137255, 1)
@@ -161,9 +176,12 @@ layout_mode = 2
 
 [node name="LineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer" unique_id=1468972938]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.29803923, 0.6862745, 0.3137255, 1)
+theme_override_colors/font_placeholder_color = Color(0.3238985, 0.43201837, 0.32410374, 1)
 theme_override_fonts/font = ExtResource("4_xpv52")
 theme_override_styles/normal = SubResource("StyleBoxFlat_2ccvi")
-placeholder_text = "   Username"
+theme_override_styles/focus = SubResource("StyleBoxFlat_o655f")
+placeholder_text = "Username"
 
 [node name="PlayButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=2130037411 groups=["ui_buttons"]]
 custom_minimum_size = Vector2(200, 46)
