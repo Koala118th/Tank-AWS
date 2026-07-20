@@ -20,7 +20,6 @@ func _ready() -> void:
 func play_at(stream: AudioStream, pos: Vector2) -> void:
 	if not stream:
 		return
-	print("[AudioManager] play_ui: playing %s" % stream.resource_path)
 	var p := AudioStreamPlayer2D.new()
 	p.stream = stream
 	p.position = pos

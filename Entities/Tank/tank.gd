@@ -41,7 +41,6 @@ var track_timer := 0.0
 @export var track_distance := 7.0
 
 @export var current_ammo = GameServer.projectileManager.AmmoType.BULLET
-@export var pause_menu: CanvasLayer
 
 @export var speed: float = 150.0
 @export var turn_speed: float = 5.0
@@ -109,8 +108,6 @@ var paused := false
 func _ready():
 	add_to_group("tank")
 	GameServer.tankManager.tank_moved.connect(_on_tank_moved)
-	if pause_menu != null:
-		pause_menu.resumed.connect(_resume)
 	
 	target_pos = global_position
 	target_body_rot = body.rotation
