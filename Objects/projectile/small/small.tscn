@@ -9,7 +9,7 @@ size = Vector2(2, 5)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7ha1i"]
 size = Vector2(2, 5)
 
-[node name="Small" unique_id=2093711468 instance=ExtResource("1_8jhwm")]
+[node name="Small" unique_id=2093711468 groups=["projectile"] instance=ExtResource("1_8jhwm")]
 speed = 400.0
 damage = 5.0
 fire_cooldown = 0.1

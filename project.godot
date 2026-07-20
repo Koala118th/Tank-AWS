@@ -33,6 +33,7 @@ project/assembly_name="Tank (AWS)"
 
 navigation_polygon_source_geometry_group=""
 tank=""
+projectile=""
 
 [input]
 

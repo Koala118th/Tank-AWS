@@ -243,12 +243,17 @@ func _on_game_over_finished():
 @rpc("authority", "call_remote", "reliable")
 func show_game_over(winner_id: int, countdown_seconds: float):
 	pending_screen = ""
+	
+	for node in get_tree().get_nodes_in_group("tank"):
+		node.set_physics_process(false)
+	for node in get_tree().get_nodes_in_group("projectile"):
+		node.set_physics_process(false)
+	
 	var ui = _get_match_ui()
 	if ui:
 		ui.hide_all()
 	
 	var result = LeaderboardManager.get_sorted_leaderboard()
-	print(result)
 	var go_screen = _get_game_over_screen()
 	if go_screen:
 		go_screen.show_screen(result, 1, countdown_seconds)

@@ -6,7 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://fe8a6uy3gjku" path="res://Assets/PNG/bulletRed1.png" id="4_2kaku"]
 [ext_resource type="Texture2D" uid="uid://jycjbhes5dy1" path="res://Assets/PNG/bulletSand1.png" id="5_m60hf"]
 
-[node name="Projectile" type="CharacterBody2D" unique_id=2093711468]
+[node name="Projectile" type="CharacterBody2D" unique_id=2093711468 groups=["projectile"]]
 collision_layer = 0
 collision_mask = 4
 script = ExtResource("1_sirro")

@@ -13,7 +13,7 @@ size = Vector2(8, 12)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7ompk"]
 size = Vector2(8, 12)
 
-[node name="Chaser" unique_id=2093711468 instance=ExtResource("1_60iaj")]
+[node name="Chaser" unique_id=2093711468 groups=["projectile"] instance=ExtResource("1_60iaj")]
 script = ExtResource("2_v0nso")
 turn_speed = 10.0
 speed = 180.0
