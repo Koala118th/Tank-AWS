@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 GameServer="*uid://djbvowfvclxkf"
 AudioManager="*uid://bxa3y805pjdw5"
+LeaderboardManager="*uid://d0wvs2c0mylgr"
 
 [display]
 
@@ -32,7 +33,7 @@ project/assembly_name="Tank (AWS)"
 
 navigation_polygon_source_geometry_group=""
 tank=""
-ui_buttons=""
+projectile=""
 
 [input]
 

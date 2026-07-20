@@ -39,7 +39,7 @@ func _physics_process(delta):
 
 			if collider.has_method("get_hit"):
 				if collider not in hit_targets:
-					collider.get_hit(damage)
+					collider.get_hit(damage, shooter_id)
 					hit_targets[collider] = true
 				current_pos = end_point + current_dir * 1
 				continue

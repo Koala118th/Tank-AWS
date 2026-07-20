@@ -36,7 +36,7 @@ func _connect_button_sounds(button: Button) -> void:
 
 func show_screen(scores: Array, match_number: int, countdown_seconds: float = 8.0):
 	scores.sort_custom(func(a, b): return a["wins"] > b["wins"])
-	winner_badge.text = "🏆  " + scores[0]["name"] + " wins the round"
+	winner_badge.text = "🏆  " + str(scores[0]["name"]) + " wins the round"
 	match_counter.text = "Match #" + str(match_number)
 	_populate_scores(scores)
 	show()
@@ -48,7 +48,7 @@ func _populate_scores(scores: Array):
 	for i in scores.size():
 		var row = score_row_scene.instantiate()
 		score_container.add_child(row)
-		row.setup(i + 1, scores[i]["name"], scores[i]["wins"],
+		row.setup(i + 1, str(scores[i]["name"]), scores[i]["wins"],
 			scores[i]["kills"], scores[i]["is_you"])
 
 func _setup_countdown_timer():

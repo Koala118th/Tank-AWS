@@ -40,6 +40,10 @@ func send_input(input: Dictionary):
 	
 	var tank = find_tank_by_owner(sender_id)
 	
+	if tank == null:
+		print("Tank not found for peer: ", sender_id)
+		return
+	
 	tank.current_input = input
 
 

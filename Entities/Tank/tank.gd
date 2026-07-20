@@ -57,7 +57,7 @@ var track_timer := 0.0
 			return
 
 		if _health > 0 and new_health == 0:
-			die()
+			die(_last_attacker_id)
 
 		_health = new_health
 
@@ -65,6 +65,7 @@ var track_timer := 0.0
 		GameServer.tankManager.sync_health.rpc(owner_id, _health)
 
 var _health: float = 100
+var _last_attacker_id: int = -1
 
 @onready var body: Node2D = $Body
 @onready var turret: Node2D = $Turret
@@ -104,10 +105,6 @@ func _process(delta):
 	health_bar.value = lerp(health_bar.value, _health, 10 * delta)
 
 var paused := false
-
-func _unhandled_input(event):
-	# Pause handled by a single per-game UI (not per-tank) to avoid multiple menus.
-	pass
 
 func _ready():
 	add_to_group("tank")
@@ -319,11 +316,12 @@ func server_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int, spawn_ind
 	fire_timer.start(projectile.fire_cooldown)
 
 
-func get_hit(damage: float):
+func get_hit(damage: float, attacker_id: int):
 	health -= damage
+	_last_attacker_id = attacker_id
 
 
-func die():
+func die(killer_id: int = -1):
 	set_physics_process(false)
 
 	var explosion = explosion_scene.instantiate()
@@ -332,6 +330,11 @@ func die():
 
 	# ADD THIS
 	AudioManager.play_at(AudioManager.sfx_explosion, global_position)
+	
+	if multiplayer.is_server():
+		# Prevent invalid kills
+		if killer_id != -1 and killer_id != owner_id:
+			LeaderboardManager.add_kill(killer_id)
 
 	queue_free()
 
