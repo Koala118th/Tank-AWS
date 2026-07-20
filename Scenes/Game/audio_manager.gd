@@ -9,10 +9,15 @@ extends Node
 @export var sfx_impact: AudioStream = preload("res://Audio/BulletImpactMetal01.ogg")
 @export var sfx_explosion: AudioStream = preload("res://Audio/Explosion.mp3")
 @export var sfx_pickup: AudioStream = preload("res://Audio/Collectible.ogg")
+@export var sfx_button_hover: AudioStream = preload("res://Audio/Hover.ogg")
+@export var sfx_button_click: AudioStream = preload("res://Audio/Click.ogg")
+@export var sfx_countdown_tick: AudioStream = preload("res://Audio/countdown_tick.ogg")
+@export var sfx_countdown_go: AudioStream = preload("res://Audio/countdown_go.ogg")
 
 func play_at(stream: AudioStream, pos: Vector2) -> void:
-	if not stream or multiplayer.is_server():
+	if not stream:
 		return
+	print("[AudioManager] play_ui: playing %s" % stream.resource_path)
 	var p := AudioStreamPlayer2D.new()
 	p.stream = stream
 	p.position = pos
@@ -22,8 +27,10 @@ func play_at(stream: AudioStream, pos: Vector2) -> void:
 	get_tree().current_scene.add_child(p)
 
 func play_ui(stream: AudioStream) -> void:
-	if not stream or multiplayer.is_server():
+	if not stream:
+		print("[AudioManager] play_ui: stream is null, skipping")
 		return
+	print("[AudioManager] play_ui: playing %s" % stream.resource_path)
 	var p := AudioStreamPlayer.new()
 	p.stream = stream
 	p.bus = "SFX"

@@ -147,7 +147,7 @@ custom_minimum_size = Vector2(52, 52)
 layout_mode = 2
 texture = ExtResource("5_xpv52")
 
-[node name="PlayButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=2130037411]
+[node name="PlayButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=2130037411 groups=["ui_buttons"]]
 custom_minimum_size = Vector2(200, 46)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.039215688, 0.07058824, 0.039215688, 1)
@@ -157,7 +157,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_sulmp")
 theme_override_styles/hover = SubResource("StyleBoxFlat_hvu6i")
 text = "▶  PLAY"
 
-[node name="SettingsButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1001919873]
+[node name="SettingsButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=1001919873 groups=["ui_buttons"]]
 custom_minimum_size = Vector2(200, 46)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.41568628, 0.5411765, 0.41568628, 1)
@@ -168,7 +168,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_3q6f2")
 theme_override_styles/hover = SubResource("StyleBoxFlat_xpv52")
 text = "SETTINGS"
 
-[node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=376001844]
+[node name="QuitButton" type="Button" parent="CenterContainer/VBoxContainer" unique_id=376001844 groups=["ui_buttons"]]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2901961, 0.3529412, 0.2901961, 1)
 theme_override_colors/font_hover_color = Color(0.5411765, 0.6039216, 0.5411765, 1)

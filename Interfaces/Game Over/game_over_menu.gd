@@ -21,12 +21,19 @@ var countdown_timer: Timer
 @onready var quit_button     = $Control/VBoxContainer/QuitButton
 
 func _ready():
+	for button in get_tree().get_nodes_in_group("ui_buttons"):
+		_connect_button_sounds(button)
+	
 	add_to_group("game_over_screen")
 	hide()
 	quit_button.pressed.connect(_on_quit_pressed)
 	_setup_countdown_timer()
 	if GameServer.pending_screen == "game_over":
 		show_screen(placeholder_scores, 1, GameServer.pending_countdown)
+
+func _connect_button_sounds(button: Button) -> void:
+	button.mouse_entered.connect(func(): AudioManager.play_ui(AudioManager.sfx_button_hover))
+	button.pressed.connect(func(): AudioManager.play_ui(AudioManager.sfx_button_click))
 
 func show_screen(scores: Array, match_number: int, countdown_seconds: float = 8.0):
 	scores.sort_custom(func(a, b): return a["wins"] > b["wins"])

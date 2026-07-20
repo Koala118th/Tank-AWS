@@ -68,7 +68,7 @@ theme_override_font_sizes/font_size = 52
 text = "Paused"
 horizontal_alignment = 1
 
-[node name="ResumeButton" type="Button" parent="Control/CenterContainer/VBoxContainer" unique_id=1040879207]
+[node name="ResumeButton" type="Button" parent="Control/CenterContainer/VBoxContainer" unique_id=1040879207 groups=["ui_buttons"]]
 custom_minimum_size = Vector2(200, 46)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_ywhub")
@@ -77,7 +77,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_lm2xp")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ywhub")
 text = "▶  RESUME"
 
-[node name="SettingsButton" type="Button" parent="Control/CenterContainer/VBoxContainer" unique_id=346808688]
+[node name="SettingsButton" type="Button" parent="Control/CenterContainer/VBoxContainer" unique_id=346808688 groups=["ui_buttons"]]
 custom_minimum_size = Vector2(200, 46)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_ywhub")
@@ -86,7 +86,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_lm2xp")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ywhub")
 text = "SETTINGS"
 
-[node name="QuitButton" type="Button" parent="Control/CenterContainer/VBoxContainer" unique_id=418823728]
+[node name="QuitButton" type="Button" parent="Control/CenterContainer/VBoxContainer" unique_id=418823728 groups=["ui_buttons"]]
 custom_minimum_size = Vector2(200, 46)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_ywhub")

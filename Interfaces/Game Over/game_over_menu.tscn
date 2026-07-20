@@ -117,7 +117,7 @@ theme_override_colors/font_color = Color(0.22745098, 0.47843137, 0.22745098, 1)
 theme_override_font_sizes/font_size = 12
 text = "08"
 
-[node name="QuitButton" type="Button" parent="Control/VBoxContainer" unique_id=1020968764]
+[node name="QuitButton" type="Button" parent="Control/VBoxContainer" unique_id=1020968764 groups=["ui_buttons"]]
 custom_minimum_size = Vector2(0, 32)
 layout_mode = 2
 theme_override_colors/font_color = Color(0.2901961, 0.3529412, 0.2901961, 1)

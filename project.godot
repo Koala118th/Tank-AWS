@@ -24,10 +24,6 @@ AudioManager="*uid://bxa3y805pjdw5"
 
 window/stretch/mode="canvas_items"
 
-[display]
-
-window/stretch/mode="canvas_items"
-
 [dotnet]
 
 project/assembly_name="Tank (AWS)"
@@ -36,6 +32,7 @@ project/assembly_name="Tank (AWS)"
 
 navigation_polygon_source_geometry_group=""
 tank=""
+ui_buttons=""
 
 [input]
 

@@ -5,11 +5,21 @@ signal resumed
 var _paused := false
 
 func _ready() -> void:
+	var buttons = get_tree().get_nodes_in_group("ui_buttons")
+	print("[PauseMenu] Found %d buttons in ui_buttons group" % buttons.size())
+	for button in buttons:
+		print("[PauseMenu] Connecting sounds to: ", button.name)
+		_connect_button_sounds(button)
+	
 	hide()
 	$Control/CenterContainer/VBoxContainer/ResumeButton.pressed.connect(_on_resume)
 	$Control/CenterContainer/VBoxContainer/QuitButton.pressed.connect(_on_quit)
 
 	set_process_unhandled_input(true)
+
+func _connect_button_sounds(button: Button) -> void:
+	button.mouse_entered.connect(func(): AudioManager.play_ui(AudioManager.sfx_button_hover))
+	button.pressed.connect(func(): AudioManager.play_ui(AudioManager.sfx_button_click))
 
 func _unhandled_input(event: InputEvent) -> void:
 	if not event.is_action_pressed("ui_cancel"):
