@@ -8,7 +8,6 @@
 [ext_resource type="PackedScene" uid="uid://cinbd346kuavh" path="res://Levels/Background/Background1.tscn" id="5_tt4vx"]
 [ext_resource type="PackedScene" uid="uid://ces1j6g4ykfwr" path="res://Levels/collectible_spawner.tscn" id="7_fts4d"]
 
-
 [sub_resource type="NavigationPolygon" id="NavigationPolygon_egmw7"]
 vertices = PackedVector2Array(556, -304.0078, 556, 304.96094, -557, 303.03125, -557, -304.97656)
 polygons = Array[PackedInt32Array]([PackedInt32Array(0, 1, 2, 3)])
@@ -34,8 +33,7 @@ script = ExtResource("1_c313c")
 tilemap = NodePath("TileMapLayer")
 background_scenes = Array[PackedScene]([ExtResource("4_qtbyg"), ExtResource("3_011ed"), ExtResource("5_tt4vx")])
 
-[node name="TankSpawner" parent="." unique_id=1050861460 node_paths=PackedStringArray("game_over_screen", "maze_generator") instance=ExtResource("5_qtbyg")]
-game_over_screen = NodePath("../GameOverMenu")
+[node name="TankSpawner" parent="." unique_id=1050861460 node_paths=PackedStringArray("maze_generator") instance=ExtResource("5_qtbyg")]
 maze_generator = NodePath("..")
 
 [node name="Map" type="Node2D" parent="." unique_id=1521102474 groups=["navigation_polygon_source_geometry_group"]]
@@ -50,5 +48,3 @@ collision_visibility_mode = 2
 
 [node name="CollectibleSpawner" parent="." unique_id=124313281 node_paths=PackedStringArray("maze_generator") instance=ExtResource("7_fts4d")]
 maze_generator = NodePath("..")
-
-
