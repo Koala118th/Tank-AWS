@@ -2,11 +2,9 @@ extends Control
 class_name Main_menu
 
 func _ready():
-	var buttons = get_tree().get_nodes_in_group("ui_buttons")
-	print("[MainMenu] Found %d buttons in ui_buttons group" % buttons.size())
-	for button in buttons:
-		print("[MainMenu] Connecting sounds to: ", button.name)
-		_connect_button_sounds(button)
+	_connect_button_sounds($CenterContainer/VBoxContainer/PlayButton)
+	_connect_button_sounds($CenterContainer/VBoxContainer/SettingsButton)
+	_connect_button_sounds($CenterContainer/VBoxContainer/QuitButton)
 
 func _on_start_button_pressed() -> void:
 	GameServer.start_client()

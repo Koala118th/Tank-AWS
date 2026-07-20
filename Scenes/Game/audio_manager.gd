@@ -14,6 +14,9 @@ extends Node
 @export var sfx_countdown_tick: AudioStream = preload("res://Audio/countdown_tick.ogg")
 @export var sfx_countdown_go: AudioStream = preload("res://Audio/countdown_go.ogg")
 
+func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
+
 func play_at(stream: AudioStream, pos: Vector2) -> void:
 	if not stream:
 		return
@@ -35,5 +38,6 @@ func play_ui(stream: AudioStream) -> void:
 	p.stream = stream
 	p.bus = "SFX"
 	p.autoplay = true
+	p.process_mode = Node.PROCESS_MODE_ALWAYS  # ← add this
 	p.finished.connect(p.queue_free)
 	add_child(p)

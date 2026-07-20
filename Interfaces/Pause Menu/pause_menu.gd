@@ -5,16 +5,20 @@ signal resumed
 var _paused := false
 
 func _ready() -> void:
-	var buttons = get_tree().get_nodes_in_group("ui_buttons")
-	print("[PauseMenu] Found %d buttons in ui_buttons group" % buttons.size())
-	for button in buttons:
-		print("[PauseMenu] Connecting sounds to: ", button.name)
-		_connect_button_sounds(button)
-	
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	hide()
-	$Control/CenterContainer/VBoxContainer/ResumeButton.pressed.connect(_on_resume)
-	$Control/CenterContainer/VBoxContainer/QuitButton.pressed.connect(_on_quit)
-
+	
+	var resume_btn := $Control/CenterContainer/VBoxContainer/ResumeButton
+	var settings_btn := $Control/CenterContainer/VBoxContainer/SettingsButton
+	var quit_btn := $Control/CenterContainer/VBoxContainer/QuitButton
+	
+	_connect_button_sounds(resume_btn)
+	_connect_button_sounds(settings_btn)
+	_connect_button_sounds(quit_btn)
+	
+	resume_btn.pressed.connect(_on_resume)
+	quit_btn.pressed.connect(_on_quit)
+	
 	set_process_unhandled_input(true)
 
 func _connect_button_sounds(button: Button) -> void:

@@ -21,8 +21,7 @@ var countdown_timer: Timer
 @onready var quit_button     = $Control/VBoxContainer/QuitButton
 
 func _ready():
-	for button in get_tree().get_nodes_in_group("ui_buttons"):
-		_connect_button_sounds(button)
+	_connect_button_sounds($Control/VBoxContainer/QuitButton)
 	
 	add_to_group("game_over_screen")
 	hide()
