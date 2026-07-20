@@ -25,7 +25,7 @@ func is_server_mode() -> bool:
 # ─────────────────────────────────────────
 const PORT = 7777
 const MAX_CLIENTS = 4
-const SERVER_IP = "127.0.0.1"
+const SERVER_IP = "10.215.199.221"
 
 @onready var playerManager      = $PlayerManager
 @onready var tankManager        = $TankManager
