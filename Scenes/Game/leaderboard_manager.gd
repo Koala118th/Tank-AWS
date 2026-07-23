@@ -3,18 +3,20 @@ extends Node
 # Structure:
 # {
 #   player_id: {
+#       "name": player_name,
 #       "wins": int,
 #       "kills": int
 #   }
 # }
 var leaderboard := {}
 
-func register_player(player_id: int):
+func register_player(player_id: int, player_name: String):
 	if not multiplayer.is_server():
 		return
 	
 	if not leaderboard.has(player_id):
 		leaderboard[player_id] = {
+			"name": player_name,
 			"wins": 0,
 			"kills": 0
 		}
@@ -57,6 +59,15 @@ func get_sorted_leaderboard():
 	)
 
 	return arr
+
+
+@rpc("any_peer", "reliable")
+func register_player_request(player_name: String):
+	if not multiplayer.is_server():
+		return
+	
+	var sender_id = multiplayer.get_remote_sender_id()
+	register_player(sender_id, player_name)
 
 
 @rpc("authority", "call_remote")

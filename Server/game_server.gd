@@ -60,7 +60,6 @@ func start_server():
 func _on_peer_connected(id: int):
 	print("SERVER: Player connected — id: ", id)
 	playerManager.assign_slot(id, match_state)
-	LeaderboardManager.register_player(id)
 
 func _on_peer_disconnected(id: int):
 	print("SERVER: Player disconnected — id: ", id)
@@ -346,7 +345,7 @@ func _reset_client_session_state() -> void:
 	pending_match_state = -1
 	match_state = MatchState.WAITING
 
-func start_client():
+func start_client(player_name: String):
 	_reset_client_session_state()
 	var peer = ENetMultiplayerPeer.new()
 	if not multiplayer.connected_to_server.is_connected(_on_connected_to_server):
@@ -360,6 +359,8 @@ func start_client():
 		print("CLIENT: Failed to connect: ", err)
 		return
 	multiplayer.multiplayer_peer = peer
+	
+	LeaderboardManager.register_player_request.rpc_id(1, player_name)
 
 func _on_connected_to_server():
 	my_id = multiplayer.get_unique_id()
