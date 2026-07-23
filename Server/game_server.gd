@@ -1,21 +1,7 @@
 extends Node
 # ─────────────────────────────────────────
-#  MATCH STATE
+#  SERVER HELPER FUNCTIONS
 # ─────────────────────────────────────────
-enum MatchState { WAITING, STARTING, IN_MATCH }
-var match_state: MatchState = MatchState.WAITING
-
-var _countdown_timer: Timer = null
-const COUNTDOWN_SECONDS = 5
-const GAME_OVER_COUNTDOWN = 8
-
-# ─────────────────────────────────────────
-#  LIFE CYCLE
-# ─────────────────────────────────────────
-func _ready():
-	if is_server_mode():
-		pass
-		
 func is_server_mode() -> bool:
 	return "--server" in OS.get_cmdline_args() \
 		or DisplayServer.get_name() == "headless"
@@ -26,6 +12,9 @@ func is_server_mode() -> bool:
 const PORT = 7777
 const MAX_CLIENTS = 4
 const SERVER_IP = "127.0.0.1"
+
+#Player sessions server
+var player_session_store: Dictionary = {}
 
 @onready var playerManager      = $PlayerManager
 @onready var tankManager        = $TankManager
@@ -41,7 +30,8 @@ func start_server():
 		return
 	multiplayer.multiplayer_peer = peer
 	print("SERVER: Listening on port ", PORT)
-
+	
+	# Listen for peer connection signals
 	multiplayer.peer_connected.connect(_on_peer_connected)
 	multiplayer.peer_disconnected.connect(_on_peer_disconnected)
 
@@ -50,9 +40,76 @@ func start_server():
 	playerManager.player_needs_spectator_screen.connect(_on_player_needs_spectator_screen)
 	playerManager.player_needs_game_over_screen.connect(_on_player_needs_game_over_screen)
 	playerManager.ready_to_start.connect(_on_ready_to_start)
-
+	
+	#Start Game
 	mapManager.start_maze()
 	get_tree().call_deferred("change_scene_to_file", "res://Scenes/game.tscn")
+
+# ─────────────────────────────────────────
+#  CLIENT
+# ─────────────────────────────────────────
+var my_id = null
+#Player session client
+var _player_session = null
+
+func start_client(server_ip, port, player_session, game_session):
+	_reset_client_session_state()
+	var peer = ENetMultiplayerPeer.new()
+	if not multiplayer.connected_to_server.is_connected(_on_connected_to_server):
+		multiplayer.connected_to_server.connect(_on_connected_to_server)
+	if not multiplayer.connection_failed.is_connected(_on_connection_failed):
+		multiplayer.connection_failed.connect(_on_connection_failed)
+	if not multiplayer.server_disconnected.is_connected(_on_server_disconnected):
+		multiplayer.server_disconnected.connect(_on_server_disconnected)
+	var err = peer.create_client(server_ip, port)
+	if err != OK:
+		print("CLIENT: Failed to connect: ", err)
+		return
+	multiplayer.multiplayer_peer = peer
+
+	_player_session = player_session
+
+@rpc("any_peer", "call_remote")
+func send_player_session(player_session_id: String, peer_id):
+	print("CLIENT: Sending player session ID to server: ", player_session_id)
+	player_session_store[peer_id] = player_session_id
+	GameLiftBridge.AcceptPlayerSession(player_session_id)
+
+func _on_connected_to_server():
+	my_id = multiplayer.get_unique_id()
+	send_player_session.rpc_id(1, _player_session, my_id)
+	
+	print("CLIENT: Connected! My ID is ", my_id)
+
+func _on_connection_failed():
+	print("CLIENT: Connection failed.")
+
+func _on_server_disconnected():
+	print("CLIENT: Server disconnected.")
+	_reset_client_session_state()
+
+func disconnect_client() -> void:
+	if multiplayer.multiplayer_peer:
+		multiplayer.multiplayer_peer.close()
+		multiplayer.multiplayer_peer = null
+	_reset_client_session_state()
+
+func _reset_client_session_state() -> void:
+	my_id = null
+	pending_screen = ""
+	pending_countdown = 0.0
+	pending_match_state = -1
+	match_state = MatchState.WAITING
+
+# ─────────────────────────────────────────
+#  MATCH STATE
+# ─────────────────────────────────────────
+enum MatchState { WAITING, STARTING, IN_MATCH }
+var match_state: MatchState = MatchState.WAITING
+
+var _countdown_timer: Timer = null
+const COUNTDOWN_SECONDS = 5
+const GAME_OVER_COUNTDOWN = 8
 
 # ─────────────────────────────────────────
 #  PEER EVENTS
@@ -335,62 +392,3 @@ func _get_tank_spawner():
 func _get_match_ui():
 	var nodes = get_tree().get_nodes_in_group("match_ui")
 	return nodes[0] if nodes.size() > 0 else null
-
-# ─────────────────────────────────────────
-#  CLIENT
-# ─────────────────────────────────────────
-var my_id = null
-
-func _reset_client_session_state() -> void:
-	my_id = null
-	pending_screen = ""
-	pending_countdown = 0.0
-	pending_match_state = -1
-	match_state = MatchState.WAITING
-
-#Player session client
-var _player_session = null
-#Player sessions server
-var player_session_store: Dictionary = {}
-
-func start_client(server_ip, port, player_session, game_session):
-	_reset_client_session_state()
-	var peer = ENetMultiplayerPeer.new()
-	if not multiplayer.connected_to_server.is_connected(_on_connected_to_server):
-		multiplayer.connected_to_server.connect(_on_connected_to_server)
-	if not multiplayer.connection_failed.is_connected(_on_connection_failed):
-		multiplayer.connection_failed.connect(_on_connection_failed)
-	if not multiplayer.server_disconnected.is_connected(_on_server_disconnected):
-		multiplayer.server_disconnected.connect(_on_server_disconnected)
-	var err = peer.create_client(server_ip, port)
-	if err != OK:
-		print("CLIENT: Failed to connect: ", err)
-		return
-	multiplayer.multiplayer_peer = peer
-
-	_player_session = player_session
-
-@rpc("any_peer", "call_remote")
-func send_player_session(player_session_id: String, peer_id):
-	print("CLIENT: Sending player session ID to server: ", player_session_id)
-	player_session_store[peer_id] = player_session_id
-	GameLiftBridge.AcceptPlayerSession(player_session_id)
-
-func _on_connected_to_server():
-	my_id = multiplayer.get_unique_id()
-	send_player_session.rpc_id(1, _player_session, my_id)
-	
-	print("CLIENT: Connected! My ID is ", my_id)
-
-func _on_connection_failed():
-	print("CLIENT: Connection failed.")
-
-func _on_server_disconnected():
-	print("CLIENT: Server disconnected.")
-	_reset_client_session_state()
-
-func disconnect_client() -> void:
-	if multiplayer.multiplayer_peer:
-		multiplayer.multiplayer_peer.close()
-		multiplayer.multiplayer_peer = null
-	_reset_client_session_state()

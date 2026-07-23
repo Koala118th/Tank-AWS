@@ -16,10 +16,6 @@ func _ready():
 	_connect_button_sounds($CenterContainer/VBoxContainer/SettingsButton)
 	_connect_button_sounds($CenterContainer/VBoxContainer/QuitButton)
 
-func _ready():
-	_connect_button_sounds($CenterContainer/VBoxContainer/PlayButton)
-	_connect_button_sounds($CenterContainer/VBoxContainer/SettingsButton)
-	_connect_button_sounds($CenterContainer/VBoxContainer/QuitButton)
 
 func _on_start_button_pressed() -> void:
 	play_button.disabled = true
