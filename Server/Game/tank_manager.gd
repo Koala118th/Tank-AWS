@@ -80,7 +80,7 @@ func sync_health(id: int, new_health: float):
 	tank._health = new_health
 	tank.flash_red()
 	var death_pos: Vector2 = tank.global_position
-	AudioManager.play_at(AudioManager.sfx_impact, death_pos)
+	AudioManager.play_game(AudioManager.sfx_impact, death_pos)
 
 	if was_alive and new_health == 0:
 		tank.die()

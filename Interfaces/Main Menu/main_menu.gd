@@ -9,6 +9,9 @@ func _ready():
 func _on_start_button_pressed() -> void:
 	GameServer.start_client()
 
+func _on_settings_button_pressed() -> void:
+	var scene := preload("res://Interfaces/Settings/settings_menu.tscn")
+	add_child(scene.instantiate())
 
 func _on_quit_button_pressed() -> void:
 	get_tree().quit()

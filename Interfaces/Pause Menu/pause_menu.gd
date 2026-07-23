@@ -3,6 +3,7 @@ extends CanvasLayer
 signal resumed
 
 var _paused := false
+var _blocked := false
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -17,6 +18,7 @@ func _ready() -> void:
 	_connect_button_sounds(quit_btn)
 	
 	resume_btn.pressed.connect(_on_resume)
+	settings_btn.pressed.connect(_on_settings)
 	quit_btn.pressed.connect(_on_quit)
 	
 	set_process_unhandled_input(true)
@@ -26,6 +28,8 @@ func _connect_button_sounds(button: Button) -> void:
 	button.pressed.connect(func(): AudioManager.play_ui(AudioManager.sfx_button_click))
 
 func _unhandled_input(event: InputEvent) -> void:
+	if _blocked:
+		return
 	if not event.is_action_pressed("ui_cancel"):
 		return
 	if _paused:
@@ -34,7 +38,6 @@ func _unhandled_input(event: InputEvent) -> void:
 		_pause()
 
 func _pause() -> void:
-	AudioManager.play_ui(AudioManager.sfx_button_click)
 	_paused = true
 	open()  # no get_tree().paused — just show the menu
 
@@ -51,6 +54,13 @@ func close() -> void:
 
 func _on_resume() -> void:
 	_resume()
+
+func _on_settings() -> void:
+	_blocked = true
+	var scene := preload("res://Interfaces/Settings/settings_menu.tscn")
+	var settings = scene.instantiate()
+	settings.tree_exited.connect(func(): _blocked = false)
+	add_child(settings)
 
 func _on_quit() -> void:
 	_paused = false

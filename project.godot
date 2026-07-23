@@ -20,9 +20,11 @@ config/icon="res://icon.svg"
 GameServer="*uid://djbvowfvclxkf"
 AudioManager="*uid://bxa3y805pjdw5"
 LeaderboardManager="*uid://d0wvs2c0mylgr"
+SettingsConfig="*uid://s1b1q5tfhdtw"
 
 [display]
 
+window/size/mode=4
 window/stretch/mode="canvas_items"
 
 [dotnet]

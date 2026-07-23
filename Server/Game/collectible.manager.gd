@@ -125,7 +125,7 @@ func receive_crate_removed(crate_id: int, crate_pos: Vector2) -> void:
 	if _collectible_spawner == null:
 		push_warning("[CollectibleManager] _collectible_spawner is null!")
 		return
-	AudioManager.play_at(AudioManager.sfx_pickup, crate_pos)
+	AudioManager.play_game(AudioManager.sfx_pickup, crate_pos)
 	_collectible_spawner.remove_crate(crate_id)
 
 @rpc("any_peer", "call_remote", "reliable")

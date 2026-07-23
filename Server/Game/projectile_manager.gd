@@ -83,7 +83,7 @@ func spawn_projectile(id, pos: Vector2, rot: float, dir: Vector2, ammo_type: int
 		AmmoType.BULLET: shoot_sfx = AudioManager.sfx_shoot
 		AmmoType.CHASER: shoot_sfx = AudioManager.sfx_shoot
 		AmmoType.SMALL: shoot_sfx = AudioManager.sfx_shoot_small
-	AudioManager.play_at(shoot_sfx, pos)
+	AudioManager.play_game(shoot_sfx, pos)
 
 
 @rpc("authority", "call_remote", "unreliable")

@@ -319,7 +319,7 @@ func die(killer_id: int = -1):
 	get_parent().add_child(explosion)
 
 	# ADD THIS
-	AudioManager.play_at(AudioManager.sfx_explosion, global_position)
+	AudioManager.play_game(AudioManager.sfx_explosion, global_position)
 	
 	if multiplayer.is_server():
 		# Prevent invalid kills
