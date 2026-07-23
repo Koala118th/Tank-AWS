@@ -84,7 +84,7 @@ func _on_tank_removed_recheck_round_end() -> void:
 		return
 	var alive := get_tanks_alive()
 	print("Recheck after removal — tanks alive: ", alive)
-	if alive == 1:
+	if alive <= 1:
 		_on_round_over()
 
 
@@ -180,7 +180,7 @@ func _on_tank_died():
 
 	var tanks_alive := get_tanks_alive()
 	print("Tanks remaining: ", tanks_alive)
-	if tanks_alive == 1:
+	if tanks_alive <= 1:
 		_on_round_over()
 
 
@@ -192,7 +192,7 @@ func _on_round_over():
 		return
 	_match_active = false
 
-	if get_tanks_alive() != 1:
+	if get_tanks_alive() > 1:
 		return
 
 
