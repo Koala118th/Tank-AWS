@@ -46,7 +46,7 @@ func get_sorted_leaderboard():
 	for id in leaderboard:
 		var data = leaderboard[id]
 		arr.append({
-			"name": id,
+			"name": data["name"],
 			"wins": data["wins"],
 			"kills": data["kills"],
 			"is_you": id == multiplayer.get_unique_id()

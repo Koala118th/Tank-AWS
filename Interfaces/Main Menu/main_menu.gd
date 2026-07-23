@@ -9,8 +9,9 @@ func _ready():
 	_connect_button_sounds($CenterContainer/VBoxContainer/QuitButton)
 
 func _on_start_button_pressed() -> void:
-	if name_line_edit.text == null:
+	if name_line_edit.text == null || name_line_edit.text == "":
 		name_line_edit.placeholder_text = "ENTER A USERNAME"
+		name_line_edit.add_theme_color_override("font_placeholder_color", Color.RED)
 	else:
 		GameServer.start_client(name_line_edit.text)
 

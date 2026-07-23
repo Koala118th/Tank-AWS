@@ -324,7 +324,7 @@ func die(killer_id: int = -1):
 	if multiplayer.is_server():
 		# Prevent invalid kills
 		if killer_id != -1 and killer_id != owner_id:
-			LeaderboardManager.add_kill(killer_id)
+			GameServer.leaderboardManager.add_kill(killer_id)
 
 	queue_free()
 
