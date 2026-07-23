@@ -178,7 +178,7 @@ func on_match_ended(winner_id: int):
 	print("SERVER: Match ended. Winner: ", winner_id)
 	leaderboardManager.add_win(winner_id)
 	leaderboardManager.sync_leaderboard.rpc(leaderboardManager.leaderboard)
-	show_game_over(winner_id, float(GAME_OVER_COUNTDOWN))
+	show_game_over(float(GAME_OVER_COUNTDOWN))
 	show_game_over.rpc(winner_id, float(GAME_OVER_COUNTDOWN))
 	_start_game_over_countdown()
 
@@ -239,7 +239,7 @@ func _on_game_over_finished():
 	tankManager.notify_spawns_ready.rpc()
 
 @rpc("authority", "call_remote", "reliable")
-func show_game_over(winner_id: int, countdown_seconds: float):
+func show_game_over(countdown_seconds: float):
 	pending_screen = ""
 	
 	for node in get_tree().get_nodes_in_group("tank"):

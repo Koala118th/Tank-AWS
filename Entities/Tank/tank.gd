@@ -105,8 +105,6 @@ func _process(delta):
 	health_bar.value = lerp(health_bar.value, _health, 10 * delta)
 
 func _ready():
-	GameServer.tankManager.tank_moved.connect(_on_tank_moved)
-	
 	target_pos = global_position
 	target_body_rot = body.rotation
 	target_turret_rot = turret.rotation
@@ -269,7 +267,7 @@ func shoot_request():
 	GameServer.projectileManager.request_shoot.rpc_id(1, owner_id, mouse_pos, spawn_index)
 
 
-func trigger_muzzle_flash(flash: bool = true):
+func trigger_muzzle_flash():
 	fire_timer.start(GameServer.projectileManager.ammo_cooldown[current_ammo]) # Spam blocker
 	if not current_ammo == GameServer.projectileManager.AmmoType.LASER:
 		if current_ammo == GameServer.projectileManager.AmmoType.SNIPER:
@@ -280,7 +278,7 @@ func trigger_muzzle_flash(flash: bool = true):
 		muzzle_timer.start()
 
 
-func server_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int, spawn_index: int):
+func server_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int, spawn_indx: int):
 	if not fire_timer.is_stopped():
 		return
 	
@@ -306,7 +304,7 @@ func server_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int, spawn_ind
 		bullet_dir,
 		ammo_type,
 		shooter_id,
-		spawn_index
+		spawn_indx
 	)
 
 	fire_timer.start(projectile.fire_cooldown)
