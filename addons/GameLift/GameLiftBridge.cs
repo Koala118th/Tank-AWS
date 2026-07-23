@@ -55,17 +55,19 @@ public partial class GameLiftBridge : Node
         hierarchy.Configured = true;
     }
 
+    private const bool IsAnywhereFleet = false;
+
     private void InitGameLift()
     {
-        var serverParameters = new ServerParameters(
-            "wss://ap-southeast-2.api.amazongamelift.com",
-            $"process-{System.Guid.NewGuid()}",
-            "my-laptop-compute",
-            "fleet-418af44f-1431-41dc-8fe8-c4348f3138f4",
-            "a34180dc-38c8-4cd9-8af8-433dbce5c142"
-        );
-
-        var initOutcome = GameLiftServerAPI.InitSDK(serverParameters);
+        var initOutcome = IsAnywhereFleet
+        ? GameLiftServerAPI.InitSDK(new ServerParameters(
+              "wss://ap-southeast-2.api.amazongamelift.com",
+              $"process-{System.Guid.NewGuid()}",
+              "my-laptop-compute",
+              "fleet-0a02bb0b-c3b2-4f60-b27a-c54d87014153",
+              "cb089c22-7d04-4e75-bd1d-27710c956f03"
+          ))
+        : GameLiftServerAPI.InitSDK();
 
         if (!initOutcome.Success)
         {

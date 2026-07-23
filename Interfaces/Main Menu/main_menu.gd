@@ -4,7 +4,7 @@ class_name Main_menu
 #  SCENE
 # ─────────────────────────────────────────
 
-const WEBSOCKET_URL = "wss://my8oxjq6ea.execute-api.ap-southeast-2.amazonaws.com/production/"
+const WEBSOCKET_URL = "wss://v4wok52voc.execute-api.ap-southeast-2.amazonaws.com/production/"
 @onready var play_button: Button = $CenterContainer/VBoxContainer/PlayButton
 
 var _client: WebSocketPeer
