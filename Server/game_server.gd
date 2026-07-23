@@ -60,6 +60,7 @@ func start_server():
 func _on_peer_connected(id: int):
 	print("SERVER: Player connected — id: ", id)
 	playerManager.assign_slot(id, match_state)
+	LeaderboardManager.register_player(id)
 
 func _on_peer_disconnected(id: int):
 	print("SERVER: Player disconnected — id: ", id)
@@ -72,6 +73,37 @@ func _on_peer_disconnected(id: int):
 	GameLiftBridge.RemovePlayerSession(player_session_store[id])
 	player_session_store.erase(id)
 	playerManager.remove_slot(id)
+	# If server is now empty, full reset
+	if playerManager.player_count == 0:
+		_reset_server()
+	
+	LeaderboardManager.remove_player(id)
+
+func _reset_server() -> void:
+	print("SERVER: No players remaining — resetting server state")
+	# Cancel any running timers
+	if _countdown_timer:
+		_countdown_timer.stop()
+		_countdown_timer.queue_free()
+		_countdown_timer = null
+	if _game_over_timer:
+		_game_over_timer.stop()
+		_game_over_timer.queue_free()
+		_game_over_timer = null
+	# Reset all state
+	match_state = MatchState.WAITING
+	collectibleManager.reset()
+	playerManager._spectators_next_match.clear()
+	playerManager._keep_spectator_next_match.clear()
+	# Clear tanks and projectiles on server
+	var tank_spawner = _get_tank_spawner()
+	if tank_spawner:
+		tank_spawner._clear_tanks()
+	projectileManager.clear_all_projectiles()
+	# Generate fresh maze ready for next players
+	mapManager.start_maze()
+	mapManager.pick_background()
+	print("SERVER: Reset complete — waiting for players")
 
 # ─────────────────────────────────────────
 #  SIGNAL HANDLERS FROM PLAYER MANAGER
@@ -148,6 +180,8 @@ func _start_match():
 func on_match_ended(winner_id: int):
 	match_state = MatchState.WAITING
 	print("SERVER: Match ended. Winner: ", winner_id)
+	LeaderboardManager.add_win(winner_id)
+	LeaderboardManager.sync_leaderboard.rpc(LeaderboardManager.leaderboard)
 	show_game_over(winner_id, float(GAME_OVER_COUNTDOWN))
 	show_game_over.rpc(winner_id, float(GAME_OVER_COUNTDOWN))
 	_start_game_over_countdown()
@@ -211,12 +245,20 @@ func _on_game_over_finished():
 @rpc("authority", "call_remote", "reliable")
 func show_game_over(winner_id: int, countdown_seconds: float):
 	pending_screen = ""
+	
+	for node in get_tree().get_nodes_in_group("tank"):
+		node.set_physics_process(false)
+	for node in get_tree().get_nodes_in_group("projectile"):
+		node.set_physics_process(false)
+	
 	var ui = _get_match_ui()
 	if ui:
 		ui.hide_all()
+	
+	var result = LeaderboardManager.get_sorted_leaderboard()
 	var go_screen = _get_game_over_screen()
 	if go_screen:
-		go_screen.show_screen(go_screen.placeholder_scores, 1, countdown_seconds)
+		go_screen.show_screen(result, 1, countdown_seconds)
 
 func _get_game_over_screen():
 	var nodes = get_tree().get_nodes_in_group("game_over_screen")

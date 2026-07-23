@@ -5,8 +5,6 @@ class_name LaserProjectile
 
 @export var max_bounces := 3
 @export var max_length := 1000.0
-@onready var laser_texture: Texture2D = $Sprite2D.texture
-
 
 var segments: Array[Sprite2D] = []
 var direction: Vector2
@@ -41,7 +39,7 @@ func _physics_process(delta):
 
 			if collider.has_method("get_hit"):
 				if collider not in hit_targets:
-					collider.get_hit(damage)
+					collider.get_hit(damage, shooter_id)
 					hit_targets[collider] = true
 				current_pos = end_point + current_dir * 1
 				continue
@@ -63,7 +61,7 @@ func _physics_process(delta):
 
 func create_segment(start: Vector2, end: Vector2):
 	var sprite = Sprite2D.new()
-	sprite.texture = laser_texture
+	sprite.texture = projectile_sprite.texture
 	add_child(sprite)
 
 	var dir = end - start
