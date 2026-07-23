@@ -105,12 +105,18 @@ func _process(delta):
 	health_bar.value = lerp(health_bar.value, _health, 10 * delta)
 
 func _ready():
-	add_to_group("tank")
 	GameServer.tankManager.tank_moved.connect(_on_tank_moved)
 	
 	target_pos = global_position
 	target_body_rot = body.rotation
 	target_turret_rot = turret.rotation
+	
+	var style = StyleBoxFlat.new()
+	if owner_id == multiplayer.get_unique_id():
+		style.bg_color = Color(0.286, 0.71, 0.0)
+	else:
+		style.bg_color = Color(1.0, 0.0, 0.0)
+	health_bar.add_theme_stylebox_override("fill", style)
 
 func _physics_process(delta: float):
 	if multiplayer.multiplayer_peer == null:
