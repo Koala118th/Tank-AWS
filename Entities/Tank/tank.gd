@@ -144,7 +144,7 @@ func _physics_process(delta: float):
 			shoot_request()
 		
 		if current_ammo == GameServer.projectileManager.AmmoType.LASER:
-			aim()
+			aim(get_global_mouse_position())
 		else:
 			aim_line.clear_points()
 	else:
@@ -155,7 +155,12 @@ func _physics_process(delta: float):
 		body.rotation = lerp_angle(body.rotation, target_body_rot, t)
 		collision_shape.rotation = body.rotation
 		turret.rotation = lerp_angle(turret.rotation, target_turret_rot, t)
+		
 		spawn_tracks(delta)
+		if current_ammo == GameServer.projectileManager.AmmoType.LASER:
+			var dir = Vector2.UP.rotated(turret.rotation)
+			var point = global_position + dir * 1000
+			aim(point)
 
 
 func get_input_state():
@@ -213,8 +218,8 @@ func apply_server_state(pos, body_rot, turret_rot):
 		target_turret_rot = turret_rot
 
 
-func aim():
-	var current_dir = (get_global_mouse_position() - global_position).normalized()
+func aim(point_position: Vector2):
+	var current_dir = (point_position - global_position).normalized()
 	var current_pos = global_position + current_dir * 25
 	
 	var points = []
