@@ -14,7 +14,7 @@ shader = ExtResource("2_neyqc")
 shader = ExtResource("3_sulmp")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ccvi"]
-content_margin_left = 5.0
+content_margin_left = 10.0
 bg_color = Color(0.6, 0.6, 0.6, 0)
 border_width_left = 1
 border_width_top = 1
@@ -27,7 +27,7 @@ corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o655f"]
-content_margin_left = 5.0
+content_margin_left = 10.0
 bg_color = Color(0.6, 0.6, 0.6, 0)
 border_width_left = 1
 border_width_top = 1

@@ -78,16 +78,16 @@ func divide_grid(maze_grid: Array, y: int, x: int, height: int, width: int):
 		if height < 5:
 			return
 
-		var wall_count = (height - 1) / 2 - 1
+		var wall_count = (height - 1) / 2.0 - 1
 		if wall_count < 1:
 			return
 
-		var hole_count = (width - 1) / 2
+		var hole_count = (width - 1) / 2.0
 		if hole_count < 1:
 			return
 
-		var new_wall = y + (randi() % wall_count + 1) * 2
-		var new_hole = x + (randi() % hole_count) * 2 + 1
+		var new_wall = y + (randi() % int(wall_count) + 1) * 2
+		var new_hole = x + (randi() % int(hole_count)) * 2 + 1
 
 		if new_wall >= maze_grid.size():
 			push_error("new_wall row ", new_wall, " out of bounds!")
@@ -111,16 +111,16 @@ func divide_grid(maze_grid: Array, y: int, x: int, height: int, width: int):
 		if width < 5:
 			return
 
-		var wall_count = (width - 1) / 2 - 1
+		var wall_count = (width - 1) / 2.0 - 1
 		if wall_count < 1:
 			return
 
-		var hole_count = (height - 1) / 2
+		var hole_count = (height - 1) / 2.0
 		if hole_count < 1:
 			return
 
-		var new_wall = x + (randi() % wall_count + 1) * 2
-		var new_hole = y + (randi() % hole_count) * 2 + 1
+		var new_wall = x + (randi() % int(wall_count) + 1) * 2
+		var new_hole = y + (randi() % int(hole_count)) * 2 + 1
 
 		if new_hole >= maze_grid.size():
 			push_error("new_hole row ", new_hole, " out of bounds!")

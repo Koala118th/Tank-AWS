@@ -105,12 +105,16 @@ func _process(delta):
 	health_bar.value = lerp(health_bar.value, _health, 10 * delta)
 
 func _ready():
-	add_to_group("tank")
-	GameServer.tankManager.tank_moved.connect(_on_tank_moved)
-	
 	target_pos = global_position
 	target_body_rot = body.rotation
 	target_turret_rot = turret.rotation
+	
+	var style = StyleBoxFlat.new()
+	if owner_id == multiplayer.get_unique_id():
+		style.bg_color = Color(0.286, 0.71, 0.0)
+	else:
+		style.bg_color = Color(1.0, 0.0, 0.0)
+	health_bar.add_theme_stylebox_override("fill", style)
 
 func _physics_process(delta: float):
 	if multiplayer.multiplayer_peer == null:
@@ -140,7 +144,7 @@ func _physics_process(delta: float):
 			shoot_request()
 		
 		if current_ammo == GameServer.projectileManager.AmmoType.LASER:
-			aim()
+			aim(get_global_mouse_position())
 		else:
 			aim_line.clear_points()
 	else:
@@ -151,7 +155,12 @@ func _physics_process(delta: float):
 		body.rotation = lerp_angle(body.rotation, target_body_rot, t)
 		collision_shape.rotation = body.rotation
 		turret.rotation = lerp_angle(turret.rotation, target_turret_rot, t)
+		
 		spawn_tracks(delta)
+		if current_ammo == GameServer.projectileManager.AmmoType.LASER:
+			var dir = Vector2.UP.rotated(turret.rotation)
+			var point = global_position + dir * 1000
+			aim(point)
 
 
 func get_input_state():
@@ -209,8 +218,8 @@ func apply_server_state(pos, body_rot, turret_rot):
 		target_turret_rot = turret_rot
 
 
-func aim():
-	var current_dir = (get_global_mouse_position() - global_position).normalized()
+func aim(point_position: Vector2):
+	var current_dir = (point_position - global_position).normalized()
 	var current_pos = global_position + current_dir * 25
 	
 	var points = []
@@ -263,7 +272,7 @@ func shoot_request():
 	GameServer.projectileManager.request_shoot.rpc_id(1, owner_id, mouse_pos, spawn_index)
 
 
-func trigger_muzzle_flash(flash: bool = true):
+func trigger_muzzle_flash():
 	fire_timer.start(GameServer.projectileManager.ammo_cooldown[current_ammo]) # Spam blocker
 	if not current_ammo == GameServer.projectileManager.AmmoType.LASER:
 		if current_ammo == GameServer.projectileManager.AmmoType.SNIPER:
@@ -274,7 +283,7 @@ func trigger_muzzle_flash(flash: bool = true):
 		muzzle_timer.start()
 
 
-func server_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int, spawn_index: int):
+func server_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int, spawn_indx: int):
 	if not fire_timer.is_stopped():
 		return
 	
@@ -300,7 +309,7 @@ func server_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int, spawn_ind
 		bullet_dir,
 		ammo_type,
 		shooter_id,
-		spawn_index
+		spawn_indx
 	)
 
 	fire_timer.start(projectile.fire_cooldown)
@@ -324,7 +333,7 @@ func die(killer_id: int = -1):
 	if multiplayer.is_server():
 		# Prevent invalid kills
 		if killer_id != -1 and killer_id != owner_id:
-			LeaderboardManager.add_kill(killer_id)
+			GameServer.leaderboardManager.add_kill(killer_id)
 
 	queue_free()
 

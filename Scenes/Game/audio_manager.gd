@@ -18,6 +18,7 @@ func play_ui(stream: AudioStream) -> void:
 	if not stream:
 		print("[AudioManager] play_ui: stream is null, skipping")
 		return
+	#print("[AudioManager] play_ui: playing %s" % stream.resource_path)
 	var p := AudioStreamPlayer.new()
 	p.stream = stream
 	p.bus = "SFX_UI"

@@ -1,13 +1,19 @@
 extends Control
 class_name Main_menu
 
+@onready var name_line_edit = $CenterContainer/VBoxContainer/LineEdit
+
 func _ready():
 	_connect_button_sounds($CenterContainer/VBoxContainer/PlayButton)
 	_connect_button_sounds($CenterContainer/VBoxContainer/SettingsButton)
 	_connect_button_sounds($CenterContainer/VBoxContainer/QuitButton)
 
 func _on_start_button_pressed() -> void:
-	GameServer.start_client()
+	if name_line_edit.text == null || name_line_edit.text == "":
+		name_line_edit.placeholder_text = "ENTER A USERNAME"
+		name_line_edit.add_theme_color_override("font_placeholder_color", Color.RED)
+	else:
+		GameServer.start_client(name_line_edit.text)
 
 func _on_settings_button_pressed() -> void:
 	var scene := preload("res://Interfaces/Settings/settings_menu.tscn")

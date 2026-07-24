@@ -32,6 +32,7 @@ const SERVER_IP = "127.0.0.1"
 @onready var mapManager         = $MapManager
 @onready var collectibleManager = $CollectibleManager
 @onready var projectileManager  = $ProjectileManager
+@onready var leaderboardManager = $LeaderboardManager
 
 func start_server():
 	var peer = ENetMultiplayerPeer.new()
@@ -60,7 +61,6 @@ func start_server():
 func _on_peer_connected(id: int):
 	print("SERVER: Player connected — id: ", id)
 	playerManager.assign_slot(id, match_state)
-	LeaderboardManager.register_player(id)
 
 func _on_peer_disconnected(id: int):
 	print("SERVER: Player disconnected — id: ", id)
@@ -75,7 +75,7 @@ func _on_peer_disconnected(id: int):
 	if playerManager.player_count == 0:
 		_reset_server()
 	
-	LeaderboardManager.remove_player(id)
+	leaderboardManager.remove_player(id)
 
 func _reset_server() -> void:
 	print("SERVER: No players remaining — resetting server state")
@@ -125,8 +125,6 @@ func _on_ready_to_start():
 # ─────────────────────────────────────────
 #  COUNTDOWN
 # ─────────────────────────────────────────
-var _countdown_start_time: float = 0.0
-var _match_start_time: float = 0.0
 var _game_over_timer: Timer = null
 
 func _begin_countdown():
@@ -178,8 +176,9 @@ func _start_match():
 func on_match_ended(winner_id: int):
 	match_state = MatchState.WAITING
 	print("SERVER: Match ended. Winner: ", winner_id)
-	LeaderboardManager.add_win(winner_id)
-	LeaderboardManager.sync_leaderboard.rpc(LeaderboardManager.leaderboard)
+	if winner_id != -1:
+		leaderboardManager.add_win(winner_id)
+	leaderboardManager.sync_leaderboard.rpc(leaderboardManager.leaderboard)
 	show_game_over(winner_id, float(GAME_OVER_COUNTDOWN))
 	show_game_over.rpc(winner_id, float(GAME_OVER_COUNTDOWN))
 	_start_game_over_countdown()
@@ -253,10 +252,10 @@ func show_game_over(winner_id: int, countdown_seconds: float):
 	if ui:
 		ui.hide_all()
 	
-	var result = LeaderboardManager.get_sorted_leaderboard()
+	var result = leaderboardManager.get_sorted_leaderboard()
 	var go_screen = _get_game_over_screen()
 	if go_screen:
-		go_screen.show_screen(result, 1, countdown_seconds)
+		go_screen.show_screen(winner_id, result, 1, countdown_seconds)
 
 func _get_game_over_screen():
 	var nodes = get_tree().get_nodes_in_group("game_over_screen")
@@ -338,6 +337,7 @@ func _get_match_ui():
 #  CLIENT
 # ─────────────────────────────────────────
 var my_id = null
+var pending_player_name: String
 
 func _reset_client_session_state() -> void:
 	my_id = null
@@ -346,7 +346,8 @@ func _reset_client_session_state() -> void:
 	pending_match_state = -1
 	match_state = MatchState.WAITING
 
-func start_client():
+func start_client(player_name: String):
+	pending_player_name = player_name
 	_reset_client_session_state()
 	var peer = ENetMultiplayerPeer.new()
 	if not multiplayer.connected_to_server.is_connected(_on_connected_to_server):
@@ -361,9 +362,11 @@ func start_client():
 		return
 	multiplayer.multiplayer_peer = peer
 
+
 func _on_connected_to_server():
 	my_id = multiplayer.get_unique_id()
 	print("CLIENT: Connected! My ID is ", my_id)
+	leaderboardManager.register_player_request.rpc_id(1, pending_player_name)
 
 func _on_connection_failed():
 	print("CLIENT: Connection failed.")

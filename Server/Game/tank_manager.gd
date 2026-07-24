@@ -1,7 +1,6 @@
 extends Node
 
 signal tank_spawned(peer_id: int, assigned_slot: int, spawn_pos: Vector2)
-signal tank_moved(peer_id: int, pos: Vector2, body_rot: float, turret_rot: float)
 signal spawns_ready
 var tanks := {}
 var tank_ammo: Dictionary = {}
