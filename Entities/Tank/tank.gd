@@ -161,6 +161,8 @@ func _physics_process(delta: float):
 			var dir = Vector2.UP.rotated(turret.rotation)
 			var point = global_position + dir * 1000
 			aim(point)
+		else:
+			aim_line.clear_points()
 
 
 func get_input_state():
