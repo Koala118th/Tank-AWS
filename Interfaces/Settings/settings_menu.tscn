@@ -2,6 +2,102 @@
 
 [ext_resource type="Script" uid="uid://c4hncoas6d8d4" path="res://Interfaces/Settings/settings_menu.gd" id="1_script"]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_panel"]
+content_margin_left = 0.0
+content_margin_top = 0.0
+content_margin_right = 0.0
+content_margin_bottom = 0.0
+bg_color = Color(0.067, 0.094, 0.125, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.118, 0.165, 0.118, 1)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_option_normal"]
+content_margin_left = 10.0
+content_margin_top = 6.0
+content_margin_right = 10.0
+content_margin_bottom = 6.0
+bg_color = Color(0.055, 0.067, 0.09, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.165, 0.227, 0.165, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_option_hover"]
+content_margin_left = 10.0
+content_margin_top = 6.0
+content_margin_right = 10.0
+content_margin_bottom = 6.0
+bg_color = Color(0.055, 0.067, 0.09, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.298, 0.686, 0.314, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_normal"]
+content_margin_left = 28.0
+content_margin_top = 10.0
+content_margin_right = 28.0
+content_margin_bottom = 10.0
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.165, 0.227, 0.165, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_pressed"]
+content_margin_left = 28.0
+content_margin_top = 10.0
+content_margin_right = 28.0
+content_margin_bottom = 10.0
+bg_color = Color(0.294, 0.686, 0.314, 0.12)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.298, 0.686, 0.314, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_btn_hover"]
+content_margin_left = 28.0
+content_margin_top = 10.0
+content_margin_right = 28.0
+content_margin_bottom = 10.0
+bg_color = Color(0.294, 0.686, 0.314, 0.06)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.298, 0.686, 0.314, 1)
+corner_radius_top_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+corner_radius_bottom_left = 3
+
 [node name="SettingsMenu" type="CanvasLayer" unique_id=528820352]
 layer = 10
 script = ExtResource("1_script")
@@ -11,7 +107,7 @@ anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
-color = Color(0.055, 0.067, 0.09, 0.92)
+color = Color(0.055, 0.067, 0.09, 0.78)
 
 [node name="Panel" type="PanelContainer" parent="." unique_id=603278963]
 anchors_preset = 8
@@ -19,128 +115,225 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -240.0
-offset_top = -290.0
-offset_right = 240.0
-offset_bottom = 290.0
+offset_left = -180.0
+offset_top = -260.0
+offset_right = 180.0
+offset_bottom = 260.0
 grow_horizontal = 2
 grow_vertical = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_panel")
 
 [node name="VBox" type="VBoxContainer" parent="Panel" unique_id=372966012]
 layout_mode = 2
-theme_override_constants/separation = 20
+theme_override_constants/separation = 0
 
-[node name="Title" type="Label" parent="Panel/VBox" unique_id=1971631381]
+[node name="Header" type="HBoxContainer" parent="Panel/VBox" unique_id=100000001]
 layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="TitleBlock" type="VBoxContainer" parent="Panel/VBox/Header" unique_id=100000002]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 3
+
+[node name="EyebrowLabel" type="Label" parent="Panel/VBox/Header/TitleBlock" unique_id=100000003]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.227, 0.353, 0.227, 1)
+theme_override_font_sizes/font_size = 10
+text = "// config"
+
+[node name="Title" type="Label" parent="Panel/VBox/Header/TitleBlock" unique_id=1971631381]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.91, 0.941, 0.91, 1)
+theme_override_font_sizes/font_size = 20
 text = "SETTINGS"
-horizontal_alignment = 1
 
-[node name="HSep1" type="HSeparator" parent="Panel/VBox" unique_id=1390382071]
+[node name="CloseXButton" type="Button" parent="Panel/VBox/Header" unique_id=100000004]
+custom_minimum_size = Vector2(28, 28)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.353, 0.478, 0.353, 1)
+theme_override_colors/font_hover_color = Color(0.788, 0.478, 0.478, 1)
+theme_override_font_sizes/font_size = 13
+text = "✕"
+
+[node name="HeaderSep" type="HSeparator" parent="Panel/VBox" unique_id=100000005]
 layout_mode = 2
 
-[node name="AudioLabel" type="Label" parent="Panel/VBox" unique_id=696938134]
+[node name="BodyMargin" type="MarginContainer" parent="Panel/VBox" unique_id=100000006]
 layout_mode = 2
-text = "— AUDIO —"
-horizontal_alignment = 1
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
 
-[node name="MasterRow" type="HBoxContainer" parent="Panel/VBox" unique_id=1272650053]
+[node name="BodyVBox" type="VBoxContainer" parent="Panel/VBox/BodyMargin" unique_id=100000007]
 layout_mode = 2
+theme_override_constants/separation = 18
 
-[node name="MasterLabel" type="Label" parent="Panel/VBox/MasterRow" unique_id=332906926]
-custom_minimum_size = Vector2(100, 0)
+[node name="AudioLabel" type="Label" parent="Panel/VBox/BodyMargin/BodyVBox" unique_id=696938134]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.227, 0.353, 0.227, 1)
+theme_override_font_sizes/font_size = 10
+text = "// AUDIO"
+
+[node name="AudioSection" type="VBoxContainer" parent="Panel/VBox/BodyMargin/BodyVBox" unique_id=100000008]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="MasterRow" type="HBoxContainer" parent="Panel/VBox/BodyMargin/BodyVBox/AudioSection" unique_id=1272650053]
+layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="MasterLabel" type="Label" parent="Panel/VBox/BodyMargin/BodyVBox/AudioSection/MasterRow" unique_id=332906926]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.541, 0.667, 0.541, 1)
+theme_override_font_sizes/font_size = 12
 text = "Master"
 
-[node name="MasterSlider" type="HSlider" parent="Panel/VBox/MasterRow" unique_id=534551853]
+[node name="MasterSlider" type="HSlider" parent="Panel/VBox/BodyMargin/BodyVBox/AudioSection/MasterRow" unique_id=534551853]
 layout_mode = 2
 size_flags_horizontal = 3
 max_value = 1.0
 step = 0.01
-value = 1.0
+value = 0.8
 
-[node name="MasterValue" type="Label" parent="Panel/VBox/MasterRow" unique_id=1886687901]
+[node name="MasterValue" type="Label" parent="Panel/VBox/BodyMargin/BodyVBox/AudioSection/MasterRow" unique_id=1886687901]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
-text = "100%"
+theme_override_colors/font_color = Color(0.298, 0.686, 0.314, 1)
+theme_override_font_sizes/font_size = 11
+text = "80%"
 horizontal_alignment = 2
 
-[node name="SFXUIRow" type="HBoxContainer" parent="Panel/VBox" unique_id=530869590]
+[node name="SFXUIRow" type="HBoxContainer" parent="Panel/VBox/BodyMargin/BodyVBox/AudioSection" unique_id=530869590]
 layout_mode = 2
+theme_override_constants/separation = 12
 
-[node name="SFXUILabel" type="Label" parent="Panel/VBox/SFXUIRow" unique_id=2049315630]
-custom_minimum_size = Vector2(100, 0)
+[node name="SFXUILabel" type="Label" parent="Panel/VBox/BodyMargin/BodyVBox/AudioSection/SFXUIRow" unique_id=2049315630]
+custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.541, 0.667, 0.541, 1)
+theme_override_font_sizes/font_size = 12
 text = "SFX UI"
 
-[node name="SFXUISlider" type="HSlider" parent="Panel/VBox/SFXUIRow" unique_id=1317122561]
+[node name="SFXUISlider" type="HSlider" parent="Panel/VBox/BodyMargin/BodyVBox/AudioSection/SFXUIRow" unique_id=1317122561]
 layout_mode = 2
 size_flags_horizontal = 3
 max_value = 1.0
 step = 0.01
 value = 1.0
 
-[node name="SFXUIValue" type="Label" parent="Panel/VBox/SFXUIRow" unique_id=484597529]
+[node name="SFXUIValue" type="Label" parent="Panel/VBox/BodyMargin/BodyVBox/AudioSection/SFXUIRow" unique_id=484597529]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.298, 0.686, 0.314, 1)
+theme_override_font_sizes/font_size = 11
 text = "100%"
 horizontal_alignment = 2
 
-[node name="SFXGameRow" type="HBoxContainer" parent="Panel/VBox" unique_id=978727099]
+[node name="SFXGameRow" type="HBoxContainer" parent="Panel/VBox/BodyMargin/BodyVBox/AudioSection" unique_id=978727099]
 layout_mode = 2
+theme_override_constants/separation = 12
 
-[node name="SFXGameLabel" type="Label" parent="Panel/VBox/SFXGameRow" unique_id=1638555651]
-custom_minimum_size = Vector2(100, 0)
+[node name="SFXGameLabel" type="Label" parent="Panel/VBox/BodyMargin/BodyVBox/AudioSection/SFXGameRow" unique_id=1638555651]
+custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.541, 0.667, 0.541, 1)
+theme_override_font_sizes/font_size = 12
 text = "SFX Game"
 
-[node name="SFXGameSlider" type="HSlider" parent="Panel/VBox/SFXGameRow" unique_id=1749280286]
+[node name="SFXGameSlider" type="HSlider" parent="Panel/VBox/BodyMargin/BodyVBox/AudioSection/SFXGameRow" unique_id=1749280286]
 layout_mode = 2
 size_flags_horizontal = 3
 max_value = 1.0
 step = 0.01
 value = 1.0
 
-[node name="SFXGameValue" type="Label" parent="Panel/VBox/SFXGameRow" unique_id=907591348]
+[node name="SFXGameValue" type="Label" parent="Panel/VBox/BodyMargin/BodyVBox/AudioSection/SFXGameRow" unique_id=907591348]
 custom_minimum_size = Vector2(40, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.298, 0.686, 0.314, 1)
+theme_override_font_sizes/font_size = 11
 text = "100%"
 horizontal_alignment = 2
 
-[node name="HSep2" type="HSeparator" parent="Panel/VBox" unique_id=1142421924]
+[node name="HSep2" type="HSeparator" parent="Panel/VBox/BodyMargin/BodyVBox" unique_id=1142421924]
 layout_mode = 2
 
-[node name="DisplayLabel" type="Label" parent="Panel/VBox" unique_id=1853342888]
+[node name="DisplayLabel" type="Label" parent="Panel/VBox/BodyMargin/BodyVBox" unique_id=1853342888]
 layout_mode = 2
-text = "— DISPLAY —"
-horizontal_alignment = 1
+theme_override_colors/font_color = Color(0.227, 0.353, 0.227, 1)
+theme_override_font_sizes/font_size = 10
+text = "// DISPLAY"
 
-[node name="WindowModeRow" type="HBoxContainer" parent="Panel/VBox" unique_id=40936445]
+[node name="DisplaySection" type="VBoxContainer" parent="Panel/VBox/BodyMargin/BodyVBox" unique_id=100000009]
 layout_mode = 2
+theme_override_constants/separation = 12
 
-[node name="WindowLabel" type="Label" parent="Panel/VBox/WindowModeRow" unique_id=1791308311]
-custom_minimum_size = Vector2(100, 0)
+[node name="WindowModeRow" type="HBoxContainer" parent="Panel/VBox/BodyMargin/BodyVBox/DisplaySection" unique_id=40936445]
 layout_mode = 2
+theme_override_constants/separation = 12
+
+[node name="WindowLabel" type="Label" parent="Panel/VBox/BodyMargin/BodyVBox/DisplaySection/WindowModeRow" unique_id=1791308311]
+custom_minimum_size = Vector2(90, 0)
+layout_mode = 2
+theme_override_colors/font_color = Color(0.541, 0.667, 0.541, 1)
+theme_override_font_sizes/font_size = 12
 text = "Window"
 
-[node name="WindowModeOption" type="OptionButton" parent="Panel/VBox/WindowModeRow" unique_id=68000358]
+[node name="WindowModeOption" type="OptionButton" parent="Panel/VBox/BodyMargin/BodyVBox/DisplaySection/WindowModeRow" unique_id=68000358]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.627, 0.753, 0.627, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxFlat_option_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_option_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_option_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_option_hover")
 
-[node name="ResolutionRow" type="HBoxContainer" parent="Panel/VBox" unique_id=1558689057]
+[node name="ResolutionRow" type="HBoxContainer" parent="Panel/VBox/BodyMargin/BodyVBox/DisplaySection" unique_id=1558689057]
 layout_mode = 2
+theme_override_constants/separation = 12
 
-[node name="ResolutionLabel" type="Label" parent="Panel/VBox/ResolutionRow" unique_id=2131254207]
-custom_minimum_size = Vector2(100, 0)
+[node name="ResolutionLabel" type="Label" parent="Panel/VBox/BodyMargin/BodyVBox/DisplaySection/ResolutionRow" unique_id=2131254207]
+custom_minimum_size = Vector2(90, 0)
 layout_mode = 2
+theme_override_colors/font_color = Color(0.541, 0.667, 0.541, 1)
+theme_override_font_sizes/font_size = 12
 text = "Resolution"
 
-[node name="ResolutionOption" type="OptionButton" parent="Panel/VBox/ResolutionRow" unique_id=659406964]
+[node name="ResolutionOption" type="OptionButton" parent="Panel/VBox/BodyMargin/BodyVBox/DisplaySection/ResolutionRow" unique_id=659406964]
 layout_mode = 2
 size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.627, 0.753, 0.627, 1)
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxFlat_option_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_option_hover")
+theme_override_styles/hover = SubResource("StyleBoxFlat_option_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_option_hover")
 
-[node name="HSep3" type="HSeparator" parent="Panel/VBox" unique_id=355161846]
+[node name="FooterSep" type="HSeparator" parent="Panel/VBox" unique_id=100000010]
 layout_mode = 2
 
-[node name="CloseButton" type="Button" parent="Panel/VBox" unique_id=1093152986]
+[node name="FooterMargin" type="MarginContainer" parent="Panel/VBox" unique_id=100000011]
 layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 14
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 14
+
+[node name="FooterHBox" type="HBoxContainer" parent="Panel/VBox/FooterMargin" unique_id=100000012]
+layout_mode = 2
+alignment = 1
+
+[node name="CloseButton" type="Button" parent="Panel/VBox/FooterMargin/FooterHBox" unique_id=1093152986]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.416, 0.541, 0.416, 1)
+theme_override_colors/font_hover_color = Color(0.627, 0.753, 0.627, 1)
+theme_override_font_sizes/font_size = 13
+theme_override_styles/normal = SubResource("StyleBoxFlat_btn_normal")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_btn_pressed")
+theme_override_styles/hover = SubResource("StyleBoxFlat_btn_hover")
+theme_override_styles/focus = SubResource("StyleBoxFlat_btn_normal")
 text = "CLOSE"

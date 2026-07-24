@@ -1,15 +1,16 @@
 extends CanvasLayer
 
-@onready var master_slider    : HSlider      = $Panel/VBox/MasterRow/MasterSlider
-@onready var master_value     : Label        = $Panel/VBox/MasterRow/MasterValue
-@onready var sfx_ui_slider    : HSlider      = $Panel/VBox/SFXUIRow/SFXUISlider
-@onready var sfx_ui_value     : Label        = $Panel/VBox/SFXUIRow/SFXUIValue
-@onready var sfx_game_slider  : HSlider      = $Panel/VBox/SFXGameRow/SFXGameSlider
-@onready var sfx_game_value   : Label        = $Panel/VBox/SFXGameRow/SFXGameValue
-@onready var window_mode_opt  : OptionButton = $Panel/VBox/WindowModeRow/WindowModeOption
-@onready var resolution_row   : HBoxContainer = $Panel/VBox/ResolutionRow
-@onready var resolution_opt   : OptionButton = $Panel/VBox/ResolutionRow/ResolutionOption
-@onready var close_btn        : Button       = $Panel/VBox/CloseButton
+@onready var master_slider    : HSlider      = $Panel/VBox/BodyMargin/BodyVBox/AudioSection/MasterRow/MasterSlider
+@onready var master_value     : Label        = $Panel/VBox/BodyMargin/BodyVBox/AudioSection/MasterRow/MasterValue
+@onready var sfx_ui_slider    : HSlider      = $Panel/VBox/BodyMargin/BodyVBox/AudioSection/SFXUIRow/SFXUISlider
+@onready var sfx_ui_value     : Label        = $Panel/VBox/BodyMargin/BodyVBox/AudioSection/SFXUIRow/SFXUIValue
+@onready var sfx_game_slider  : HSlider      = $Panel/VBox/BodyMargin/BodyVBox/AudioSection/SFXGameRow/SFXGameSlider
+@onready var sfx_game_value   : Label        = $Panel/VBox/BodyMargin/BodyVBox/AudioSection/SFXGameRow/SFXGameValue
+@onready var window_mode_opt  : OptionButton = $Panel/VBox/BodyMargin/BodyVBox/DisplaySection/WindowModeRow/WindowModeOption
+@onready var resolution_row   : HBoxContainer= $Panel/VBox/BodyMargin/BodyVBox/DisplaySection/ResolutionRow
+@onready var resolution_opt   : OptionButton = $Panel/VBox/BodyMargin/BodyVBox/DisplaySection/ResolutionRow/ResolutionOption
+@onready var close_btn        : Button       = $Panel/VBox/FooterMargin/FooterHBox/CloseButton
+@onready var closex_btn       : Button       = $Panel/VBox/Header/CloseXButton
 
 const WINDOW_MODES := [
 	DisplayServer.WINDOW_MODE_WINDOWED,
@@ -39,6 +40,7 @@ func _ready() -> void:
 	_load_current_values()
 	_connect_signals()
 	_connect_button_sounds(close_btn)
+	_connect_button_sounds(closex_btn)
 
 func _connect_button_sounds(button: Button) -> void:
 	button.mouse_entered.connect(func(): AudioManager.play_ui(AudioManager.sfx_button_hover))
@@ -103,6 +105,7 @@ func _connect_signals() -> void:
 	window_mode_opt.item_selected.connect(_on_window_mode_selected)
 	resolution_opt.item_selected.connect(_on_resolution_selected)
 	close_btn.pressed.connect(_on_close_pressed)
+	closex_btn.pressed.connect(_on_close_pressed)
 
 func _on_master_changed(value: float) -> void:
 	master_value.text = "%d%%" % roundi(value * 100)
