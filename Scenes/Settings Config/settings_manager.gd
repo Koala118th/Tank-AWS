@@ -65,8 +65,8 @@ func _apply_resolution(res: Vector2i) -> void:
 	DisplayServer.window_set_size(res)
 	var screen_size := DisplayServer.screen_get_size()
 	var centered := Vector2i(
-		(screen_size.x - res.x) / 2,
-		(screen_size.y - res.y) / 2
+		int((screen_size.x - res.x) / 2.0),
+		int((screen_size.y - res.y) / 2.0)
 	)
 	DisplayServer.window_set_position(centered)
 

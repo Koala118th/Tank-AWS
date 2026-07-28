@@ -98,7 +98,6 @@ var current_input := {
 	"forward": 0.0,
 	"turn": 0.0,
 	"mouse": Vector2.ZERO,
-	"shoot": false
 }
 
 func _process(delta):
@@ -170,7 +169,6 @@ func get_input_state():
 		"forward": Input.get_axis("move_backward", "move_forward"),
 		"turn": Input.get_axis("turn_left", "turn_right"),
 		"mouse": get_global_mouse_position(),
-		"shoot": Input.is_action_pressed("shoot")
 	}
 
 

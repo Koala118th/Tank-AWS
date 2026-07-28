@@ -86,7 +86,7 @@ func _load_current_values() -> void:
 
 func _find_closest_resolution(target: Vector2i) -> int:
 	var best_idx := 0
-	var best_diff : int = INF
+	var best_diff : int = 2147483647
 	for i in _available_resolutions.size():
 		var res := _available_resolutions[i]
 		var diff : int = abs(res.x - target.x) + abs(res.y - target.y)
