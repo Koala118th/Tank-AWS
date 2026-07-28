@@ -17,10 +17,10 @@ var _collectible_spawner: Node2D = null
 
 func _get_ammo_remaining(crate_type: int) -> int:
 	match crate_type:
-		1: return -1
-		2: return -1
-		3: return -1
-		4: return -1
+		1: return 3 #Sniper
+		2: return 3 #Chaser
+		3: return 21 #Small
+		4: return 3 #Laser
 	return -1
 
 func init_collectibles(spawner_node: Node) -> void:

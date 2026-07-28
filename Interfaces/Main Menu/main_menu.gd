@@ -13,7 +13,6 @@ func _on_start_button_pressed() -> void:
 	if name_line_edit.text.strip_edges() == "":
 		divider_label.text = "ENTER A USERNAME"
 		divider_label.add_theme_color_override("font_color", Color.RED)
-		divider_label
 	else:
 		GameServer.start_client(name_line_edit.text)
 

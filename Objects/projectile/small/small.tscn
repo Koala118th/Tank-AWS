@@ -9,7 +9,7 @@ size = Vector2(2, 5)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7ha1i"]
 size = Vector2(2, 5)
 
-[node name="Small" unique_id=2093711468 groups=["projectile"] instance=ExtResource("1_8jhwm")]
+[node name="Small" unique_id=2093711468 instance=ExtResource("1_8jhwm")]
 speed = 400.0
 damage = 5.0
 fire_cooldown = 0.1
@@ -20,6 +20,9 @@ texture = ExtResource("2_1jbff")
 
 [node name="CollisionShape2D" parent="EnemyDetectionArea" parent_id_path=PackedInt32Array(1894152565) index="0" unique_id=1678753695]
 shape = SubResource("RectangleShape2D_kgo4g")
+
+[node name="DeleteTimer" parent="." index="2" unique_id=1513807636]
+wait_time = 1.25
 
 [node name="CollisionShape2D" parent="." index="3" unique_id=346569427]
 shape = SubResource("RectangleShape2D_7ha1i")
