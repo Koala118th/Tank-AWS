@@ -5,7 +5,6 @@ class_name Chaser
 
 @onready var agent: NavigationAgent2D = $NavigationAgent2D
 var target: Node2D
-var _tick_player: AudioStreamPlayer
 
 
 func _ready():

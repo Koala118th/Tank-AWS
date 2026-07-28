@@ -98,8 +98,10 @@ var current_input := {
 	"forward": 0.0,
 	"turn": 0.0,
 	"mouse": Vector2.ZERO,
-	"shoot": false
+	"seq": 0,
 }
+var input_sequence: int = 0
+var input_buffer: Array = []
 
 func _process(delta):
 	health_bar.value = lerp(health_bar.value, _health, 10 * delta)
@@ -128,7 +130,8 @@ func _physics_process(delta: float):
 			owner_id,
 			global_position,
 			body.rotation,
-			turret.rotation
+			turret.rotation,
+			current_input.get("seq", 0)
 		)
 	
 	elif is_multiplayer_authority():
@@ -137,6 +140,9 @@ func _physics_process(delta: float):
 		
 		# prediction
 		var input = get_input_state()
+		input_sequence += 1
+		input["seq"] = input_sequence
+		input_buffer.append(input)
 		GameServer.tankManager.send_input.rpc_id(1, input)
 		apply_input(input, delta)
 		spawn_tracks(delta)
@@ -171,7 +177,6 @@ func get_input_state():
 		"forward": Input.get_axis("move_backward", "move_forward"),
 		"turn": Input.get_axis("turn_left", "turn_right"),
 		"mouse": get_global_mouse_position(),
-		"shoot": Input.is_action_pressed("shoot")
 	}
 
 
@@ -196,25 +201,25 @@ func apply_input(input: Dictionary, delta: float):
 	turret.rotation += deg_to_rad(90)
 
 
-func reconcile(server_pos, server_body_rot, server_turret_rot):
-	var error = global_position.distance_to(server_pos)
-	
-	if error > reconcile_threshold:
-		# snap
-		global_position = server_pos
-		body.rotation = server_body_rot
-		turret.rotation = server_turret_rot
-	else:
-		# smooth correction
-		global_position = global_position.lerp(server_pos, 0.2)
-		body.rotation = lerp_angle(body.rotation, server_body_rot, 0.2)
-		collision_shape.rotation = body.rotation
-		turret.rotation = lerp_angle(turret.rotation, server_turret_rot, 0.2)
+func reconcile(server_pos, server_body_rot, server_turret_rot, last_seq: int):
+	# hard reset to authoritative state (PAST)
+	global_position = server_pos
+	body.rotation = server_body_rot
+	turret.rotation = server_turret_rot
+	collision_shape.rotation = body.rotation
+
+	# drop acknowledged inputs
+	while input_buffer.size() > 0 and input_buffer[0]["seq"] <= last_seq:
+		input_buffer.pop_front()
+
+	# replay remaining inputs (FUTURE)
+	for input in input_buffer:
+		apply_input(input, 1.0 / 60.0)
 
 
-func apply_server_state(pos, body_rot, turret_rot):
+func apply_server_state(pos, body_rot, turret_rot, last_seq: int):
 	if is_multiplayer_authority():
-		reconcile(pos, body_rot, turret_rot)
+		reconcile(pos, body_rot, turret_rot, last_seq)
 	else:
 		target_pos = pos
 		target_body_rot = body_rot
