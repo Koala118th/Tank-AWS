@@ -233,9 +233,6 @@ text = "v0.1.0"
 [node name="SocketNode" type="Node" parent="." unique_id=105702720]
 script = ExtResource("7_2ccvi")
 
-[node name="SocketNode" type="Node" parent="." unique_id=105702720]
-script = ExtResource("7_2ccvi")
-
 [connection signal="text_changed" from="CenterContainer/VBoxContainer/LineEdit" to="." method="_on_line_edit_text_changed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/PlayButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
