@@ -32,11 +32,11 @@ func _ready():
 
 		var my_id = multiplayer.get_unique_id()
 		print("TANKSPAWNER READY — peer: ", my_id,
-			" pending_screen: ", GameServer.pending_screen,
-			" pending_match_state: ", GameServer.pending_match_state)
+			" pending_screen: ", GameServer.matchManager.pending_screen,
+			" pending_match_state: ", GameServer.matchManager.pending_match_state)
 
-		if GameServer.pending_screen == "spectator" \
-		and GameServer.pending_match_state == 2:
+		if GameServer.matchManager.pending_screen == "spectator" \
+		and GameServer.matchManager.pending_match_state == 2:
 			if not tankManager.spawns_ready.is_connected(_on_spawns_ready):
 				tankManager.spawns_ready.connect(_on_spawns_ready)
 			tankManager.request_spawns.rpc_id(1, my_id)
@@ -84,7 +84,7 @@ func _on_tank_removed_recheck_round_end() -> void:
 		return
 	var alive := get_tanks_alive()
 	print("Recheck after removal — tanks alive: ", alive)
-	if alive == 1:
+	if alive <= 1:
 		_on_round_over()
 
 
@@ -180,7 +180,7 @@ func _on_tank_died():
 
 	var tanks_alive := get_tanks_alive()
 	print("Tanks remaining: ", tanks_alive)
-	if tanks_alive == 1:
+	if tanks_alive <= 1:
 		_on_round_over()
 
 
@@ -192,7 +192,7 @@ func _on_round_over():
 		return
 	_match_active = false
 
-	if get_tanks_alive() != 1:
+	if get_tanks_alive() > 1:
 		return
 
 
@@ -203,7 +203,7 @@ func _on_round_over():
 			break
 
 	print("SERVER: Round over. Winner id: ", winner_id)
-	GameServer.on_match_ended(winner_id)
+	GameServer.matchManager.on_match_ended(winner_id)
 
 
 func start_next_match():

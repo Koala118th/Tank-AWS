@@ -17,10 +17,10 @@ var _collectible_spawner: Node2D = null
 
 func _get_ammo_remaining(crate_type: int) -> int:
 	match crate_type:
-		1: return -1
-		2: return -1
-		3: return -1
-		4: return -1
+		1: return 3 #Sniper
+		2: return 3 #Chaser
+		3: return 21 #Small
+		4: return 3 #Laser
 	return -1
 
 func init_collectibles(spawner_node: Node) -> void:
@@ -125,7 +125,7 @@ func receive_crate_removed(crate_id: int, crate_pos: Vector2) -> void:
 	if _collectible_spawner == null:
 		push_warning("[CollectibleManager] _collectible_spawner is null!")
 		return
-	AudioManager.play_at(AudioManager.sfx_pickup, crate_pos)
+	AudioManager.play_game(AudioManager.sfx_pickup, crate_pos)
 	_collectible_spawner.remove_crate(crate_id)
 
 @rpc("any_peer", "call_remote", "reliable")

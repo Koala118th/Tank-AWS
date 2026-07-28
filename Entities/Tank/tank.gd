@@ -98,22 +98,29 @@ var current_input := {
 	"forward": 0.0,
 	"turn": 0.0,
 	"mouse": Vector2.ZERO,
-	"shoot": false
+	"seq": 0,
 }
+var input_sequence: int = 0
+var input_buffer: Array = []
 
 func _process(delta):
 	health_bar.value = lerp(health_bar.value, _health, 10 * delta)
 
 func _ready():
-	add_to_group("tank")
-	GameServer.tankManager.tank_moved.connect(_on_tank_moved)
-	
 	target_pos = global_position
 	target_body_rot = body.rotation
 	target_turret_rot = turret.rotation
+	
+	var style = StyleBoxFlat.new()
+	if owner_id == multiplayer.get_unique_id():
+		style.bg_color = Color(0.286, 0.71, 0.0)
+	else:
+		style.bg_color = Color(1.0, 0.0, 0.0)
+	health_bar.add_theme_stylebox_override("fill", style)
 
 func _physics_process(delta: float):
 	if multiplayer.multiplayer_peer == null:
+		set_physics_process(false)
 		return
 	
 	if multiplayer.is_server():
@@ -123,7 +130,8 @@ func _physics_process(delta: float):
 			owner_id,
 			global_position,
 			body.rotation,
-			turret.rotation
+			turret.rotation,
+			current_input.get("seq", 0)
 		)
 	
 	elif is_multiplayer_authority():
@@ -132,6 +140,9 @@ func _physics_process(delta: float):
 		
 		# prediction
 		var input = get_input_state()
+		input_sequence += 1
+		input["seq"] = input_sequence
+		input_buffer.append(input)
 		GameServer.tankManager.send_input.rpc_id(1, input)
 		apply_input(input, delta)
 		spawn_tracks(delta)
@@ -140,7 +151,7 @@ func _physics_process(delta: float):
 			shoot_request()
 		
 		if current_ammo == GameServer.projectileManager.AmmoType.LASER:
-			aim()
+			aim(get_global_mouse_position())
 		else:
 			aim_line.clear_points()
 	else:
@@ -151,7 +162,14 @@ func _physics_process(delta: float):
 		body.rotation = lerp_angle(body.rotation, target_body_rot, t)
 		collision_shape.rotation = body.rotation
 		turret.rotation = lerp_angle(turret.rotation, target_turret_rot, t)
+		
 		spawn_tracks(delta)
+		if current_ammo == GameServer.projectileManager.AmmoType.LASER:
+			var dir = Vector2.UP.rotated(turret.rotation)
+			var point = global_position + dir * 1000
+			aim(point)
+		else:
+			aim_line.clear_points()
 
 
 func get_input_state():
@@ -159,7 +177,6 @@ func get_input_state():
 		"forward": Input.get_axis("move_backward", "move_forward"),
 		"turn": Input.get_axis("turn_left", "turn_right"),
 		"mouse": get_global_mouse_position(),
-		"shoot": Input.is_action_pressed("shoot")
 	}
 
 
@@ -184,33 +201,33 @@ func apply_input(input: Dictionary, delta: float):
 	turret.rotation += deg_to_rad(90)
 
 
-func reconcile(server_pos, server_body_rot, server_turret_rot):
-	var error = global_position.distance_to(server_pos)
-	
-	if error > reconcile_threshold:
-		# snap
-		global_position = server_pos
-		body.rotation = server_body_rot
-		turret.rotation = server_turret_rot
-	else:
-		# smooth correction
-		global_position = global_position.lerp(server_pos, 0.2)
-		body.rotation = lerp_angle(body.rotation, server_body_rot, 0.2)
-		collision_shape.rotation = body.rotation
-		turret.rotation = lerp_angle(turret.rotation, server_turret_rot, 0.2)
+func reconcile(server_pos, server_body_rot, server_turret_rot, last_seq: int):
+	# hard reset to authoritative state (PAST)
+	global_position = server_pos
+	body.rotation = server_body_rot
+	turret.rotation = server_turret_rot
+	collision_shape.rotation = body.rotation
+
+	# drop acknowledged inputs
+	while input_buffer.size() > 0 and input_buffer[0]["seq"] <= last_seq:
+		input_buffer.pop_front()
+
+	# replay remaining inputs (FUTURE)
+	for input in input_buffer:
+		apply_input(input, 1.0 / 60.0)
 
 
-func apply_server_state(pos, body_rot, turret_rot):
+func apply_server_state(pos, body_rot, turret_rot, last_seq: int):
 	if is_multiplayer_authority():
-		reconcile(pos, body_rot, turret_rot)
+		reconcile(pos, body_rot, turret_rot, last_seq)
 	else:
 		target_pos = pos
 		target_body_rot = body_rot
 		target_turret_rot = turret_rot
 
 
-func aim():
-	var current_dir = (get_global_mouse_position() - global_position).normalized()
+func aim(point_position: Vector2):
+	var current_dir = (point_position - global_position).normalized()
 	var current_pos = global_position + current_dir * 25
 	
 	var points = []
@@ -263,7 +280,7 @@ func shoot_request():
 	GameServer.projectileManager.request_shoot.rpc_id(1, owner_id, mouse_pos, spawn_index)
 
 
-func trigger_muzzle_flash(flash: bool = true):
+func trigger_muzzle_flash():
 	fire_timer.start(GameServer.projectileManager.ammo_cooldown[current_ammo]) # Spam blocker
 	if not current_ammo == GameServer.projectileManager.AmmoType.LASER:
 		if current_ammo == GameServer.projectileManager.AmmoType.SNIPER:
@@ -274,7 +291,7 @@ func trigger_muzzle_flash(flash: bool = true):
 		muzzle_timer.start()
 
 
-func server_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int, spawn_index: int):
+func server_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int, spawn_indx: int):
 	if not fire_timer.is_stopped():
 		return
 	
@@ -300,7 +317,7 @@ func server_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int, spawn_ind
 		bullet_dir,
 		ammo_type,
 		shooter_id,
-		spawn_index
+		spawn_indx
 	)
 
 	fire_timer.start(projectile.fire_cooldown)
@@ -319,12 +336,12 @@ func die(killer_id: int = -1):
 	get_parent().add_child(explosion)
 
 	# ADD THIS
-	AudioManager.play_at(AudioManager.sfx_explosion, global_position)
+	AudioManager.play_game(AudioManager.sfx_explosion, global_position)
 	
 	if multiplayer.is_server():
 		# Prevent invalid kills
 		if killer_id != -1 and killer_id != owner_id:
-			LeaderboardManager.add_kill(killer_id)
+			GameServer.leaderboardManager.add_kill(killer_id)
 
 	queue_free()
 

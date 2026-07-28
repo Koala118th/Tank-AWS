@@ -2,13 +2,6 @@ extends CanvasLayer
 
 @export var tank_spawner: Node2D
 
-var placeholder_scores = [
-	{"name": "VK_Tiger88", "wins": 5, "kills": 12, "is_you": true},
-	{"name": "SteelWolf",  "wins": 3, "kills": 9,  "is_you": false},
-	{"name": "T34_Ghost",  "wins": 2, "kills": 7,  "is_you": false},
-	{"name": "IronBarrel", "wins": 1, "kills": 4,  "is_you": false},
-]
-
 var score_row_scene = preload("res://Interfaces/Game Over/score_row.tscn")
 var _end_time: float = 0.0
 var countdown_timer: Timer
@@ -27,16 +20,19 @@ func _ready():
 	hide()
 	quit_button.pressed.connect(_on_quit_pressed)
 	_setup_countdown_timer()
-	if GameServer.pending_screen == "game_over":
-		show_screen(placeholder_scores, 1, GameServer.pending_countdown)
-
+	if GameServer.matchManager.pending_screen == "game_over":
+		show_screen(-2, GameServer.leaderboardManager.get_sorted_leaderboard(), 1, GameServer.matchManager.pending_countdown)
 func _connect_button_sounds(button: Button) -> void:
 	button.mouse_entered.connect(func(): AudioManager.play_ui(AudioManager.sfx_button_hover))
 	button.pressed.connect(func(): AudioManager.play_ui(AudioManager.sfx_button_click))
 
-func show_screen(scores: Array, match_number: int, countdown_seconds: float = 8.0):
-	scores.sort_custom(func(a, b): return a["wins"] > b["wins"])
-	winner_badge.text = "🏆  " + str(scores[0]["name"]) + " wins the round"
+func show_screen(winner_id: int, scores: Array, match_number: int, countdown_seconds: float = 8.0):
+	if winner_id == -1:
+		winner_badge.text = "Nobody wins"
+	elif winner_id == -2:
+		winner_badge.text = ""
+	else:
+		winner_badge.text = "🏆  " + str(GameServer.leaderboardManager.leaderboard[winner_id]["name"]) + " wins the round"
 	match_counter.text = "Match #" + str(match_number)
 	_populate_scores(scores)
 	show()

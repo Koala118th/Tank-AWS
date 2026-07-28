@@ -8,12 +8,25 @@ var target: Node2D
 
 
 func _ready():
+	if not multiplayer.is_server():
+		AudioManager.start_chaser_tick()
+
 	target = get_closest_tank()
 	if target != null:
 		agent.target_position = target.global_position
 	$EnemyDetectionArea/CollisionShape2D.disabled = true
 	await get_tree().create_timer(0.15).timeout
 	$EnemyDetectionArea/CollisionShape2D.disabled = false
+
+func _exit_tree() -> void:
+	if not multiplayer.is_server():
+		AudioManager.stop_chaser_tick()
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_PREDELETE:
+		if not multiplayer.is_server():
+			AudioManager.stop_chaser_tick()
 
 
 func get_closest_tank():

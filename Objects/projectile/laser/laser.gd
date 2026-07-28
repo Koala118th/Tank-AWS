@@ -12,11 +12,11 @@ var hit_targets := {}  # prevent multi-hit same frame
 var last_points: PackedVector2Array = []
 
 
-func set_direction(target_pos: Vector2):
-	direction = (target_pos - global_position).normalized()
+func set_direction(target_position: Vector2):
+	direction = (target_position - global_position).normalized()
 
 
-func _physics_process(delta):
+func _physics_process(_delta):
 	if multiplayer.multiplayer_peer == null:
 		return
 	if not multiplayer.is_server():

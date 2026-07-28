@@ -44,6 +44,8 @@ var player_session_store: Dictionary = {}
 @onready var mapManager         = $MapManager
 @onready var collectibleManager = $CollectibleManager
 @onready var projectileManager  = $ProjectileManager
+@onready var leaderboardManager = $LeaderboardManager
+@onready var matchManager       = $MatchManager
 
 func start_server():
 	var peer = ENetMultiplayerPeer.new()
@@ -54,11 +56,11 @@ func start_server():
 	multiplayer.multiplayer_peer = peer
 	print("SERVER: Listening on port ", PORT)
 	
-	# Listen to PlayerManager signals
-	playerManager.player_needs_waiting_screen.connect(_on_player_needs_waiting_screen)
-	playerManager.player_needs_spectator_screen.connect(_on_player_needs_spectator_screen)
-	playerManager.player_needs_game_over_screen.connect(_on_player_needs_game_over_screen)
-	playerManager.ready_to_start.connect(_on_ready_to_start)
+	# Listen to PlayerManager signals — delegate to MatchManager
+	playerManager.player_needs_waiting_screen.connect(matchManager._on_player_needs_waiting_screen)
+	playerManager.player_needs_spectator_screen.connect(matchManager._on_player_needs_spectator_screen)
+	playerManager.player_needs_game_over_screen.connect(matchManager._on_player_needs_game_over_screen)
+	playerManager.ready_to_start.connect(matchManager._on_ready_to_start)
 	
 	#Start Game
 	mapManager.start_maze()
@@ -66,12 +68,11 @@ func start_server():
 
 func _on_peer_connected(id: int):
 	print("SERVER: Player connected — id: ", id)
-	playerManager.assign_slot(id, match_state)
-	LeaderboardManager.register_player(id)
+	playerManager.assign_slot(id, matchManager.match_state)
 
 func _on_peer_disconnected(id: int):
 	print("SERVER: Player disconnected — id: ", id)
-	var tank_spawner = _get_tank_spawner()
+	var tank_spawner = matchManager._get_tank_spawner()
 	if tank_spawner:
 		print("SERVER: deleting tank for disconnected peer ", id)
 		tank_spawner.remove_tank_by_owner(id)
@@ -80,8 +81,56 @@ func _on_peer_disconnected(id: int):
 	GameLiftBridge.RemovePlayerSession(player_session_store[id])
 	player_session_store.erase(id)
 	playerManager.remove_slot(id)
-	# If server is now empty, full reset
+	leaderboardManager.remove_player(id)
 	if playerManager.player_count == 0:
+		matchManager._reset_server()
+
+# ─────────────────────────────────────────
+#  CLIENT
+# ─────────────────────────────────────────
+var my_id = null
+var pending_player_name: String
+
+func _reset_client_session_state() -> void:
+	my_id = null
+	matchManager.pending_screen = ""
+	matchManager.pending_countdown = 0.0
+	matchManager.pending_match_state = -1
+	matchManager.match_state = matchManager.MatchState.WAITING
+
+func start_client(player_name: String):
+	pending_player_name = player_name
+	_reset_client_session_state()
+	var peer = ENetMultiplayerPeer.new()
+	if not multiplayer.connected_to_server.is_connected(_on_connected_to_server):
+		multiplayer.connected_to_server.connect(_on_connected_to_server)
+	if not multiplayer.connection_failed.is_connected(_on_connection_failed):
+		multiplayer.connection_failed.connect(_on_connection_failed)
+	if not multiplayer.server_disconnected.is_connected(_on_server_disconnected):
+		multiplayer.server_disconnected.connect(_on_server_disconnected)
+	var err = peer.create_client(SERVER_IP, PORT)
+	if err != OK:
+		print("CLIENT: Failed to connect: ", err)
+		return
+	multiplayer.multiplayer_peer = peer
+
+func _on_connected_to_server():
+	my_id = multiplayer.get_unique_id()
+	print("CLIENT: Connected! My ID is ", my_id)
+	leaderboardManager.register_player_request.rpc_id(1, pending_player_name)
+
+func _on_connection_failed():
+	print("CLIENT: Connection failed.")
+
+func _on_server_disconnected():
+	print("CLIENT: Server disconnected.")
+	_reset_client_session_state()
+
+func disconnect_client() -> void:
+	if multiplayer.multiplayer_peer:
+		multiplayer.multiplayer_peer.close()
+		multiplayer.multiplayer_peer = null
+	_reset_client_session_state()
 		_reset_server()
 	
 	LeaderboardManager.remove_player(id)

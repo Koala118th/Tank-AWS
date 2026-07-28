@@ -15,7 +15,7 @@ shader = ExtResource("2_neyqc")
 shader = ExtResource("3_sulmp")
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2ccvi"]
-content_margin_left = 5.0
+content_margin_left = 10.0
 bg_color = Color(0.6, 0.6, 0.6, 0)
 border_width_left = 1
 border_width_top = 1
@@ -28,7 +28,7 @@ corner_radius_bottom_right = 2
 corner_radius_bottom_left = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_o655f"]
-content_margin_left = 5.0
+content_margin_left = 10.0
 bg_color = Color(0.6, 0.6, 0.6, 0)
 border_width_left = 1
 border_width_top = 1
@@ -143,12 +143,11 @@ text = "Steel [color=#4caf50]Barrage[/color]"
 fit_content = true
 horizontal_alignment = 1
 
-[node name="DividerLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=797793779]
+[node name="HSeparator" type="HSeparator" parent="CenterContainer/VBoxContainer" unique_id=1427808590]
+modulate = Color(1, 1, 1, 0)
+self_modulate = Color(1, 1, 1, 0)
+custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
-theme_override_colors/font_color = Color(0.22745098, 0.3529412, 0.22745098, 1)
-theme_override_font_sizes/font_size = 12
-text = "·    ·    ·    ·    ·    ·    ·    ·    ·    ·    ·    ·    ·"
-horizontal_alignment = 1
 
 [node name="TankRow" type="HBoxContainer" parent="CenterContainer/VBoxContainer" unique_id=1221371435]
 layout_mode = 2
@@ -169,11 +168,12 @@ custom_minimum_size = Vector2(52, 52)
 layout_mode = 2
 texture = ExtResource("5_xpv52")
 
-[node name="HSeparator" type="HSeparator" parent="CenterContainer/VBoxContainer" unique_id=1427808590]
-modulate = Color(1, 1, 1, 0)
-self_modulate = Color(1, 1, 1, 0)
-custom_minimum_size = Vector2(0, 20)
+[node name="DividerLabel" type="Label" parent="CenterContainer/VBoxContainer" unique_id=797793779]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.22745098, 0.3529412, 0.22745098, 1)
+theme_override_font_sizes/font_size = 12
+text = "·    ·    ·    ·    ·    ·    ·    ·    ·    ·    ·    ·    ·"
+horizontal_alignment = 1
 
 [node name="LineEdit" type="LineEdit" parent="CenterContainer/VBoxContainer" unique_id=1468972938]
 layout_mode = 2
@@ -233,5 +233,10 @@ text = "v0.1.0"
 [node name="SocketNode" type="Node" parent="." unique_id=105702720]
 script = ExtResource("7_2ccvi")
 
+[node name="SocketNode" type="Node" parent="." unique_id=105702720]
+script = ExtResource("7_2ccvi")
+
+[connection signal="text_changed" from="CenterContainer/VBoxContainer/LineEdit" to="." method="_on_line_edit_text_changed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/PlayButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="CenterContainer/VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

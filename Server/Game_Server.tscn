@@ -7,6 +7,8 @@
 [ext_resource type="Script" uid="uid://cnwje3daie033" path="res://Server/Game/map_manager.gd" id="5_f05h8"]
 [ext_resource type="Script" uid="uid://cdcefh8dkpnnd" path="res://Server/Game/collectible.manager.gd" id="6_gkfa0"]
 [ext_resource type="Script" uid="uid://jbeyki5vxc8b" path="res://Server/Game/projectile_manager.gd" id="6_qgpre"]
+[ext_resource type="Script" uid="uid://d0wvs2c0mylgr" path="res://Server/Game/leaderboard_manager.gd" id="8_vu7pq"]
+[ext_resource type="Script" uid="uid://c847eo58e17xn" path="res://Server/Game/match_manager.gd" id="9_wipyk"]
 
 [node name="GameServer" type="Node" unique_id=482026261]
 script = ExtResource("1_7sp1r")
@@ -28,3 +30,9 @@ script = ExtResource("6_gkfa0")
 
 [node name="ProjectileManager" type="Node" parent="." unique_id=123819990]
 script = ExtResource("6_qgpre")
+
+[node name="LeaderboardManager" type="Node" parent="." unique_id=403446437]
+script = ExtResource("8_vu7pq")
+
+[node name="MatchManager" type="Node" parent="." unique_id=914750554]
+script = ExtResource("9_wipyk")

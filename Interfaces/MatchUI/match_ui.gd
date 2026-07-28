@@ -19,19 +19,19 @@ func _ready():
 
 func _apply_pending_screen():
 	_screen_applied = true
-	var gs = GameServer
-	print("MatchUI applying screen: ", gs.pending_screen,
-		" match_state: ", gs.pending_match_state,
-		" pending_countdown: ", gs.pending_countdown)
-	match gs.pending_screen:
+	var mm = GameServer.matchManager
+	print("MatchUI applying screen: ", mm.pending_screen,
+		" match_state: ", mm.pending_match_state,
+		" pending_countdown: ", mm.pending_countdown)
+	match mm.pending_screen:
 		"waiting":
 			show_waiting()
 		"starting":
-			show_starting(gs.pending_countdown)
+			show_starting(mm.pending_countdown)
 		"spectator":
-			if gs.pending_match_state == 1:
-				show_starting(gs.pending_countdown, false)
-				_show_spectator_after_countdown(gs.pending_countdown)
+			if mm.pending_match_state == 1:
+				show_starting(mm.pending_countdown, false)
+				_show_spectator_after_countdown(mm.pending_countdown)
 			else:
 				show_spectator()
 		"game_over":
