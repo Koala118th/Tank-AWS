@@ -6,6 +6,7 @@
 [ext_resource type="Texture2D" uid="uid://br7noaac5ekqj" path="res://Assets/PNG/tank_green.png" id="4_3q6f2"]
 [ext_resource type="FontFile" uid="uid://dm2nbkb8dm4vu" path="res://Assets/Fonts/Blockletter.otf" id="4_xpv52"]
 [ext_resource type="Texture2D" uid="uid://crr1oakda6l6b" path="res://Assets/PNG/tank_blue.png" id="5_xpv52"]
+[ext_resource type="Script" uid="uid://b7f16y715q03n" path="res://Interfaces/Main Menu/web_socket.gd" id="7_2ccvi"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_sulmp"]
 shader = ExtResource("2_neyqc")
@@ -228,6 +229,9 @@ theme_override_colors/font_color = Color(0.16470589, 0.22745098, 0.16470589, 1)
 theme_override_fonts/font = ExtResource("4_xpv52")
 theme_override_font_sizes/font_size = 20
 text = "v0.1.0"
+
+[node name="SocketNode" type="Node" parent="." unique_id=105702720]
+script = ExtResource("7_2ccvi")
 
 [connection signal="pressed" from="CenterContainer/VBoxContainer/PlayButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="CenterContainer/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]
