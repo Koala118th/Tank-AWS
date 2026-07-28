@@ -295,6 +295,8 @@ func server_shoot(shooter_id: int, mouse_pos: Vector2, ammo_type: int, spawn_ind
 	if not fire_timer.is_stopped():
 		return
 	
+	GameServer.tankManager.consume_ammo(shooter_id)
+	
 	var projectile = GameServer.projectileManager.ammo_scenes[ammo_type].instantiate()
 	projectile.shooter_id = shooter_id
 
