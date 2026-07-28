@@ -7,21 +7,6 @@ public partial class GameLiftBridge : Node
 {
     private Node _gdServer;
 
-    public override void _Ready()
-    {
-        var args = OS.GetCmdlineArgs();
-        bool isServer = System.Array.IndexOf(args, "--server") >= 0
-            || DisplayServer.GetName() == "headless";
-
-        if (!isServer)
-            return;
-
-        _gdServer = GetNode("/root/GameServer");
-
-        ConfigureLogging();
-        InitGameLift();
-    }
-
     private void ConfigureLogging() //Disables log4net console output and configures a file appender for logging
     {
         log4net.Util.LogLog.QuietMode = true;
@@ -55,18 +40,23 @@ public partial class GameLiftBridge : Node
         hierarchy.Configured = true;
     }
 
-    private const bool IsAnywhereFleet = false;
-
-    private void InitGameLift()
+    public void InitGameLift(int port)
     {
+        var args = OS.GetCmdlineArgs();
+        bool isServer = System.Array.IndexOf(args, "--server") >= 0
+            || DisplayServer.GetName() == "headless";
+
+        if (!isServer)
+            return;
+
+        _gdServer = GetNode("/root/GameServer");
+
+        ConfigureLogging();
+
+        const bool IsAnywhereFleet = false;
+
         var initOutcome = IsAnywhereFleet
-        ? GameLiftServerAPI.InitSDK(new ServerParameters(
-              "wss://ap-southeast-2.api.amazongamelift.com",
-              $"process-{System.Guid.NewGuid()}",
-              "my-laptop-compute",
-              "fleet-0a02bb0b-c3b2-4f60-b27a-c54d87014153",
-              "cb089c22-7d04-4e75-bd1d-27710c956f03"
-          ))
+        ? GameLiftServerAPI.InitSDK(GetServerParameters())
         : GameLiftServerAPI.InitSDK();
 
         if (!initOutcome.Success)
@@ -92,7 +82,7 @@ public partial class GameLiftBridge : Node
             OnUpdateGameSession,
             OnProcessTerminate,
             OnHealthCheck,
-            7777,
+            port,
             logParameters
         );
 
@@ -117,7 +107,23 @@ public partial class GameLiftBridge : Node
         }
     }
 
-    void AcceptPlayerSession(string playerSessionId)
+    private ServerParameters GetServerParameters()
+    {
+        string region = System.Environment.GetEnvironmentVariable("GAMELIFT_REGION");
+        string computeLocation = System.Environment.GetEnvironmentVariable("GAMELIFT_LOCATION");
+        string fleetId = System.Environment.GetEnvironmentVariable("GAMELIFT_FLEET_ID");
+        string authToken = System.Environment.GetEnvironmentVariable("GAMELIFT_AUTH_TOKEN");
+
+        return new ServerParameters(
+            region,
+            $"process-{System.Guid.NewGuid()}",
+            computeLocation,
+            fleetId,
+            authToken
+        );
+    }
+
+    public void AcceptPlayerSession(string playerSessionId)
     {
         var acceptOutcome = GameLiftServerAPI.AcceptPlayerSession(playerSessionId);
 
@@ -141,7 +147,7 @@ public partial class GameLiftBridge : Node
         }
     }
 
-    void RemovePlayerSession(string playerSessionId)
+    public void RemovePlayerSession(string playerSessionId)
     {
         var removeOutcome = GameLiftServerAPI.RemovePlayerSession(playerSessionId);
 

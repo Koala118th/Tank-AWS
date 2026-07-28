@@ -1,21 +1,24 @@
 extends Control
 class_name Main_menu
 # ─────────────────────────────────────────
-#  SCENE
+#  LIFE CYCLE
 # ─────────────────────────────────────────
-
-const WEBSOCKET_URL = "wss://v4wok52voc.execute-api.ap-southeast-2.amazonaws.com/production/"
-@onready var play_button: Button = $CenterContainer/VBoxContainer/PlayButton
-
-var _client: WebSocketPeer
-var _waiting_for_open := false
-
-
 func _ready():
+	#Connect sound 
 	_connect_button_sounds($CenterContainer/VBoxContainer/PlayButton)
 	_connect_button_sounds($CenterContainer/VBoxContainer/SettingsButton)
 	_connect_button_sounds($CenterContainer/VBoxContainer/QuitButton)
+	
+	if GameServer.is_server_mode():
+		GameLiftBridge.InitGameLift(GameServer.get_port_from_args())
+# ─────────────────────────────────────────
+#  WEBSOCKET
+# ─────────────────────────────────────────
+const WEBSOCKET_URL = "wss://v4wok52voc.execute-api.ap-southeast-2.amazonaws.com/production/"
 
+@onready var play_button: Button = $CenterContainer/VBoxContainer/PlayButton
+var _client: WebSocketPeer
+var _waiting_for_open := false
 
 func _on_start_button_pressed() -> void:
 	play_button.disabled = true
@@ -87,7 +90,9 @@ func _on_game_start() -> void:
 func _on_quit_button_pressed() -> void:
 	get_tree().quit()
 
-
+# ─────────────────────────────────────────
+#  HELPER FUNCTIONS
+# ─────────────────────────────────────────
 func _connect_button_sounds(button: Button) -> void:
 	button.mouse_entered.connect(func(): AudioManager.play_ui(AudioManager.sfx_button_hover))
 	button.pressed.connect(func(): AudioManager.play_ui(AudioManager.sfx_button_click))
