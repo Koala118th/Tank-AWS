@@ -30,6 +30,7 @@ func deliver_spawns(peer_id: int, assigned_slot: int, spawn_pos: Vector2) -> voi
 	print(multiplayer.get_unique_id(), " received spawn for ", peer_id, " at slot ", assigned_slot)
 
 
+var last_processed_seq: int = 0
 @rpc("any_peer", "call_remote", "unreliable")
 func send_input(input: Dictionary):
 	if not multiplayer.is_server():
@@ -47,7 +48,7 @@ func send_input(input: Dictionary):
 
 
 @rpc("authority", "call_remote", "unreliable")
-func sync_state(id: int, pos: Vector2, body_rot: float, turret_rot: float):
+func sync_state(id: int, pos: Vector2, body_rot: float, turret_rot: float, last_seq: int):
 	if multiplayer.is_server():
 		return
 	
@@ -56,7 +57,7 @@ func sync_state(id: int, pos: Vector2, body_rot: float, turret_rot: float):
 	if not is_instance_valid(tank):
 		return
 	
-	tank.apply_server_state(pos, body_rot, turret_rot)
+	tank.apply_server_state(pos, body_rot, turret_rot, last_seq)
 
 
 @rpc("authority", "call_remote", "reliable")
