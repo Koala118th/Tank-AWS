@@ -118,6 +118,7 @@ func _ready():
 
 func _physics_process(delta: float):
 	if multiplayer.multiplayer_peer == null:
+		set_physics_process(false)
 		return
 	
 	if multiplayer.is_server():

@@ -72,7 +72,7 @@ func _route_new_player(peer_id: int, match_state: int) -> void:
 				else:
 					queue_spectator_next_match(peer_id)
 				player_needs_game_over_screen.emit(peer_id, GameServer.matchManager._game_over_timer.time_left)
-			elif _has_live_tanks() and GameServer.matchManager.match_state == GameServer.MatchState.IN_MATCH:
+			elif _has_live_tanks() and GameServer.matchManager.match_state == GameServer.matchManager.MatchState.IN_MATCH:
 				make_spectator(peer_id)
 				player_needs_spectator_screen.emit(peer_id, 2)
 			elif player_count == 1:

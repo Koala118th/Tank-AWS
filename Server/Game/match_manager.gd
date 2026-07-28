@@ -102,6 +102,7 @@ func _on_game_over_finished():
 	_game_over_timer = null
 
 	var playerManager = GameServer.playerManager
+
 	var future_actives: int = playerManager.actives_players.size() \
 		+ playerManager.spectators.size() \
 		+ playerManager._spectators_next_match.size()
@@ -130,6 +131,18 @@ func _on_game_over_finished():
 	GameServer.mapManager.pick_background()
 	await get_tree().process_frame
 
+	# Recheck after await — a player may have disconnected during maze generation
+	var recheck_actives: int = playerManager.actives_players.size() \
+		+ playerManager.spectators.size()
+	if recheck_actives <= 1:
+		match_state = MatchState.WAITING
+		for pid in playerManager.actives_players + playerManager.spectators:
+			notify_waiting.rpc_id(pid)
+		# Clean up the started systems
+		GameServer.tankManager.clear_tanks.rpc()
+		GameServer.collectibleManager.reset()
+		return
+
 	if needs_countdown:
 		match_state = MatchState.STARTING
 		for pid in playerManager.actives_players:
@@ -137,6 +150,25 @@ func _on_game_over_finished():
 		for pid in playerManager.spectators:
 			notify_spectator.rpc_id(pid, MatchState.STARTING, float(COUNTDOWN_SECONDS))
 		await get_tree().create_timer(float(COUNTDOWN_SECONDS)).timeout
+
+		# Recheck again after countdown — another player may have left
+		var recheck_after_countdown: int = playerManager.actives_players.size() \
+			+ playerManager.spectators.size()
+		if recheck_after_countdown <= 1:
+			match_state = MatchState.WAITING
+			for pid in playerManager.actives_players + playerManager.spectators:
+				notify_waiting.rpc_id(pid)
+			GameServer.tankManager.clear_tanks.rpc()
+			GameServer.collectibleManager.reset()
+			return
+
+	match_state = MatchState.IN_MATCH
+	playerManager.begin_match.rpc()
+	await get_tree().process_frame
+	await get_tree().process_frame
+	GameServer.tankManager.clear_tanks.rpc()
+	await get_tree().process_frame
+	GameServer.tankManager.notify_spawns_ready.rpc()
 
 	match_state = MatchState.IN_MATCH
 	playerManager.begin_match.rpc()

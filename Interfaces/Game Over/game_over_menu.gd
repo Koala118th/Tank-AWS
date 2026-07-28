@@ -20,7 +20,8 @@ func _ready():
 	hide()
 	quit_button.pressed.connect(_on_quit_pressed)
 	_setup_countdown_timer()
-
+	if GameServer.matchManager.pending_screen == "game_over":
+		show_screen(-2, GameServer.leaderboardManager.get_sorted_leaderboard(), 1, GameServer.matchManager.pending_countdown)
 func _connect_button_sounds(button: Button) -> void:
 	button.mouse_entered.connect(func(): AudioManager.play_ui(AudioManager.sfx_button_hover))
 	button.pressed.connect(func(): AudioManager.play_ui(AudioManager.sfx_button_click))
@@ -28,6 +29,8 @@ func _connect_button_sounds(button: Button) -> void:
 func show_screen(winner_id: int, scores: Array, match_number: int, countdown_seconds: float = 8.0):
 	if winner_id == -1:
 		winner_badge.text = "Nobody wins"
+	elif winner_id == -2:
+		winner_badge.text = ""
 	else:
 		winner_badge.text = "🏆  " + str(GameServer.leaderboardManager.leaderboard[winner_id]["name"]) + " wins the round"
 	match_counter.text = "Match #" + str(match_number)
