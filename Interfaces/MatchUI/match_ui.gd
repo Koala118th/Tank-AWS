@@ -4,6 +4,7 @@ extends CanvasLayer
 @onready var starting_screen   : Control = $StartingScreen
 @onready var countdown_label: Label = $StartingScreen/Center/VBox/CountdownLabel
 @onready var spectator_overlay : Control = $SpectatorOverlay
+@onready var waiting_quit_button: Button = $WaitingScreen/Center/VBox/QuitButton
 
 var _countdown_tween: Tween = null
 var _screen_applied: bool = false
@@ -13,9 +14,13 @@ var _last_countdown_number: int = -1
 func _ready():
 	add_to_group("match_ui")
 	hide_all()
+	waiting_quit_button.pressed.connect(_on_waiting_quit_pressed)
 	await get_tree().process_frame
 	if not _screen_applied:
 		_apply_pending_screen()
+func _on_waiting_quit_pressed():
+	GameServer.disconnect_client()
+	get_tree().change_scene_to_file("res://Interfaces/Main Menu/main_menu.tscn")
 
 func _apply_pending_screen():
 	_screen_applied = true

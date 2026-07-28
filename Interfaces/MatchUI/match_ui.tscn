@@ -3,6 +3,8 @@
 [ext_resource type="Script" uid="uid://crvs0pibroy62" path="res://Interfaces/MatchUI/match_ui.gd" id="1_06msw"]
 [ext_resource type="FontFile" uid="uid://dm2nbkb8dm4vu" path="res://Assets/Fonts/Blockletter.otf" id="2_font"]
 
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wait"]
+
 [node name="MatchUI" type="CanvasLayer" unique_id=740397080]
 layer = 10
 script = ExtResource("1_06msw")
@@ -25,7 +27,8 @@ grow_vertical = 2
 color = Color(0.05490196, 0.06666667, 0.09019608, 1)
 
 [node name="Center" type="CenterContainer" parent="WaitingScreen" unique_id=2001000002]
-layout_mode = 0
+layout_mode = 1
+anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
@@ -75,19 +78,22 @@ theme_override_font_sizes/font_size = 14
 text = "1 / 2 players connected"
 horizontal_alignment = 1
 
-[node name="CornerLabel" type="Label" parent="WaitingScreen" unique_id=2001000009]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -28.0
-offset_right = 120.0
-offset_bottom = -8.0
-grow_vertical = 0
-theme_override_colors/font_color = Color(0.10196079, 0.22745098, 0.10196079, 1)
+[node name="Divider2" type="ColorRect" parent="WaitingScreen/Center/VBox" unique_id=1092429341]
+visible = false
+custom_minimum_size = Vector2(40, 1)
+layout_mode = 2
+size_flags_horizontal = 4
+color = Color(0.10196079, 0.22745098, 0.10196079, 1)
+
+[node name="QuitButton" type="Button" parent="WaitingScreen/Center/VBox" unique_id=2001000010]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2901961, 0.3529412, 0.2901961, 1)
+theme_override_colors/font_hover_color = Color(0.7882353, 0.47843137, 0.47843137, 1)
 theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 9
-text = "SLOT 01"
+theme_override_font_sizes/font_size = 12
+theme_override_styles/normal = SubResource("StyleBoxEmpty_wait")
+text = "QUIT TO MENU"
+flat = true
 
 [node name="StartingScreen" type="Control" parent="." unique_id=1485286025]
 visible = false
@@ -154,20 +160,6 @@ theme_override_fonts/font = ExtResource("2_font")
 theme_override_font_sizes/font_size = 16
 text = "2 / 2 players ready"
 horizontal_alignment = 1
-
-[node name="CornerLabel" type="Label" parent="StartingScreen" unique_id=2002000008]
-layout_mode = 1
-anchors_preset = 2
-anchor_top = 1.0
-anchor_bottom = 1.0
-offset_top = -28.0
-offset_right = 140.0
-offset_bottom = -8.0
-grow_vertical = 0
-theme_override_colors/font_color = Color(0.10196079, 0.22745098, 0.10196079, 1)
-theme_override_fonts/font = ExtResource("2_font")
-theme_override_font_sizes/font_size = 9
-text = "ALL SYSTEMS GO"
 
 [node name="SpectatorOverlay" type="Control" parent="." unique_id=2120653571]
 layout_mode = 3
