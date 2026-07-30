@@ -37,6 +37,7 @@ var colors := [
 var track_scene: PackedScene = preload("res://Assets/VFX Scenes/Track/track.tscn")
 var last_track_pos: Vector2
 var track_timer := 0.0
+var elapsed_cooldown := 0
 @export var track_interval := 0.07
 @export var track_distance := 7.0
 
@@ -79,6 +80,7 @@ var _last_attacker_id: int = -1
 @onready var muzzle_timer: Timer = $Turret/MuzzleTimer
 @onready var direction_arrow: Polygon2D = $Body/Polygon2D
 @onready var pause_menu = get_node("/root/Game/PauseMenu")
+@onready var cooldown_progress: TextureProgressBar = $TextureProgressBar
 
 var owner_id
 
@@ -106,6 +108,12 @@ var input_buffer: Array = []
 
 func _process(delta):
 	health_bar.value = lerp(health_bar.value, _health, 10 * delta)
+	
+	if fire_timer.time_left > 0:
+		var progress = 1.0 - (fire_timer.time_left / fire_timer.wait_time)
+		cooldown_progress.value = progress * 100
+	else:
+		cooldown_progress.value = 100
 
 func _ready():
 	target_pos = global_position
