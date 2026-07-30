@@ -13,12 +13,12 @@ size = Vector2(8, 12)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7ompk"]
 size = Vector2(8, 12)
 
-[node name="Chaser" unique_id=2093711468 groups=["projectile"] instance=ExtResource("1_60iaj")]
+[node name="Chaser" unique_id=2093711468 instance=ExtResource("1_60iaj")]
 script = ExtResource("2_v0nso")
 turn_speed = 10.0
 speed = 180.0
 damage = 20.0
-fire_cooldown = 1.0
+fire_cooldown = 3.0
 projectile_textures = [ExtResource("3_v0nso"), ExtResource("4_7ompk"), ExtResource("5_1f4cc"), ExtResource("6_d0knq")]
 
 [node name="Sprite2D" parent="." index="0" unique_id=1784469120]

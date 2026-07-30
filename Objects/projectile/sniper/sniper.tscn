@@ -13,10 +13,10 @@ size = Vector2(4, 14)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_et4m5"]
 size = Vector2(4, 14)
 
-[node name="Sniper" unique_id=2093711468 groups=["projectile"] instance=ExtResource("1_ku0u4")]
+[node name="Sniper" unique_id=2093711468 instance=ExtResource("1_ku0u4")]
 script = ExtResource("2_rmuuh")
 speed = 1100.0
-damage = 30.0
+damage = 70.0
 fire_cooldown = 2.0
 projectile_textures = [ExtResource("3_njdyj"), ExtResource("4_et4m5"), ExtResource("5_eosok"), ExtResource("6_75kri")]
 
