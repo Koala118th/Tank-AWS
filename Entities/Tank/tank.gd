@@ -144,7 +144,7 @@ func _physics_process(delta: float):
 		input_sequence += 1
 		input["seq"] = input_sequence
 		input["delta"] = delta
-		input_buffer.append(input)
+		input_buffer.append(input.duplicate())
 		GameServer.tankManager.send_input.rpc_id(1, input)
 		apply_input(input, delta)
 		spawn_tracks(delta)
