@@ -162,6 +162,7 @@ text = "2 / 2 players ready"
 horizontal_alignment = 1
 
 [node name="SpectatorOverlay" type="Control" parent="." unique_id=2120653571]
+visible = false
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
