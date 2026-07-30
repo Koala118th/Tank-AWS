@@ -170,14 +170,6 @@ func _on_game_over_finished():
 	await get_tree().process_frame
 	GameServer.tankManager.notify_spawns_ready.rpc()
 
-	match_state = MatchState.IN_MATCH
-	playerManager.begin_match.rpc()
-	await get_tree().process_frame
-	await get_tree().process_frame
-	GameServer.tankManager.clear_tanks.rpc()
-	await get_tree().process_frame
-	GameServer.tankManager.notify_spawns_ready.rpc()
-
 # ─────────────────────────────────────────
 #  RESET
 # ─────────────────────────────────────────
