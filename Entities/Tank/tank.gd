@@ -99,6 +99,7 @@ var current_input := {
 	"turn": 0.0,
 	"mouse": Vector2.ZERO,
 	"seq": 0,
+	"delta": 0,
 }
 var input_sequence: int = 0
 var input_buffer: Array = []
@@ -142,6 +143,7 @@ func _physics_process(delta: float):
 		var input = get_input_state()
 		input_sequence += 1
 		input["seq"] = input_sequence
+		input["delta"] = delta
 		input_buffer.append(input)
 		GameServer.tankManager.send_input.rpc_id(1, input)
 		apply_input(input, delta)
@@ -188,7 +190,7 @@ func apply_input(input: Dictionary, delta: float):
 	
 	# MOVEMENT
 	var forward = input["forward"]
-	var motion = Vector2.UP.rotated(body.rotation) * forward * speed * get_physics_process_delta_time()
+	var motion = Vector2.UP.rotated(body.rotation) * forward * speed * delta
 
 	var collision = move_and_collide(motion)
 	if collision:
@@ -214,7 +216,7 @@ func reconcile(server_pos, server_body_rot, server_turret_rot, last_seq: int):
 
 	# replay remaining inputs (FUTURE)
 	for input in input_buffer:
-		apply_input(input, 1.0 / 60.0)
+		apply_input(input, input["delta"])
 
 
 func apply_server_state(pos, body_rot, turret_rot, last_seq: int):
