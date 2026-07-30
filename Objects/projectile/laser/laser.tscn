@@ -11,7 +11,7 @@
 script = ExtResource("2_rqvie")
 max_bounces = 5
 max_length = 1000.0
-damage = 40.0
+damage = 30.0
 fire_cooldown = 1.0
 projectile_textures = [ExtResource("3_jm82b"), ExtResource("3_rqvie"), ExtResource("5_s3lir"), ExtResource("6_m8g2b")]
 

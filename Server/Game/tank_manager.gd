@@ -6,7 +6,13 @@ var tanks := {}
 var tank_ammo: Dictionary = {}
 var tank_ammo_remaining: Dictionary = {}
 
-@rpc("authority", "call_remote", "reliable")
+@rpc("authority", "call_local", "reliable")
+func reset_spawns_flag() -> void:
+	var spawners = get_tree().get_nodes_in_group("tank_spawner")
+	if spawners.size() > 0:
+		spawners[0].reset_spawn_flag()
+
+@rpc("authority", "call_local", "reliable")
 func notify_spawns_ready() -> void:
 	spawns_ready.emit()
 
