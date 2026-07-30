@@ -232,6 +232,7 @@ func notify_spectator(current_match_state: int, match_start_time: float):
 		var spawner = _get_tank_spawner()
 		if spawner != null:
 			spawner._request_spawns_once()
+		GameServer.projectileManager.request_projectiles.rpc_id(1)
 
 @rpc("authority", "call_remote", "reliable")
 func notify_game_over_join(remaining_time: float):
