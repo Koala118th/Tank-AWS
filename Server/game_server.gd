@@ -28,6 +28,9 @@ func get_port_from_args() -> int:
 		if args[i] == "--port":
 			return int(args[i + 1])
 	return 7777  # local dev fallback
+	
+func get_connected_peer_count() -> int:
+	return multiplayer.get_peers().size()
 
 # ─────────────────────────────────────────
 #  SERVER CONFIG
@@ -68,6 +71,7 @@ func start_server():
 
 func _on_peer_connected(id: int):
 	print("SERVER: Player connected — id: ", id)
+	GameLiftBridge.StopEmptyServerTimer()
 	playerManager.assign_slot(id, matchManager.match_state)
 
 func _on_peer_disconnected(id: int):
@@ -84,6 +88,7 @@ func _on_peer_disconnected(id: int):
 	leaderboardManager.remove_player(id)
 	if playerManager.player_count == 0:
 		matchManager._reset_server()
+		GameLiftBridge.StartEmptyServerTimer()
 	
 
 # ─────────────────────────────────────────

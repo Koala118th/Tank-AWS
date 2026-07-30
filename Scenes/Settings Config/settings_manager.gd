@@ -6,7 +6,7 @@ const DEFAULT_MASTER_VOLUME   := 1.0
 const DEFAULT_SFX_UI_VOLUME   := 1.0
 const DEFAULT_SFX_GAME_VOLUME := 1.0
 const DEFAULT_WINDOW_MODE     := DisplayServer.WINDOW_MODE_WINDOWED
-const DEFAULT_RESOLUTION      := Vector2i(1920, 1080)
+const DEFAULT_RESOLUTION      := Vector2i(1280, 720)
 
 var master_volume   : float    = DEFAULT_MASTER_VOLUME
 var sfx_ui_volume   : float    = DEFAULT_SFX_UI_VOLUME

@@ -6,8 +6,10 @@ extends Node
 const WEBSOCKET_URL = "wss://v4wok52voc.execute-api.ap-southeast-2.amazonaws.com/production/"
 var _client: WebSocketPeer
 var _waiting_for_open := false
+var _text
 
-func open_client() -> void: 
+func open_client(text) -> void: 
+	_text = text
 	_client = WebSocketPeer.new()
 
 	var err = _client.connect_to_url(WEBSOCKET_URL)
@@ -52,13 +54,17 @@ func _on_message(text: String) -> void:
 		print("Failed to parse message")
 		return
 	print("Received: ", data)
-	match data["type"]:
-		"route":
-			connect_to_server(data)
-		"retry_request":
-			retry()
-		"message":
-			print(data["content"])
+	if data.has("type"):
+		match data["type"]:
+			"route":
+				connect_to_server(data)
+			"retry_request":
+				retry()
+			"message":
+				print(data["content"])
+				play_button.disabled = false
+	else: 
+		play_button.disabled = false
 	
 func connect_to_server(data) -> void:
 	var server_ip = data["serverIp"]
@@ -75,7 +81,7 @@ func connect_to_server(data) -> void:
 		play_button.disabled = false
 		return
 	
-	GameServer.start_client(server_ip, port, player_session_id, game_session_id)
+	GameServer.start_client(_text, server_ip, port, player_session_id, game_session_id)
 
 
 var attempt: int = 0

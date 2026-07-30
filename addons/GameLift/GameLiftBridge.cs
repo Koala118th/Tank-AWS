@@ -2,6 +2,9 @@ using Godot;
 using Aws.GameLift.Server;
 using Aws.GameLift.Server.Model;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
+using System;
 
 public partial class GameLiftBridge : Node
 {
@@ -10,6 +13,9 @@ public partial class GameLiftBridge : Node
     private void ConfigureLogging() //Disables log4net console output and configures a file appender for logging
     {
         log4net.Util.LogLog.QuietMode = true;
+
+        const string logDir = "/local/game/logs";
+        System.IO.Directory.CreateDirectory(logDir);
 
         var hierarchy =
             (log4net.Repository.Hierarchy.Hierarchy)
@@ -26,7 +32,7 @@ public partial class GameLiftBridge : Node
 
         var fileAppender = new log4net.Appender.FileAppender
         {
-            File = "logs/gamelift-full.log",
+            File = System.IO.Path.Combine(logDir, "gamelift-full.log"),
             AppendToFile = true,
             Layout = new log4net.Layout.PatternLayout(
                 "%date [%thread] %-5level %logger - %message%newline"
@@ -70,10 +76,9 @@ public partial class GameLiftBridge : Node
             return;
         }
 
-        var logParameters = new LogParameters(
-            new List<string>
+        var logParameters = new LogParameters(new List<string>
             {
-                "/local/game/logs/myserver.log"
+                "/local/game/logs/gamelift-full.log"
             }
         );
 
@@ -230,16 +235,48 @@ public partial class GameLiftBridge : Node
     {
         return true;
     }
+    private CancellationTokenSource _emptyTimerCts;
 
-    async private void StartEmptyServerTimer()
+    public void StartEmptyServerTimer()
+    {
+        StopEmptyServerTimer();
+
+        _emptyTimerCts = new CancellationTokenSource();
+        _ = RunEmptyServerTimer(_emptyTimerCts.Token);
+    }
+
+    public void StopEmptyServerTimer()
+    {
+        if (_emptyTimerCts == null)
+            return;
+
+        _emptyTimerCts.Cancel();
+        _emptyTimerCts.Dispose();
+        _emptyTimerCts = null;
+
+        GD.Print(
+            "===============================\n" +
+            "Empty server timer stopped — a player is connected." +
+            "\n==============================="
+        );
+    }
+
+    private async Task RunEmptyServerTimer(CancellationToken token)
     {
         GD.Print(
             "===============================\n" +
             "starting empty server timer..." +
             "\n==============================="
         );
-        //Test Timer: After 10 minutes, if no players have connected, shut down the server
-        await ToSignal(GetTree().CreateTimer(600), SceneTreeTimer.SignalName.Timeout);
+
+        try
+        {
+            await Task.Delay(TimeSpan.FromSeconds(600), token);
+        }
+        catch (TaskCanceledException)
+        {
+            return;
+        }
 
         GD.Print(
             "===============================\n" +
@@ -251,20 +288,11 @@ public partial class GameLiftBridge : Node
 
         if (!outcome.Success)
         {
-            GD.PrintErr(
-                "===============================\n" +
-                "ProcessEnding failed: " +
-                outcome.Error.ErrorMessage +
-                "\n==============================="
-            );
+            GD.PrintErr("ProcessEnding failed: " + outcome.Error.ErrorMessage);
         }
         else
         {
-            GD.Print(
-                "===============================\n" +
-                "ProcessEnding succeeded" +
-                "\n==============================="
-            );
+            GD.Print("ProcessEnding succeeded");
         }
 
         GetTree().Quit();
