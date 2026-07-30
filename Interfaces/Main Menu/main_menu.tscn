@@ -151,7 +151,6 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="MenuScreen" type="CenterContainer" parent="." unique_id=234454671]
-visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -254,6 +253,7 @@ theme_override_styles/normal = SubResource("StyleBoxEmpty_2ccvi")
 text = "QUIT"
 
 [node name="ConnectingScreen" type="CenterContainer" parent="." unique_id=300000001]
+visible = false
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
