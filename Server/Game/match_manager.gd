@@ -71,7 +71,11 @@ func _start_match():
 	GameServer.playerManager.begin_match.rpc()
 	await get_tree().process_frame
 	await get_tree().process_frame
+	GameServer.tankManager.reset_spawns_flag.rpc()
+	await get_tree().process_frame
 	GameServer.tankManager.notify_spawns_ready.rpc()
+	for pid in GameServer.playerManager.spectators:
+		notify_spectator.rpc_id(pid, MatchState.IN_MATCH, 0.0)
 
 # ─────────────────────────────────────────
 #  MATCH END
@@ -100,7 +104,6 @@ func _on_game_over_finished():
 	_game_over_timer = null
 
 	var playerManager = GameServer.playerManager
-
 	var future_actives: int = playerManager.actives_players.size() \
 		+ playerManager.spectators.size() \
 		+ playerManager._spectators_next_match.size()
@@ -129,14 +132,13 @@ func _on_game_over_finished():
 	GameServer.mapManager.pick_background()
 	await get_tree().process_frame
 
-	# Recheck after await — a player may have disconnected during maze generation
+	# Recheck after await
 	var recheck_actives: int = playerManager.actives_players.size() \
 		+ playerManager.spectators.size()
 	if recheck_actives <= 1:
 		match_state = MatchState.WAITING
 		for pid in playerManager.actives_players + playerManager.spectators:
 			notify_waiting.rpc_id(pid)
-		# Clean up the started systems
 		GameServer.tankManager.clear_tanks.rpc()
 		GameServer.collectibleManager.reset()
 		return
@@ -149,7 +151,6 @@ func _on_game_over_finished():
 			notify_spectator.rpc_id(pid, MatchState.STARTING, float(COUNTDOWN_SECONDS))
 		await get_tree().create_timer(float(COUNTDOWN_SECONDS)).timeout
 
-		# Recheck again after countdown — another player may have left
 		var recheck_after_countdown: int = playerManager.actives_players.size() \
 			+ playerManager.spectators.size()
 		if recheck_after_countdown <= 1:
@@ -160,11 +161,14 @@ func _on_game_over_finished():
 			GameServer.collectibleManager.reset()
 			return
 
+	# Single begin_match call — reached by both countdown and no-countdown paths
 	match_state = MatchState.IN_MATCH
 	playerManager.begin_match.rpc()
 	await get_tree().process_frame
 	await get_tree().process_frame
 	GameServer.tankManager.clear_tanks.rpc()
+	await get_tree().process_frame
+	GameServer.tankManager.reset_spawns_flag.rpc()
 	await get_tree().process_frame
 	GameServer.tankManager.notify_spawns_ready.rpc()
 

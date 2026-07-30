@@ -13,7 +13,7 @@ var _spawns_requested: bool = false
 
 func _ready():
 	add_to_group("tank_spawner")
-	_spawns_requested = false  # reset on every scene load
+	_spawns_requested = false
 	await get_tree().process_frame
 
 	var playerManager = GameServer.playerManager
@@ -42,10 +42,14 @@ func _ready():
 
 	if GameServer.matchManager.pending_screen == "spectator" \
 	and GameServer.matchManager.pending_match_state == 2:
-		# IN_MATCH spectator — request immediately
 		_request_spawns_once()
+		if not tankManager.spawns_ready.is_connected(_on_spawns_ready):
+			tankManager.spawns_ready.connect(_on_spawns_ready)
 	else:
 		tankManager.spawns_ready.connect(_on_spawns_ready)
+
+func reset_spawn_flag() -> void:
+	_spawns_requested = false
 
 func _on_spawns_ready():
 	_request_spawns_once()
