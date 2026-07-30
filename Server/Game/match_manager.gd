@@ -72,8 +72,6 @@ func _start_match():
 	await get_tree().process_frame
 	await get_tree().process_frame
 	GameServer.tankManager.notify_spawns_ready.rpc()
-	for pid in GameServer.playerManager.spectators:
-		notify_spectator.rpc_id(pid, MatchState.IN_MATCH, 0.0)
 
 # ─────────────────────────────────────────
 #  MATCH END
@@ -223,14 +221,17 @@ func notify_starting(seconds: float):
 
 @rpc("authority", "call_remote", "reliable")
 func notify_spectator(current_match_state: int, match_start_time: float):
+	var was_starting = (pending_match_state == 1)
 	pending_screen = "spectator"
 	pending_match_state = current_match_state
 	pending_countdown = match_start_time
 	var ui = _get_match_ui()
 	if ui:
 		ui._apply_pending_screen()
-	if current_match_state == 2: # IN_MATCH
-		GameServer.tankManager.request_spawns.rpc_id(1, multiplayer.get_unique_id())
+	if current_match_state == 2 and not was_starting:
+		var spawner = _get_tank_spawner()
+		if spawner != null:
+			spawner._request_spawns_once()
 
 @rpc("authority", "call_remote", "reliable")
 func notify_game_over_join(remaining_time: float):

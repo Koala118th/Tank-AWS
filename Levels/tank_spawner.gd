@@ -9,44 +9,52 @@ var tanks: Dictionary = {}
 var match_number: int = 1
 var _match_active: bool = false
 var _spawn_positions: Dictionary = {}
+var _spawns_requested: bool = false
 
 func _ready():
 	add_to_group("tank_spawner")
+	_spawns_requested = false  # reset on every scene load
 	await get_tree().process_frame
 
 	var playerManager = GameServer.playerManager
 	var tankManager = GameServer.tankManager
 
 	if GameServer.is_server_mode():
+		if playerManager.match_begun.is_connected(_on_match_begun_server):
+			playerManager.match_begun.disconnect(_on_match_begun_server)
 		playerManager.match_begun.connect(_on_match_begun_server)
+		return
+
+	for c in tankManager.tank_spawned.get_connections():
+		tankManager.tank_spawned.disconnect(c["callable"])
+	tankManager.tank_spawned.connect(
+		func(peer_id: int, slot: int, pos: Vector2):
+			spawn_tank(peer_id, slot, pos)
+	)
+
+	for c in tankManager.spawns_ready.get_connections():
+		tankManager.spawns_ready.disconnect(c["callable"])
+
+	var my_id = multiplayer.get_unique_id()
+	print("TANKSPAWNER READY — peer: ", my_id,
+		" pending_screen: ", GameServer.matchManager.pending_screen,
+		" pending_match_state: ", GameServer.matchManager.pending_match_state)
+
+	if GameServer.matchManager.pending_screen == "spectator" \
+	and GameServer.matchManager.pending_match_state == 2:
+		# IN_MATCH spectator — request immediately
+		_request_spawns_once()
 	else:
-		for c in tankManager.tank_spawned.get_connections():
-			tankManager.tank_spawned.disconnect(c["callable"])
-		tankManager.tank_spawned.connect(
-			func(peer_id: int, slot: int, pos: Vector2):
-				spawn_tank(peer_id, slot, pos)
-		)
-
-		for c in tankManager.spawns_ready.get_connections():
-			tankManager.spawns_ready.disconnect(c["callable"])
-
-		var my_id = multiplayer.get_unique_id()
-		print("TANKSPAWNER READY — peer: ", my_id,
-			" pending_screen: ", GameServer.matchManager.pending_screen,
-			" pending_match_state: ", GameServer.matchManager.pending_match_state)
-
-		if GameServer.matchManager.pending_screen == "spectator" \
-		and GameServer.matchManager.pending_match_state == 2:
-			if not tankManager.spawns_ready.is_connected(_on_spawns_ready):
-				tankManager.spawns_ready.connect(_on_spawns_ready)
-			tankManager.request_spawns.rpc_id(1, my_id)
-		else:
-			if not tankManager.spawns_ready.is_connected(_on_spawns_ready):
-				tankManager.spawns_ready.connect(_on_spawns_ready)
+		tankManager.spawns_ready.connect(_on_spawns_ready)
 
 func _on_spawns_ready():
-	var my_id = multiplayer.get_unique_id()
-	GameServer.tankManager.request_spawns.rpc_id(1, my_id)
+	_request_spawns_once()
+
+func _request_spawns_once() -> void:
+	if _spawns_requested:
+		return
+	_spawns_requested = true
+	GameServer.tankManager.request_spawns.rpc_id(1, multiplayer.get_unique_id())
 
 func _on_match_begun_server():
 	_clear_tanks()
