@@ -71,6 +71,7 @@ func _on_peer_disconnected(id: int):
 # ─────────────────────────────────────────
 var my_id = null
 var pending_player_name: String
+var pending_error_message: String = ""
 
 func _reset_client_session_state() -> void:
 	my_id = null
@@ -103,9 +104,11 @@ func _on_connected_to_server():
 func _on_connection_failed():
 	print("CLIENT: Connection failed.")
 
-func _on_server_disconnected():
+func _on_server_disconnected() -> void:
 	print("CLIENT: Server disconnected.")
-	_reset_client_session_state()
+	multiplayer.multiplayer_peer = null
+	pending_error_message = "SERVER ERROR"
+	get_tree().change_scene_to_file("res://Interfaces/Main Menu/main_menu.tscn")
 
 func disconnect_client() -> void:
 	if multiplayer.multiplayer_peer:

@@ -18,6 +18,11 @@ func _ready():
 	spinner.pivot_offset       = spinner.size / 2
 	spinner_inner.pivot_offset = spinner_inner.size / 2
 
+	if GameServer.pending_error_message != "":
+		divider_label.text = GameServer.pending_error_message
+		divider_label.add_theme_color_override("font_color", Color.RED)
+		GameServer.pending_error_message = ""
+
 func _process(delta):
 	if connecting_screen.visible:
 		spinner.rotation_degrees       += 180.0 * delta   # forward
