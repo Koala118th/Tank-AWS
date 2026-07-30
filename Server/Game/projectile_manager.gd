@@ -25,7 +25,7 @@ var ammo_scenes := {
 }
 
 var current_ammo = AmmoType.BULLET
-
+var projectile_spawn_data: Dictionary = {}
 var projectiles := {}
 
 
@@ -35,6 +35,8 @@ func clear_all_projectiles() -> void:
 		if is_instance_valid(p):
 			p.queue_free()
 	projectiles.clear()
+	projectile_spawn_data.clear()
+
 
 
 @rpc("authority", "call_local", "reliable")
@@ -58,30 +60,52 @@ func request_shoot(shooter_id: int, mouse_pos: Vector2, spawn_index: int) -> voi
 		push_warning("[ProjectileManager] No tank found for shooter_id %d" % shooter_id)
 
 
+@rpc("any_peer", "call_remote", "reliable")
+func request_projectiles() -> void:
+	if not multiplayer.is_server():
+		return
+	var sender_id = multiplayer.get_remote_sender_id()
+	for id in projectiles.keys():
+		var p = projectiles[id]
+		if not is_instance_valid(p):
+			continue
+		if not projectile_spawn_data.has(id):
+			continue
+		var data = projectile_spawn_data[id]
+		spawn_projectile.rpc_id(sender_id, id, p.global_position, 
+			p.rotation, data["dir"], data["ammo_type"], 
+			data["shooter_id"], data["spawn_index"])
+
+
 @rpc("authority", "call_remote", "reliable")
-func spawn_projectile(id, pos: Vector2, rot: float, dir: Vector2, ammo_type: int, shooter_id: int, spawn_index: int):
+func spawn_projectile(id, pos: Vector2, rot: float, dir: Vector2, 
+	ammo_type: int, shooter_id: int, spawn_index: int):
 	var projectile = ammo_scenes[ammo_type].instantiate()
 	projectile.global_position = pos
 	projectile.rotation = rot
 	projectile.target_pos = pos
 	projectile.target_rot = rot
 	projectile.set_direction(dir)
-	
 	projectiles[id] = projectile
-	
+	# Store spawn data for late joiners
+	if multiplayer.is_server():
+		projectile_spawn_data[id] = {
+			"pos": pos, "rot": rot, "dir": dir,
+			"ammo_type": ammo_type, "shooter_id": shooter_id,
+			"spawn_index": spawn_index
+		}
 	get_parent().add_child(projectile)
 	projectile.set_visual_by_index(spawn_index)
-	
 	var tank = GameServer.tankManager.find_tank_by_owner(shooter_id)
-	tank.trigger_muzzle_flash()
-
+	if tank:
+		tank.trigger_muzzle_flash()
 	var shoot_sfx: AudioStream
 	match ammo_type:
 		AmmoType.SNIPER: shoot_sfx = AudioManager.sfx_shoot_sniper
 		AmmoType.LASER:  shoot_sfx = AudioManager.sfx_shoot_laser
 		AmmoType.BULLET: shoot_sfx = AudioManager.sfx_shoot
 		AmmoType.CHASER: shoot_sfx = AudioManager.sfx_shoot_chaser
-		AmmoType.SMALL: shoot_sfx = AudioManager.sfx_shoot_small
+		AmmoType.SMALL:  shoot_sfx = AudioManager.sfx_shoot_small
 	AudioManager.play_game(shoot_sfx, pos)
 
 
@@ -124,6 +148,8 @@ func sync_laser(id, points: PackedVector2Array):
 
 @rpc("authority", "call_remote", "reliable")
 func sync_delete(id):
+	if multiplayer.is_server():
+		projectile_spawn_data.erase(id)  # add this
 	if multiplayer.is_server():
 		return
 	if not projectiles.has(id):
