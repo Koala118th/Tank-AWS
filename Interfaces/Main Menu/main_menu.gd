@@ -8,7 +8,9 @@ class_name Main_menu
 @onready var status_label      = $ConnectingScreen/VBoxContainer/TextBlock/StatusLabel
 @onready var spinner           = $ConnectingScreen/VBoxContainer/SpinnerWrapper/SpinnerRect
 @onready var spinner_inner     = $ConnectingScreen/VBoxContainer/SpinnerWrapper/SpinnerInner
-@onready var play_button: Button = $CenterContainer/VBoxContainer/PlayButton
+
+@onready var menu_screen_node = $MenuScreen
+@onready var connecting_screen_node = $ConnectingScreen
 
 @onready var socketNode: Node  = $SocketNode
 
@@ -35,9 +37,9 @@ func _on_start_button_pressed() -> void:
 		divider_label.text = "ENTER A USERNAME"
 		divider_label.add_theme_color_override("font_color", Color.RED)
 	else:
-		play_button.disabled = true
+		toggle_menu_screen(false)
 		socketNode.open_client(name_line_edit.text) 
-	
+
 func _on_settings_button_pressed() -> void:
 	var scene := preload("res://Interfaces/Settings/settings_menu.tscn")
 	add_child(scene.instantiate())
@@ -75,5 +77,10 @@ func set_status(status: String):
 	status_label.text = status
 
 func _on_cancel_button_pressed():
-	# teammate fills this in with disconnect logic
+	socketNode.close_client()
+	toggle_menu_screen(true)
 	show_menu()
+
+func toggle_menu_screen(is_menu: bool) ->void:
+	menu_screen_node.visible = is_menu
+	connecting_screen_node.visible = !is_menu

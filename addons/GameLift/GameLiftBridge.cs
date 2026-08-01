@@ -271,7 +271,7 @@ public partial class GameLiftBridge : Node
 
         try
         {
-            await Task.Delay(TimeSpan.FromSeconds(600), token);
+            await Task.Delay(TimeSpan.FromSeconds(300), token);
         }
         catch (TaskCanceledException)
         {
@@ -280,7 +280,7 @@ public partial class GameLiftBridge : Node
 
         GD.Print(
             "===============================\n" +
-            "GameLift: no players connected after 10 minutes, shutting down..." +
+            "GameLift: no players connected after 5 minutes, shutting down..." +
             "\n==============================="
         );
 

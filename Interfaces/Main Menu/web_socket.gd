@@ -1,5 +1,5 @@
 extends Node
-@onready var play_button: Button = $"../CenterContainer/VBoxContainer/PlayButton"
+@onready var main_scene = $".."
 # ─────────────────────────────────────────
 #  WEBSOCKET
 # ─────────────────────────────────────────
@@ -17,7 +17,7 @@ func open_client(text) -> void:
 		_waiting_for_open = true
 	else:
 		print("WebSocket connect_to_url failed with error: ", err)
-		play_button.disabled = false
+		main_scene.toggle_menu_screen(true)
 		_client = null
 
 func _process(_delta: float) -> void:
@@ -41,7 +41,7 @@ func _process(_delta: float) -> void:
 		var reason = _client.get_close_reason()
 		print("WebSocket closed. Code: ", code, " Reason: ", reason)
 		_client = null
-		play_button.disabled = false
+		main_scene.toggle_menu_screen(true)
 
 func send_message(msg: Dictionary) -> void:
 	if _client != null and _client.get_ready_state() == WebSocketPeer.STATE_OPEN:
@@ -62,9 +62,9 @@ func _on_message(text: String) -> void:
 				retry()
 			"message":
 				print(data["content"])
-				play_button.disabled = false
+				main_scene.toggle_menu_screen(true)
 	else: 
-		play_button.disabled = false
+		main_scene.toggle_menu_screen(true)
 	
 func connect_to_server(data) -> void:
 	var server_ip = data["serverIp"]
@@ -78,7 +78,7 @@ func connect_to_server(data) -> void:
 		print("Player session ", player_session_id)
 		print("Game session: ", game_session_id)
 		
-		play_button.disabled = false
+		main_scene.toggle_menu_screen(true)
 		return
 	
 	GameServer.start_client(_text, server_ip, port, player_session_id, game_session_id)
