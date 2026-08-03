@@ -218,10 +218,47 @@ horizontal_alignment = 1
 layout_mode = 2
 theme_override_colors/font_color = Color(0.29803923, 0.6862745, 0.3137255, 1)
 theme_override_colors/font_placeholder_color = Color(0.3238985, 0.43201837, 0.32410374, 1)
-theme_override_fonts/font = ExtResource("4_xpv52")
 theme_override_styles/normal = SubResource("StyleBoxFlat_2ccvi")
 theme_override_styles/focus = SubResource("StyleBoxFlat_o655f")
 placeholder_text = "Username"
+
+[node name="PasswordEdit" type="LineEdit" parent="MenuScreen/VBoxContainer" unique_id=2017791047]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.29803923, 0.6862745, 0.3137255, 1)
+theme_override_colors/font_placeholder_color = Color(0.3238985, 0.43201837, 0.32410374, 1)
+theme_override_styles/normal = SubResource("StyleBoxFlat_2ccvi")
+theme_override_styles/focus = SubResource("StyleBoxFlat_o655f")
+placeholder_text = "Password"
+secret = true
+secret_character = "*"
+
+[node name="AuthRow" type="HBoxContainer" parent="MenuScreen/VBoxContainer" unique_id=1675905152]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="LoginButton" type="Button" parent="MenuScreen/VBoxContainer/AuthRow" unique_id=1125887305]
+custom_minimum_size = Vector2(96, 46)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.039215688, 0.07058824, 0.039215688, 1)
+theme_override_fonts/font = ExtResource("4_xpv52")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_sulmp")
+theme_override_styles/hover = SubResource("StyleBoxFlat_hvu6i")
+text = "▶  LOGIN"
+
+[node name="SignUpButton" type="Button" parent="MenuScreen/VBoxContainer/AuthRow" unique_id=1186894461]
+custom_minimum_size = Vector2(96, 46)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(0.41568628, 0.5411765, 0.41568628, 1)
+theme_override_colors/font_hover_color = Color(0.627451, 0.7529412, 0.627451, 1)
+theme_override_fonts/font = ExtResource("4_xpv52")
+theme_override_font_sizes/font_size = 18
+theme_override_styles/normal = SubResource("StyleBoxFlat_3q6f2")
+theme_override_styles/hover = SubResource("StyleBoxFlat_xpv52")
+text = "SIGN UP"
 
 [node name="PlayButton" type="Button" parent="MenuScreen/VBoxContainer" unique_id=2130037411 groups=["ui_buttons"]]
 custom_minimum_size = Vector2(200, 46)
@@ -353,6 +390,8 @@ text = "v0.1.0"
 script = ExtResource("9_t275b")
 
 [connection signal="text_changed" from="MenuScreen/VBoxContainer/LineEdit" to="." method="_on_line_edit_text_changed"]
+[connection signal="pressed" from="MenuScreen/VBoxContainer/AuthRow/LoginButton" to="." method="_on_login_button_pressed"]
+[connection signal="pressed" from="MenuScreen/VBoxContainer/AuthRow/SignUpButton" to="." method="_on_sign_up_button_pressed"]
 [connection signal="pressed" from="MenuScreen/VBoxContainer/PlayButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="MenuScreen/VBoxContainer/SettingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="MenuScreen/VBoxContainer/QuitButton" to="." method="_on_quit_button_pressed"]

@@ -18,6 +18,7 @@ func _on_body_entered(body: Node2D) -> void:
 	# Apply locally for instant feedback
 	body.current_ammo = ammo_type
 	body.flash_grey()
+	body.flash_pickup_label(ammo_type)
 
 	if crate_id != -1:
 		GameServer.collectibleManager.notify_crate_picked_up_rpc.rpc_id(1, crate_id, body.owner_id)
