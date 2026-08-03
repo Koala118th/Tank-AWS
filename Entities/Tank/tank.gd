@@ -37,6 +37,7 @@ var colors := [
 var track_scene: PackedScene = preload("res://Assets/VFX Scenes/Track/track.tscn")
 var last_track_pos: Vector2
 var track_timer := 0.0
+var elapsed_cooldown := 0
 @export var track_interval := 0.07
 @export var track_distance := 7.0
 
@@ -79,6 +80,8 @@ var _last_attacker_id: int = -1
 @onready var muzzle_timer: Timer = $Turret/MuzzleTimer
 @onready var direction_arrow: Polygon2D = $Body/Polygon2D
 @onready var pause_menu = get_node("/root/Game/PauseMenu")
+@onready var cooldown_progress: TextureProgressBar = $TextureProgressBar
+@onready var pickup_label: Label = $PickupLabel
 
 var owner_id
 
@@ -106,6 +109,12 @@ var input_buffer: Array = []
 
 func _process(delta):
 	health_bar.value = lerp(health_bar.value, _health, 10 * delta)
+	
+	if fire_timer.time_left > 0:
+		var progress = 1.0 - (fire_timer.time_left / fire_timer.wait_time)
+		cooldown_progress.value = progress * 100
+	else:
+		cooldown_progress.value = 100
 
 func _ready():
 	target_pos = global_position
@@ -369,6 +378,40 @@ func flash_grey():
 	
 	flash_tween = create_tween()
 	flash_tween.tween_property(body, "modulate", Color(1, 1, 1), 0.15)
+
+
+func flash_pickup_label(ammo_type: int):
+	var amount = GameServer.collectibleManager.get_ammo_remaining(ammo_type)
+	var ammo_name = GameServer.projectileManager.AmmoType.keys()[ammo_type]
+	
+	pickup_label.text = "x%d %s" % [amount, ammo_name]
+	pickup_label.visible = true
+	pickup_label.add_theme_constant_override("outline_size", 2)
+	pickup_label.add_theme_color_override("font_outline_color", Color.BLACK)
+	pickup_label.modulate.a = 0.0
+	
+	# Kill any previous tween
+	if pickup_label.has_meta("tween"):
+		var old_tween = pickup_label.get_meta("tween")
+		if is_instance_valid(old_tween):
+			old_tween.kill()
+	
+	var tween = create_tween()
+	pickup_label.set_meta("tween", tween)
+	
+	# Fade in
+	tween.tween_property(pickup_label, "modulate:a", 1.0, 0.2)
+	
+	# Wait
+	tween.tween_interval(1.4)
+	
+	# Fade out
+	tween.tween_property(pickup_label, "modulate:a", 0.0, 0.2)
+	
+	# Hide
+	tween.tween_callback(func():
+		pickup_label.visible = false
+	)
 
 
 func set_visual_by_index(index: int):

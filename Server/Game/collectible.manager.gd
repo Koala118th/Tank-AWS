@@ -15,7 +15,7 @@ var _next_id: int = 0
 # Client-side spawner reference
 var _collectible_spawner: Node2D = null
 
-func _get_ammo_remaining(crate_type: int) -> int:
+func get_ammo_remaining(crate_type: int) -> int:
 	match crate_type:
 		1: return 1 #Sniper
 		2: return 3 #Chaser
@@ -104,7 +104,7 @@ func notify_crate_picked_up_rpc(crate_id: int, tank_peer_id: int) -> void:
 	var crate_pos: Vector2 = _active_crates[crate_id]["position"]  # grab before erase
 	_active_crates.erase(crate_id)
 
-	var ammo_remaining: int = _get_ammo_remaining(crate_type)
+	var ammo_remaining: int = get_ammo_remaining(crate_type)
 	GameServer.tankManager.set_tank_ammo(tank_peer_id, crate_type, ammo_remaining)
 	GameServer.tankManager.sync_ammo.rpc(tank_peer_id, crate_type)
 	receive_crate_removed.rpc(crate_id, crate_pos)  # pass pos along

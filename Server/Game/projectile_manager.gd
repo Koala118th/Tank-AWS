@@ -9,9 +9,9 @@ enum AmmoType {
 }
 
 var ammo_cooldown:= {
-	AmmoType.BULLET: 0.5,
+	AmmoType.BULLET: 1,
 	AmmoType.SNIPER: 2.0,
-	AmmoType.CHASER: 1.0,
+	AmmoType.CHASER: 3.0,
 	AmmoType.SMALL: 0.1,
 	AmmoType.LASER: 1.0
 }
