@@ -15,9 +15,10 @@ zoom = Vector2(0.98, 0.92)
 
 [node name="Maze" parent="." unique_id=1984496082 instance=ExtResource("1_ebmjs")]
 
+[node name="PauseMenu" parent="." unique_id=740397081 instance=ExtResource("4_xw5m5")]
+layer = 11
+
 [node name="MatchUI" parent="." unique_id=740397080 instance=ExtResource("3_wrm1d")]
 
-[node name="PauseMenu" parent="." unique_id=740397081 instance=ExtResource("4_xw5m5")]
-
 [node name="GameOverMenu" parent="." unique_id=740397082 instance=ExtResource("5_hh6a1")]
-layer = 10
+layer = 12
