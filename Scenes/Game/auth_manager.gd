@@ -28,7 +28,13 @@ func _ready() -> void:
 func login(p_username: String, p_password: String) -> void:
 	_pending_action = "login"
 	_pending_username = p_username
-	username = p_username  # add this line
+	username = p_username
+	
+	p_username = _sanitize_username(p_username)
+	if p_username.is_empty():
+		_emit_failure("Invalid username")
+		return
+
 	var body = JSON.stringify({
 		"AuthFlow": "USER_PASSWORD_AUTH",
 		"ClientId": CLIENT_ID,
@@ -44,6 +50,12 @@ func signup(p_username: String, p_password: String) -> void:
 	_pending_action = "signup"
 	_pending_username = p_username
 	username = p_username
+
+	p_username = _sanitize_username(p_username)
+	if p_username.is_empty():
+		_emit_failure("Invalid username")
+		return
+
 	var fake_email = p_username.to_lower() + "@tankaz.game"
 	var body = JSON.stringify({
 		"ClientId": CLIENT_ID,
@@ -104,6 +116,14 @@ func _on_request_completed(result: int, response_code: int, _headers: PackedStri
 		print("[Auth] Signup success")
 		_pending_action = ""
 		signup_success.emit()
+
+
+func _sanitize_username(p_username: String) -> String:
+	var result = ""
+	for c in p_username:
+		if c.to_upper() != c.to_lower() or c in "0123456789-_.@+":
+			result += c
+	return result.strip_edges()
 
 
 func _decode_username_from_token(id_token: String) -> String:

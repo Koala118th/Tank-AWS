@@ -31,6 +31,8 @@ func show_screen(winner_id: int, scores: Array, match_number: int, countdown_sec
 		winner_badge.text = "Nobody wins"
 	elif winner_id == -2:
 		winner_badge.text = ""
+	elif not GameServer.leaderboardManager.leaderboard.has(winner_id):
+		winner_badge.text = "Winner disconnected"
 	else:
 		winner_badge.text = "🏆  " + str(GameServer.leaderboardManager.leaderboard[winner_id]["name"]) + " wins the round"
 	match_counter.text = "Match #" + str(match_number)

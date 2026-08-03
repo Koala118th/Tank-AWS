@@ -386,7 +386,7 @@ theme_override_fonts/font = ExtResource("4_xpv52")
 theme_override_font_sizes/font_size = 20
 text = "v0.1.0"
 
-[node name="SocketNode" type="Node" parent="." unique_id=1209014814]
+[node name="SocketNode" type="Node" parent="." unique_id=2039293913]
 script = ExtResource("9_t275b")
 
 [connection signal="text_changed" from="MenuScreen/VBoxContainer/LineEdit" to="." method="_on_line_edit_text_changed"]

@@ -103,12 +103,30 @@ func _apply_state(new_state: MenuState) -> void:
 func _validate() -> bool:
 	var uname = name_line_edit.text.strip_edges()
 	var pword = password_edit.text
+
 	if uname.length() < 3:
 		_show_error("Username must be at least 3 characters")
+		return false
+	if uname.length() > 20:
+		_show_error("Username must be 20 characters or less")
 		return false
 	if pword.length() < 6:
 		_show_error("Password must be at least 6 characters")
 		return false
+	if pword.length() > 64:
+		_show_error("Password too long")
+		return false
+
+	# Block characters that could be used for injection
+	var forbidden = ["<", ">", "\"", "'", ";", "{", "}", "\\", "/"]
+	for ch in forbidden:
+		if ch in uname:
+			_show_error("Username contains invalid characters")
+			return false
+		if ch in pword:
+			_show_error("Password contains invalid characters")
+			return false
+
 	return true
 
 

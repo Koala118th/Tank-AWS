@@ -10,9 +10,18 @@ extends Node
 # }
 var leaderboard := {}
 
-func register_player(player_id: int, player_name: String):
+func register_player(player_id: int, player_name: String) -> bool:
 	if not multiplayer.is_server():
-		return
+		return false
+	
+	# Check if username already connected
+	var lower_name = player_name.to_lower()
+	for existing_id in leaderboard.keys():
+		if leaderboard[existing_id]["name"].to_lower() == lower_name:
+			print("SERVER: Duplicate login — '", player_name, "' already connected as peer ", existing_id, ", rejecting peer ", player_id)
+			# Kick the new peer
+			multiplayer.multiplayer_peer.disconnect_peer(player_id)
+			return false
 	
 	if not leaderboard.has(player_id):
 		leaderboard[player_id] = {
@@ -20,6 +29,7 @@ func register_player(player_id: int, player_name: String):
 			"wins": 0,
 			"kills": 0
 		}
+	return true
 
 
 func remove_player(player_id: int):
@@ -62,12 +72,23 @@ func get_sorted_leaderboard():
 
 
 @rpc("any_peer", "reliable")
-func register_player_request(player_name: String):
+func register_player_request(player_name: String) -> void:
 	if not multiplayer.is_server():
 		return
-	
 	var sender_id = multiplayer.get_remote_sender_id()
-	register_player(sender_id, player_name)
+	var accepted = register_player(sender_id, player_name)
+	if not accepted:
+		# Notify the rejected client before they get kicked
+		reject_player.rpc_id(sender_id)
+
+
+@rpc("authority", "call_remote", "reliable")
+func reject_player() -> void:
+	print("CLIENT: Login rejected — account already in use")
+	multiplayer.multiplayer_peer.close()
+	multiplayer.multiplayer_peer = null
+	GameServer.pending_error_message = "Account already in use on another client"
+	get_tree().change_scene_to_file("res://Interfaces/Main Menu/main_menu.tscn")
 
 
 @rpc("authority", "call_remote")
