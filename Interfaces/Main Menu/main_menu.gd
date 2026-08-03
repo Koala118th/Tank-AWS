@@ -117,14 +117,11 @@ func _validate() -> bool:
 		_show_error("Password too long")
 		return false
 
-	# Block characters that could be used for injection
-	var forbidden = ["<", ">", "\"", "'", ";", "{", "}", "\\", "/"]
-	for ch in forbidden:
-		if ch in uname:
-			_show_error("Username contains invalid characters")
-			return false
-		if ch in pword:
-			_show_error("Password contains invalid characters")
+	# Only allow letters, numbers, and - _ . @ +
+	var allowed = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.@+"
+	for c in uname:
+		if c not in allowed:
+			_show_error("Username can only contain letters, numbers, and - _ . @ +")
 			return false
 
 	return true
